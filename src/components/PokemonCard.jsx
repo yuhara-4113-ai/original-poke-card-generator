@@ -1,45 +1,56 @@
 import { useState, useRef, forwardRef, useImperativeHandle } from 'react'
 
+// ポケモンカード表示コンポーネント - インタラクティブな3Dホログラフィック効果付き
 const PokemonCard = forwardRef(({ cardData, imagePreview }, ref) => {
+  // インタラクション状態の管理
   const [isInteracting, setIsInteracting] = useState(false)
+  
+  // カードの3D変形効果用CSSカスタムプロパティ
   const [cardStyle, setCardStyle] = useState({
-    '--pointer-x': '50%',
-    '--pointer-y': '50%',
-    '--card-opacity': '0',
-    '--rotate-x': '0deg',
-    '--rotate-y': '0deg',
-    '--background-x': '50%',
-    '--background-y': '50%'
+    '--pointer-x': '50%',     // マウスポインターのX座標（％）
+    '--pointer-y': '50%',     // マウスポインターのY座標（％）
+    '--card-opacity': '0',    // ホログラフィック効果の透明度
+    '--rotate-x': '0deg',     // X軸回転角度
+    '--rotate-y': '0deg',     // Y軸回転角度
+    '--background-x': '50%',  // 背景グラデーションのX位置
+    '--background-y': '50%'   // 背景グラデーションのY位置
   })
 
   const cardRef = useRef(null)
 
+  // 親コンポーネントからカード要素にアクセスするためのref転送
   useImperativeHandle(ref, () => ({
     getElement: () => cardRef.current
   }))
 
+  // マウス移動時の3D効果処理
   const handleMouseMove = (e) => {
     if (!isInteracting) return
 
     const card = cardRef.current
     const rect = card.getBoundingClientRect()
     
+    // マウス座標をカード要素相対座標に変換
     const x = e.clientX - rect.left
     const y = e.clientY - rect.top
     
+    // カードの中心座標を計算
     const centerX = rect.width / 2
     const centerY = rect.height / 2
     
-    const rotateX = (y - centerY) / 10
-    const rotateY = -(x - centerX) / 10
+    // 中心からの距離に基づいて回転角度を計算（ホログラフィック効果）
+    const rotateX = (y - centerY) / 10  // Y座標からX軸回転を計算
+    const rotateY = -(x - centerX) / 10 // X座標からY軸回転を計算（反転）
     
+    // マウス位置をパーセンテージに変換（グラデーション効果用）
     const pointerX = (x / rect.width) * 100
     const pointerY = (y / rect.height) * 100
     
+    // CSSカスタムプロパティを更新してリアルタイム3D効果を適用
     setCardStyle({
       '--pointer-x': `${pointerX}%`,
       '--pointer-y': `${pointerY}%`,
-      '--card-opacity': '1',
+      '--card-opacity': '1',              // ホログラフィック効果を表示
       '--rotate-x': `${rotateY}deg`,
       '--rotate-y': `${rotateX}deg`,
       '--background-x': `${pointerX}%`,
@@ -47,23 +58,26 @@ const PokemonCard = forwardRef(({ cardData, imagePreview }, ref) => {
     })
   }
 
+  // マウスがカードに入った時の処理
   const handleMouseEnter = () => {
     setIsInteracting(true)
   }
 
+  // マウスがカードから出た時の処理 - 元の状態に戻す
   const handleMouseLeave = () => {
     setIsInteracting(false)
     setCardStyle({
       '--pointer-x': '50%',
       '--pointer-y': '50%',
-      '--card-opacity': '0',
-      '--rotate-x': '0deg',
+      '--card-opacity': '0',    // ホログラフィック効果を非表示
+      '--rotate-x': '0deg',     // 回転をリセット
       '--rotate-y': '0deg',
       '--background-x': '50%',
       '--background-y': '50%'
     })
   }
 
+  // 画像が未アップロードの場合のデフォルト画像（SVG形式）
   const defaultImage = "data:image/svg+xml,%3Csvg viewBox='0 0 400 300' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='400' height='300' fill='%23f0f0f0'/%3E%3Ctext x='200' y='150' text-anchor='middle' dy='.3em' fill='%23666' font-family='Arial' font-size='16'%3EUpload Image%3C/text%3E%3C/svg%3E"
 
   return (
@@ -75,28 +89,41 @@ const PokemonCard = forwardRef(({ cardData, imagePreview }, ref) => {
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
+      {/* カードの3D変形コンテナ */}
       <div className="card__translater">
         <div className="card__rotator">
+          {/* カード裏面 */}
           <img
             className="card__back"
             src="https://tcg.pokemon.com/assets/img/global/tcg-card-back-2x.jpg"
             alt="Pokemon card back"
             loading="lazy"
           />
+          
+          {/* カード表面 */}
           <div className="card__front">
+            {/* ポケモン画像表示エリア */}
             <img
               className="card__image"
               src={imagePreview || defaultImage}
               alt={cardData.name}
               loading="lazy"
             />
+            
+            {/* カードコンテンツエリア */}
             <div className="card__content">
+              {/* ヘッダー：ポケモン名とHP */}
               <div className="card__header">
                 <h3 className="card__name">{cardData.name}</h3>
                 <span className="card__hp">HP {cardData.hp}</span>
               </div>
+              
+              {/* ポケモンタイプ表示 */}
               <div className="card__type">{cardData.type}</div>
+              
+              {/* フッター：技と説明 */}
               <div className="card__footer">
+                {/* 技（アビリティ）リスト */}
                 <div className="card__abilities">
                   {cardData.abilities.map((ability, index) => (
                     ability.name && (
@@ -106,9 +133,12 @@ const PokemonCard = forwardRef(({ cardData, imagePreview }, ref) => {
                     )
                   ))}
                 </div>
+                {/* ポケモンの説明文 */}
                 <p className="card__description">{cardData.description}</p>
               </div>
             </div>
+            
+            {/* ホログラフィック光沢効果レイヤー */}
             <div className="card__shine"></div>
             <div className="card__glare"></div>
           </div>

@@ -1,31 +1,35 @@
 import { useState } from 'react'
+import { useLanguage } from '../contexts/useLanguage'
 
+// カードダウンロードボタンコンポーネント - PNG画像として保存機能
 const DownloadButton = ({ cardRef, cardData }) => {
   const [isGenerating, setIsGenerating] = useState(false)
+  const { t } = useLanguage() // 翻訳機能を使用
 
+  // カード画像生成とダウンロード処理
   const generateCardImage = async () => {
     if (!cardRef?.current) {
-      alert('Card preview not available')
+      alert(t('alerts.cardNotAvailable'))
       return
     }
 
     setIsGenerating(true)
 
     try {
-      // Create a canvas with Pokemon card dimensions
+      // Canvas要素を作成してポケモンカードの寸法を設定
       const canvas = document.createElement('canvas')
       const ctx = canvas.getContext('2d')
       
-      // Standard Pokemon card dimensions (ratio 0.718)
+      // 標準的なポケモンカードの寸法 (縦横比 0.718)
       const cardWidth = 660
       const cardHeight = 921
       canvas.width = cardWidth
       canvas.height = cardHeight
 
-      // Create a gradient background
+      // グラデーション背景を作成
       const gradient = ctx.createLinearGradient(0, 0, cardWidth, cardHeight)
       
-      // Set background based on Pokemon type
+      // ポケモンタイプに基づいて背景色を設定
       const typeColors = {
         fire: ['#ff6b6b', '#ff8787'],
         water: ['#4dabf7', '#74c0fc'],
@@ -54,12 +58,12 @@ const DownloadButton = ({ cardRef, cardData }) => {
       ctx.fillStyle = gradient
       ctx.fillRect(0, 0, cardWidth, cardHeight)
 
-      // Add card border
+      // カードの境界線を描画
       ctx.strokeStyle = '#333'
       ctx.lineWidth = 8
       ctx.strokeRect(4, 4, cardWidth - 8, cardHeight - 8)
 
-      // Draw Pokemon image if available
+      // ポケモン画像があれば描画
       if (cardData.image) {
         try {
           const img = new Image()
@@ -71,7 +75,7 @@ const DownloadButton = ({ cardRef, cardData }) => {
             img.src = cardData.image
           })
 
-          // Draw the Pokemon image in the center area
+          // ポケモン画像を中央エリアに描画
           const imgX = 50
           const imgY = 120
           const imgWidth = cardWidth - 100
@@ -83,43 +87,43 @@ const DownloadButton = ({ cardRef, cardData }) => {
         }
       }
 
-      // Add text content
+      // テキストコンテンツを描画
       ctx.fillStyle = '#fff'
       ctx.strokeStyle = '#000'
       ctx.lineWidth = 3
       
-      // Pokemon name
+      // ポケモン名を描画
       ctx.font = 'bold 36px Arial, sans-serif'
       ctx.textAlign = 'left'
       const nameText = cardData.name.toUpperCase()
       ctx.strokeText(nameText, 40, 60)
       ctx.fillText(nameText, 40, 60)
 
-      // HP
+      // HPを描画
       ctx.font = 'bold 24px Arial, sans-serif'
       ctx.textAlign = 'right'
       const hpText = `HP ${cardData.hp}`
       ctx.strokeText(hpText, cardWidth - 40, 60)
       ctx.fillText(hpText, cardWidth - 40, 60)
 
-      // Type
+      // タイプを描画
       ctx.font = 'bold 20px Arial, sans-serif'
       ctx.textAlign = 'left'
       const typeText = cardData.type.toUpperCase()
       ctx.strokeText(typeText, 40, 100)
       ctx.fillText(typeText, 40, 100)
 
-      // Abilities section
+      // 技（アビリティ）セクションを描画
       let yPos = 460
       ctx.font = 'bold 18px Arial, sans-serif'
       
-      cardData.abilities.forEach((ability, index) => {
+      cardData.abilities.forEach((ability) => {
         if (ability.name && ability.description) {
-          // Ability name
+          // 技名を描画
           ctx.strokeText(ability.name.toUpperCase(), 40, yPos)
           ctx.fillText(ability.name.toUpperCase(), 40, yPos)
           
-          // Ability description (word wrap)
+          // 技の説明を描画（自動改行処理）
           yPos += 25
           ctx.font = '14px Arial, sans-serif'
           const words = ability.description.split(' ')
@@ -147,7 +151,7 @@ const DownloadButton = ({ cardRef, cardData }) => {
         }
       })
 
-      // Description
+      // ポケモンの説明を描画
       if (cardData.description) {
         yPos += 20
         ctx.font = 'italic 16px Arial, sans-serif'
@@ -174,14 +178,14 @@ const DownloadButton = ({ cardRef, cardData }) => {
         ctx.fillText(line, 40, yPos)
       }
 
-      // Add copyright notice
+      // 著作権表示を追加
       ctx.font = '12px Arial, sans-serif'
       ctx.textAlign = 'center'
       const copyrightText = 'Created with Pokemon Cards CSS (GPL-3.0)'
       ctx.strokeText(copyrightText, cardWidth / 2, cardHeight - 20)
       ctx.fillText(copyrightText, cardWidth / 2, cardHeight - 20)
 
-      // Download the image
+      // 画像をダウンロード
       const dataURL = canvas.toDataURL('image/png')
       const link = document.createElement('a')
       link.download = `${cardData.name.replace(/\s+/g, '_')}_pokemon_card.png`
@@ -190,7 +194,7 @@ const DownloadButton = ({ cardRef, cardData }) => {
 
     } catch (error) {
       console.error('Error generating card image:', error)
-      alert('Error generating card image. Please try again.')
+      alert(t('alerts.errorGenerating'))
     } finally {
       setIsGenerating(false)
     }
@@ -203,10 +207,10 @@ const DownloadButton = ({ cardRef, cardData }) => {
         onClick={generateCardImage}
         disabled={isGenerating}
       >
-        {isGenerating ? 'Generating...' : '📥 Download Card'}
+        {isGenerating ? t('generating') : t('downloadCard')}
       </button>
       <p className="download-info">
-        <small>Downloads as PNG image (660×921px)</small>
+        <small>{t('downloadInfo')}</small>
       </p>
     </div>
   )
