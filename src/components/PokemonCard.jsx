@@ -160,28 +160,8 @@ const PokemonCard = forwardRef(({ cardData, imagePreview }, ref) => {
                   <p className="card__description">{cardData.description}</p>
                 )}
                 
-                {/* カード詳細情報：弱点、抵抗力、にげるコスト */}
+                {/* カード詳細情報：にげるコスト */}
                 <div className="card__stats">
-                  {cardData.weakness && cardData.weakness !== 'none' && (
-                    <div className="stat__weakness">
-                      <span className="stat__label">weakness</span>
-                      <div className="stat__value">
-                        <span className="stat-type-icon" data-type={cardData.weakness}>●</span>
-                        <span>×2</span>
-                      </div>
-                    </div>
-                  )}
-                  
-                  {cardData.resistance && cardData.resistance !== 'none' && (
-                    <div className="stat__resistance">
-                      <span className="stat__label">resistance</span>
-                      <div className="stat__value">
-                        <span className="stat-type-icon" data-type={cardData.resistance}>●</span>
-                        <span>-30</span>
-                      </div>
-                    </div>
-                  )}
-                  
                   <div className="stat__retreat">
                     <span className="stat__label">retreat cost</span>
                     <div className="stat__value">

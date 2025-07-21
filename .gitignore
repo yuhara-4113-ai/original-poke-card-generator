@@ -22,3 +22,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Demo and test files
+*demo-card.png
+*preview.png
+test-image.*

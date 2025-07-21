@@ -168,41 +168,11 @@ const CardForm = ({
         </div>
       </div>
 
-      {/* カード詳細情報セクション - 弱点、抵抗力、にげるコスト */}
+      {/* カード詳細情報セクション - にげるコスト */}
       <div className="form-group">
         <label>{t('cardDetails')}</label>
         <div className="card-details-section">
           <div className="detail-row">
-            <div className="detail-group">
-              <label>{t('weakness')}</label>
-              <select
-                value={cardData.weakness || 'none'}
-                onChange={(e) => onInputChange('weakness', e.target.value)}
-              >
-                <option value="none">{t('none')}</option>
-                {pokemonTypes.map(type => (
-                  <option key={type} value={type}>
-                    {t(`types.${type}`)}
-                  </option>
-                ))}
-              </select>
-            </div>
-            
-            <div className="detail-group">
-              <label>{t('resistance')}</label>
-              <select
-                value={cardData.resistance || 'none'}
-                onChange={(e) => onInputChange('resistance', e.target.value)}
-              >
-                <option value="none">{t('none')}</option>
-                {pokemonTypes.map(type => (
-                  <option key={type} value={type}>
-                    {t(`types.${type}`)}
-                  </option>
-                ))}
-              </select>
-            </div>
-            
             <div className="detail-group">
               <label>{t('retreatCost')}</label>
               <select
