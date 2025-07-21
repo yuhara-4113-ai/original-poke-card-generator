@@ -43,7 +43,7 @@ const PokemonCardGenerator = () => {
     {
       name: 'Thunderstrike',
       hp: '110',
-      type: 'lightning',
+      type: 'electric',
       abilities: [
         { name: 'Lightning Bolt', description: 'Strikes with pure electric energy.' },
         { name: 'Static Shield', description: 'Creates protective electric barriers.' }
