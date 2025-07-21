@@ -151,35 +151,51 @@ const DownloadButton = ({ cardRef, cardData }) => {
       ctx.fillStyle = overlayGradient
       ctx.fillRect(0, 0, cardWidth, cardHeight)
 
-      // テキストコンテンツを描画（プレビューと同様のスタイル）
+      // テキストコンテンツを描画（新しいレイアウトに対応）
       ctx.fillStyle = '#fff'
       ctx.strokeStyle = '#000'
       ctx.lineWidth = 2
       
-      // ポケモン名を描画
-      ctx.font = 'bold 42px system-ui, -apple-system, sans-serif'
+      // ヘッダー：ポケモン名、タイプアイコン、HP
+      ctx.font = 'bold 36px system-ui, -apple-system, sans-serif'
       ctx.textAlign = 'left'
       const nameText = cardData.name.toUpperCase()
-      ctx.strokeText(nameText, 30, 70)
-      ctx.fillText(nameText, 30, 70)
+      ctx.strokeText(nameText, 30, 60)
+      ctx.fillText(nameText, 30, 60)
 
-      // HPを描画
-      ctx.font = 'bold 32px system-ui, -apple-system, sans-serif'
+      // タイプアイコンの描画（色付き円）
+      const typeColors = {
+        fire: '#ff6b6b', water: '#4dabf7', grass: '#51cf66', electric: '#ffd43b',
+        psychic: '#da77f2', fighting: '#c92a2a', poison: '#9775fa', ground: '#f59f00',
+        flying: '#74c0fc', bug: '#8ce99a', rock: '#868e96', ghost: '#6c5ce7',
+        dragon: '#ff922b', dark: '#495057', steel: '#adb5bd', fairy: '#fcc2d7',
+        ice: '#91a7ff', normal: '#ced4da'
+      }
+      const typeColor = typeColors[cardData.type] || typeColors.normal
+      
+      ctx.save()
+      ctx.fillStyle = typeColor
+      ctx.beginPath()
+      ctx.arc(240, 45, 10, 0, 2 * Math.PI)
+      ctx.fill()
+      ctx.restore()
+
+      // HP
+      ctx.font = 'bold 28px system-ui, -apple-system, sans-serif'
       ctx.textAlign = 'right'
       const hpText = `HP ${cardData.hp}`
-      ctx.strokeText(hpText, cardWidth - 30, 70)
-      ctx.fillText(hpText, cardWidth - 30, 70)
+      ctx.strokeText(hpText, cardWidth - 30, 60)
+      ctx.fillText(hpText, cardWidth - 30, 60)
 
-      // タイプを描画（プレビューのように背景付き）
+      // タイプラベル
       ctx.save()
       ctx.fillStyle = 'rgba(0, 0, 0, 0.6)'
-      
       const typeText = cardData.type.charAt(0).toUpperCase() + cardData.type.slice(1)
-      ctx.font = 'bold 20px system-ui, -apple-system, sans-serif'
+      ctx.font = 'bold 16px system-ui, -apple-system, sans-serif'
       const typeWidth = ctx.measureText(typeText).width
       
-      // 角丸背景を手動描画
-      const bgX = 30, bgY = 90, bgWidth = typeWidth + 20, bgHeight = 35, bgRadius = 15
+      // タイプラベル背景
+      const bgX = 30, bgY = 75, bgWidth = typeWidth + 16, bgHeight = 25, bgRadius = 12
       ctx.beginPath()
       ctx.moveTo(bgX + bgRadius, bgY)
       ctx.lineTo(bgX + bgWidth - bgRadius, bgY)
@@ -194,53 +210,75 @@ const DownloadButton = ({ cardRef, cardData }) => {
       
       ctx.fillStyle = '#fff'
       ctx.textAlign = 'left'
-      ctx.fillText(typeText, 40, 112)
+      ctx.fillText(typeText, 38, 92)
       ctx.restore()
 
-      // フッターエリア（技と説明）をプレビューと同様に描画
-      if (cardData.abilities.length > 0 || cardData.description) {
-        // フッター背景を描画
-        const footerHeight = Math.max(200, cardData.abilities.length * 60 + 100)
-        const footerY = cardHeight - footerHeight - 30
-        
-        ctx.save()
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.7)'
-        
-        // 角丸背景を手動描画
-        const fX = 30, fY = footerY, fWidth = cardWidth - 60, fHeight = footerHeight, fRadius = 12
-        ctx.beginPath()
-        ctx.moveTo(fX + fRadius, fY)
-        ctx.lineTo(fX + fWidth - fRadius, fY)
-        ctx.quadraticCurveTo(fX + fWidth, fY, fX + fWidth, fY + fRadius)
-        ctx.lineTo(fX + fWidth, fY + fHeight - fRadius)
-        ctx.quadraticCurveTo(fX + fWidth, fY + fHeight, fX + fWidth - fRadius, fY + fHeight)
-        ctx.lineTo(fX + fRadius, fY + fHeight)
-        ctx.quadraticCurveTo(fX, fY + fHeight, fX, fY + fHeight - fRadius)
-        ctx.lineTo(fX, fY + fRadius)
-        ctx.quadraticCurveTo(fX, fY, fX + fRadius, fY)
-        ctx.fill()
-        ctx.restore()
-        
-        // 技（アビリティ）セクションを描画
-        let yPos = footerY + 40
-        ctx.fillStyle = '#fff'
-        ctx.strokeStyle = '#000'
-        ctx.lineWidth = 1
-        
-        cardData.abilities.forEach((ability) => {
-          if (ability.name && ability.description) {
-            // 技名を描画
-            ctx.font = 'bold 20px system-ui, -apple-system, sans-serif'
+      // 中央：技リスト（新しいレイアウト）
+      const middleY = 350
+      const abilitiesHeight = Math.max(150, cardData.abilities.length * 80 + 40)
+      
+      ctx.save()
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.7)'
+      
+      // 技セクション背景
+      const aX = 30, aY = middleY, aWidth = cardWidth - 60, aHeight = abilitiesHeight, aRadius = 12
+      ctx.beginPath()
+      ctx.moveTo(aX + aRadius, aY)
+      ctx.lineTo(aX + aWidth - aRadius, aY)
+      ctx.quadraticCurveTo(aX + aWidth, aY, aX + aWidth, aY + aRadius)
+      ctx.lineTo(aX + aWidth, aY + aHeight - aRadius)
+      ctx.quadraticCurveTo(aX + aWidth, aY + aHeight, aX + aWidth - aRadius, aY + aHeight)
+      ctx.lineTo(aX + aRadius, aY + aHeight)
+      ctx.quadraticCurveTo(aX, aY + aHeight, aX, aY + aHeight - aRadius)
+      ctx.lineTo(aX, aY + aRadius)
+      ctx.quadraticCurveTo(aX, aY, aX + aRadius, aY)
+      ctx.fill()
+      ctx.restore()
+      
+      // 技の描画
+      let yPos = middleY + 40
+      ctx.fillStyle = '#fff'
+      ctx.strokeStyle = '#000'
+      ctx.lineWidth = 1
+      
+      cardData.abilities.forEach((ability) => {
+        if (ability.name) {
+          // エネルギーコストアイコン
+          const energyCost = ability.energyCost || 1
+          ctx.save()
+          ctx.fillStyle = typeColor
+          for (let i = 0; i < energyCost; i++) {
+            ctx.beginPath()
+            ctx.arc(55 + i * 20, yPos - 5, 8, 0, 2 * Math.PI)
+            ctx.fill()
+          }
+          ctx.restore()
+          
+          // 技名
+          ctx.font = 'bold 18px system-ui, -apple-system, sans-serif'
+          ctx.textAlign = 'left'
+          const abilityX = 55 + energyCost * 20 + 10
+          ctx.strokeText(ability.name, abilityX, yPos)
+          ctx.fillText(ability.name, abilityX, yPos)
+          
+          // ダメージ値
+          if (ability.damage) {
+            ctx.font = 'bold 22px system-ui, -apple-system, sans-serif'
+            ctx.textAlign = 'right'
+            ctx.fillStyle = '#ffd43b'
+            ctx.strokeText(ability.damage, cardWidth - 50, yPos)
+            ctx.fillText(ability.damage, cardWidth - 50, yPos)
+            ctx.fillStyle = '#fff'
+          }
+          
+          // 技の説明
+          if (ability.description) {
+            yPos += 20
+            ctx.font = '14px system-ui, -apple-system, sans-serif'
             ctx.textAlign = 'left'
-            ctx.strokeText(ability.name, 50, yPos)
-            ctx.fillText(ability.name, 50, yPos)
-            
-            // 技の説明を描画（自動改行処理）
-            yPos += 25
-            ctx.font = '16px system-ui, -apple-system, sans-serif'
+            const maxWidth = cardWidth - 120
             const words = ability.description.split(' ')
             let line = ''
-            const maxWidth = cardWidth - 120
             
             for (let i = 0; i < words.length; i++) {
               const testLine = line + words[i] + ' '
@@ -250,45 +288,132 @@ const DownloadButton = ({ cardRef, cardData }) => {
                 ctx.strokeText(line, 60, yPos)
                 ctx.fillText(line, 60, yPos)
                 line = words[i] + ' '
-                yPos += 20
+                yPos += 18
               } else {
                 line = testLine
               }
             }
-            
             ctx.strokeText(line, 60, yPos)
             ctx.fillText(line, 60, yPos)
-            yPos += 35
-          }
-        })
-
-        // ポケモンの説明を描画
-        if (cardData.description) {
-          yPos += 10
-          ctx.font = 'italic 18px system-ui, -apple-system, sans-serif'
-          ctx.fillStyle = 'rgba(255, 255, 255, 0.9)'
-          
-          const words = cardData.description.split(' ')
-          let line = ''
-          const maxWidth = cardWidth - 120
-          
-          for (let i = 0; i < words.length; i++) {
-            const testLine = line + words[i] + ' '
-            const metrics = ctx.measureText(testLine)
-            
-            if (metrics.width > maxWidth && i > 0) {
-              ctx.fillText(line, 50, yPos)
-              line = words[i] + ' '
-              yPos += 24
-            } else {
-              line = testLine
-            }
           }
           
-          ctx.fillText(line, 50, yPos)
+          yPos += 35
         }
+      })
+
+      // フッター：説明文とカード詳細
+      const footerY = cardHeight - 200
+      
+      // 説明文
+      if (cardData.description) {
+        ctx.save()
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.5)'
+        
+        // 説明文背景
+        const dX = 30, dY = footerY, dWidth = cardWidth - 60, dHeight = 40, dRadius = 8
+        ctx.beginPath()
+        ctx.moveTo(dX + dRadius, dY)
+        ctx.lineTo(dX + dWidth - dRadius, dY)
+        ctx.quadraticCurveTo(dX + dWidth, dY, dX + dWidth, dY + dRadius)
+        ctx.lineTo(dX + dWidth, dY + dHeight - dRadius)
+        ctx.quadraticCurveTo(dX + dWidth, dY + dHeight, dX + dWidth - dRadius, dY + dHeight)
+        ctx.lineTo(dX + dRadius, dY + dHeight)
+        ctx.quadraticCurveTo(dX, dY + dHeight, dX, dY + dHeight - dRadius)
+        ctx.lineTo(dX, dY + dRadius)
+        ctx.quadraticCurveTo(dX, dY, dX + dRadius, dY)
+        ctx.fill()
+        ctx.restore()
+        
+        ctx.font = 'italic 14px system-ui, -apple-system, sans-serif'
+        ctx.textAlign = 'left'
+        ctx.fillStyle = '#fff'
+        ctx.strokeText(cardData.description, 45, footerY + 25)
+        ctx.fillText(cardData.description, 45, footerY + 25)
       }
 
+      // カード詳細情報：弱点、抵抗力、にげるコスト
+      const statsY = footerY + 60
+      ctx.font = '12px system-ui, -apple-system, sans-serif'
+      
+      let statsX = 50
+      
+      // 弱点
+      if (cardData.weakness && cardData.weakness !== 'none') {
+        ctx.textAlign = 'center'
+        ctx.fillStyle = '#aaa'
+        ctx.fillText('weakness', statsX, statsY)
+        
+        // 弱点タイプアイコン
+        const weaknessColor = typeColors[cardData.weakness] || typeColors.normal
+        ctx.save()
+        ctx.fillStyle = weaknessColor
+        ctx.beginPath()
+        ctx.arc(statsX, statsY + 15, 6, 0, 2 * Math.PI)
+        ctx.fill()
+        ctx.restore()
+        
+        ctx.fillStyle = '#fff'
+        ctx.font = 'bold 14px system-ui, -apple-system, sans-serif'
+        ctx.fillText('×2', statsX, statsY + 35)
+        
+        statsX += 80
+      }
+      
+      // 抵抗力
+      if (cardData.resistance && cardData.resistance !== 'none') {
+        ctx.textAlign = 'center'
+        ctx.fillStyle = '#aaa'
+        ctx.font = '12px system-ui, -apple-system, sans-serif'
+        ctx.fillText('resistance', statsX, statsY)
+        
+        // 抵抗力タイプアイコン
+        const resistanceColor = typeColors[cardData.resistance] || typeColors.normal
+        ctx.save()
+        ctx.fillStyle = resistanceColor
+        ctx.beginPath()
+        ctx.arc(statsX, statsY + 15, 6, 0, 2 * Math.PI)
+        ctx.fill()
+        ctx.restore()
+        
+        ctx.fillStyle = '#fff'
+        ctx.font = 'bold 14px system-ui, -apple-system, sans-serif'
+        ctx.fillText('-30', statsX, statsY + 35)
+        
+        statsX += 80
+      }
+      
+      // にげるコスト
+      ctx.textAlign = 'center'
+      ctx.fillStyle = '#aaa'
+      ctx.font = '12px system-ui, -apple-system, sans-serif'
+      ctx.fillText('retreat cost', statsX, statsY)
+      
+      const retreatCost = cardData.retreatCost || 1
+      ctx.save()
+      ctx.fillStyle = '#ced4da'
+      for (let i = 0; i < retreatCost; i++) {
+        ctx.beginPath()
+        ctx.arc(statsX + (i - retreatCost/2 + 0.5) * 16, statsY + 15, 6, 0, 2 * Math.PI)
+        ctx.fill()
+      }
+      ctx.restore()
+
+      // カード番号とレアリティ
+      const metaY = cardHeight - 30
+      
+      // カード番号
+      ctx.font = 'bold 14px system-ui, -apple-system, sans-serif'
+      ctx.textAlign = 'left'
+      ctx.fillStyle = '#ccc'
+      ctx.fillText(cardData.cardNumber || '001/100', 30, metaY)
+      
+      // レアリティシンボル
+      ctx.textAlign = 'right'
+      const raritySymbols = { common: '○', uncommon: '●', rare: '♦', holo: '★' }
+      const rarityColors = { common: '#adb5bd', uncommon: '#51cf66', rare: '#4dabf7', holo: '#ffd43b' }
+      
+      ctx.fillStyle = rarityColors[cardData.rarity] || rarityColors.common
+      ctx.font = 'bold 18px system-ui, -apple-system, sans-serif'
       // 著作権表示を追加
       ctx.font = '14px system-ui, -apple-system, sans-serif'
       ctx.textAlign = 'center'

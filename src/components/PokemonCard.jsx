@@ -112,29 +112,95 @@ const PokemonCard = forwardRef(({ cardData, imagePreview }, ref) => {
             
             {/* カードコンテンツエリア */}
             <div className="card__content">
-              {/* ヘッダー：ポケモン名とHP */}
+              {/* ヘッダー：ポケモン名、タイプアイコン、HP */}
               <div className="card__header">
-                <h3 className="card__name">{cardData.name}</h3>
+                <div className="card__name-type">
+                  <h3 className="card__name">{cardData.name}</h3>
+                  <div className="card__type-icon" data-type={cardData.type}>
+                    <span className="type-symbol">●</span>
+                  </div>
+                </div>
                 <span className="card__hp">HP {cardData.hp}</span>
               </div>
               
-              {/* ポケモンタイプ表示 */}
-              <div className="card__type">{cardData.type}</div>
+              {/* ポケモンタイプ表示（改良版） */}
+              <div className="card__type-label">{cardData.type}</div>
               
-              {/* フッター：技と説明 */}
-              <div className="card__footer">
-                {/* 技（アビリティ）リスト */}
+              {/* 中央エリア：技リスト */}
+              <div className="card__middle">
                 <div className="card__abilities">
                   {cardData.abilities.map((ability, index) => (
                     ability.name && (
                       <div key={index} className="card__ability">
-                        <strong>{ability.name}:</strong> {ability.description}
+                        <div className="ability__header">
+                          <div className="ability__cost">
+                            {/* エネルギーコストアイコンを表示 */}
+                            {Array.from({ length: ability.energyCost || 1 }).map((_, i) => (
+                              <span key={i} className="energy-icon" data-type={cardData.type}>●</span>
+                            ))}
+                          </div>
+                          <span className="ability__name">{ability.name}</span>
+                          {ability.damage && (
+                            <span className="ability__damage">{ability.damage}</span>
+                          )}
+                        </div>
+                        {ability.description && (
+                          <p className="ability__description">{ability.description}</p>
+                        )}
                       </div>
                     )
                   ))}
                 </div>
+              </div>
+              
+              {/* フッター：説明文とカード詳細 */}
+              <div className="card__footer">
                 {/* ポケモンの説明文 */}
-                <p className="card__description">{cardData.description}</p>
+                {cardData.description && (
+                  <p className="card__description">{cardData.description}</p>
+                )}
+                
+                {/* カード詳細情報：弱点、抵抗力、にげるコスト */}
+                <div className="card__stats">
+                  {cardData.weakness && cardData.weakness !== 'none' && (
+                    <div className="stat__weakness">
+                      <span className="stat__label">weakness</span>
+                      <div className="stat__value">
+                        <span className="stat-type-icon" data-type={cardData.weakness}>●</span>
+                        <span>×2</span>
+                      </div>
+                    </div>
+                  )}
+                  
+                  {cardData.resistance && cardData.resistance !== 'none' && (
+                    <div className="stat__resistance">
+                      <span className="stat__label">resistance</span>
+                      <div className="stat__value">
+                        <span className="stat-type-icon" data-type={cardData.resistance}>●</span>
+                        <span>-30</span>
+                      </div>
+                    </div>
+                  )}
+                  
+                  <div className="stat__retreat">
+                    <span className="stat__label">retreat cost</span>
+                    <div className="stat__value">
+                      {Array.from({ length: cardData.retreatCost || 1 }).map((_, i) => (
+                        <span key={i} className="retreat-icon">●</span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+                
+                {/* カード番号とレアリティ */}
+                <div className="card__meta">
+                  <span className="card__number">{cardData.cardNumber || '001/100'}</span>
+                  <span className="card__rarity" data-rarity={cardData.rarity || 'common'}>
+                    {cardData.rarity === 'holo' ? '★' : 
+                     cardData.rarity === 'rare' ? '♦' : 
+                     cardData.rarity === 'uncommon' ? '●' : '○'}
+                  </span>
+                </div>
               </div>
             </div>
             

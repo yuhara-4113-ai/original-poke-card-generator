@@ -148,7 +148,7 @@
   background: #0056b3;
 }
 
-/* Abilities Section */
+/* Abilities Section - Enhanced with energy cost and damage */
 .abilities-section {
   display: flex;
   flex-direction: column;
@@ -172,6 +172,37 @@
 .ability-header input {
   flex: 1;
   margin: 0;
+}
+
+/* Energy cost and damage input row */
+.ability-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.energy-cost-group,
+.damage-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.energy-cost-group label,
+.damage-group label {
+  font-size: 0.85em;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+}
+
+.energy-cost-group select,
+.damage-group input {
+  padding: 6px 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.9em;
 }
 
 .remove-ability {
@@ -205,6 +236,57 @@
 
 .add-ability:hover {
   background: #218838;
+}
+
+/* Card Details Section */
+.card-details-section {
+  padding: 15px;
+  background: white;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+
+.detail-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.detail-row:last-child {
+  margin-bottom: 0;
+}
+
+.detail-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.detail-group label {
+  font-size: 0.85em;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+}
+
+.detail-group select,
+.detail-group input {
+  padding: 6px 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.9em;
+}
+
+@media (max-width: 768px) {
+  .ability-stats {
+    grid-template-columns: 1fr;
+  }
+  
+  .detail-row {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
 }
 
 /* Preview Section */

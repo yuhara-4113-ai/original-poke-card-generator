@@ -16,9 +16,19 @@ const PokemonCardGenerator = () => {
     type: 'normal',
     image: null,
     abilities: [
-      { name: t('defaultCard.ability'), description: t('defaultCard.abilityDescription') }
+      { 
+        name: t('defaultCard.ability'), 
+        description: t('defaultCard.abilityDescription'),
+        energyCost: 1,
+        damage: ''
+      }
     ],
-    description: t('defaultCard.description')
+    description: t('defaultCard.description'),
+    weakness: 'none',
+    resistance: 'none',
+    retreatCost: 1,
+    cardNumber: '001/100',
+    rarity: 'common'
   })
 
   const [imagePreview, setImagePreview] = useState(null)
@@ -32,22 +42,49 @@ const PokemonCardGenerator = () => {
         name: sampleData.blazemon.name,
         hp: '120',
         type: 'fire',
-        abilities: sampleData.blazemon.abilities,
-        description: sampleData.blazemon.description
+        abilities: sampleData.blazemon.abilities.map(ability => ({
+          ...ability,
+          energyCost: 2,
+          damage: '80'
+        })),
+        description: sampleData.blazemon.description,
+        weakness: 'water',
+        resistance: 'none',
+        retreatCost: 2,
+        cardNumber: '001/100',
+        rarity: 'rare'
       },
       {
         name: sampleData.aquaflow.name,
         hp: '90',
         type: 'water',
-        abilities: sampleData.aquaflow.abilities,
-        description: sampleData.aquaflow.description
+        abilities: sampleData.aquaflow.abilities.map(ability => ({
+          ...ability,
+          energyCost: 1,
+          damage: '60'
+        })),
+        description: sampleData.aquaflow.description,
+        weakness: 'electric',
+        resistance: 'fire',
+        retreatCost: 1,
+        cardNumber: '002/100',
+        rarity: 'uncommon'
       },
       {
         name: sampleData.thunderstrike.name,
         hp: '110',
         type: 'electric',
-        abilities: sampleData.thunderstrike.abilities,
-        description: sampleData.thunderstrike.description
+        abilities: sampleData.thunderstrike.abilities.map(ability => ({
+          ...ability,
+          energyCost: 1,
+          damage: '70'
+        })),
+        description: sampleData.thunderstrike.description,
+        weakness: 'fighting',
+        resistance: 'steel',
+        retreatCost: 1,
+        cardNumber: '003/100',
+        rarity: 'holo'
       }
     ]
   }
@@ -82,7 +119,7 @@ const PokemonCardGenerator = () => {
     if (cardData.abilities.length < 3) {
       setCardData(prev => ({
         ...prev,
-        abilities: [...prev.abilities, { name: '', description: '' }]
+        abilities: [...prev.abilities, { name: '', description: '', energyCost: 1, damage: '' }]
       }))
     }
   }
@@ -109,9 +146,19 @@ const PokemonCardGenerator = () => {
       type: 'normal',
       image: null,
       abilities: [
-        { name: t('defaultCard.ability'), description: t('defaultCard.abilityDescription') }
+        { 
+          name: t('defaultCard.ability'), 
+          description: t('defaultCard.abilityDescription'),
+          energyCost: 1,
+          damage: ''
+        }
       ],
-      description: t('defaultCard.description')
+      description: t('defaultCard.description'),
+      weakness: 'none',
+      resistance: 'none',
+      retreatCost: 1,
+      cardNumber: '001/100',
+      rarity: 'common'
     })
     setImagePreview(null)
   }

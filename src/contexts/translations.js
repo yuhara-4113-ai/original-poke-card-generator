@@ -27,6 +27,25 @@ export const translations = {
     abilities: 'Abilities',
     description: 'Description',
     
+    // 新しいフォームラベル - カード詳細
+    energyCost: 'Energy Cost',
+    damage: 'Damage',
+    cardDetails: 'Card Details',
+    weakness: 'Weakness',
+    resistance: 'Resistance',
+    retreatCost: 'Retreat Cost',
+    cardNumber: 'Card Number',
+    rarity: 'Rarity',
+    none: 'None',
+    
+    // レアリティ
+    rarities: {
+      common: 'Common',
+      uncommon: 'Uncommon',
+      rare: 'Rare',
+      holo: 'Holographic'
+    },
+    
     // フォームプレースホルダー
     enterPokemonName: 'Enter Pokemon name',
     abilityName: 'Ability name',
@@ -139,6 +158,25 @@ export const translations = {
     pokemonImage: 'ポケモン画像',
     abilities: '技',
     description: '説明',
+    
+    // 新しいフォームラベル - カード詳細
+    energyCost: 'エネルギーコスト',
+    damage: 'ダメージ',
+    cardDetails: 'カード詳細',
+    weakness: '弱点',
+    resistance: '抵抗力',
+    retreatCost: 'にげるコスト',
+    cardNumber: 'カード番号',
+    rarity: 'レアリティ',
+    none: 'なし',
+    
+    // レアリティ
+    rarities: {
+      common: 'コモン',
+      uncommon: 'アンコモン',
+      rare: 'レア',
+      holo: 'ホログラフィック'
+    },
     
     // フォームプレースホルダー
     enterPokemonName: 'ポケモン名を入力',

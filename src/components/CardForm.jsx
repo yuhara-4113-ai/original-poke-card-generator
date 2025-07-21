@@ -93,7 +93,7 @@ const CardForm = ({
         </div>
       </div>
 
-      {/* 技（アビリティ）セクション */}
+      {/* 技（アビリティ）セクション - エネルギーコストとダメージ対応 */}
       <div className="form-group">
         <label>{t('abilities')}</label>
         <div className="abilities-section">
@@ -118,6 +118,34 @@ const CardForm = ({
                   </button>
                 )}
               </div>
+              
+              {/* エネルギーコストとダメージの入力行 */}
+              <div className="ability-stats">
+                <div className="energy-cost-group">
+                  <label>{t('energyCost')}</label>
+                  <select
+                    value={ability.energyCost || 1}
+                    onChange={(e) => onAbilityChange(index, 'energyCost', parseInt(e.target.value))}
+                  >
+                    {[1, 2, 3, 4, 5].map(cost => (
+                      <option key={cost} value={cost}>{cost}</option>
+                    ))}
+                  </select>
+                </div>
+                
+                <div className="damage-group">
+                  <label>{t('damage')}</label>
+                  <input
+                    type="number"
+                    value={ability.damage || ''}
+                    onChange={(e) => onAbilityChange(index, 'damage', e.target.value)}
+                    placeholder="30"
+                    min="0"
+                    max="999"
+                  />
+                </div>
+              </div>
+              
               <textarea
                 value={ability.description}
                 onChange={(e) => onAbilityChange(index, 'description', e.target.value)}
@@ -137,6 +165,82 @@ const CardForm = ({
               {t('addAbility')}
             </button>
           )}
+        </div>
+      </div>
+
+      {/* カード詳細情報セクション - 弱点、抵抗力、にげるコスト */}
+      <div className="form-group">
+        <label>{t('cardDetails')}</label>
+        <div className="card-details-section">
+          <div className="detail-row">
+            <div className="detail-group">
+              <label>{t('weakness')}</label>
+              <select
+                value={cardData.weakness || 'none'}
+                onChange={(e) => onInputChange('weakness', e.target.value)}
+              >
+                <option value="none">{t('none')}</option>
+                {pokemonTypes.map(type => (
+                  <option key={type} value={type}>
+                    {t(`types.${type}`)}
+                  </option>
+                ))}
+              </select>
+            </div>
+            
+            <div className="detail-group">
+              <label>{t('resistance')}</label>
+              <select
+                value={cardData.resistance || 'none'}
+                onChange={(e) => onInputChange('resistance', e.target.value)}
+              >
+                <option value="none">{t('none')}</option>
+                {pokemonTypes.map(type => (
+                  <option key={type} value={type}>
+                    {t(`types.${type}`)}
+                  </option>
+                ))}
+              </select>
+            </div>
+            
+            <div className="detail-group">
+              <label>{t('retreatCost')}</label>
+              <select
+                value={cardData.retreatCost || 1}
+                onChange={(e) => onInputChange('retreatCost', parseInt(e.target.value))}
+              >
+                {[0, 1, 2, 3, 4, 5].map(cost => (
+                  <option key={cost} value={cost}>{cost}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+          
+          <div className="detail-row">
+            <div className="detail-group">
+              <label>{t('cardNumber')}</label>
+              <input
+                type="text"
+                value={cardData.cardNumber || '001/100'}
+                onChange={(e) => onInputChange('cardNumber', e.target.value)}
+                placeholder="001/100"
+                maxLength={10}
+              />
+            </div>
+            
+            <div className="detail-group">
+              <label>{t('rarity')}</label>
+              <select
+                value={cardData.rarity || 'common'}
+                onChange={(e) => onInputChange('rarity', e.target.value)}
+              >
+                <option value="common">{t('rarities.common')}</option>
+                <option value="uncommon">{t('rarities.uncommon')}</option>
+                <option value="rare">{t('rarities.rare')}</option>
+                <option value="holo">{t('rarities.holo')}</option>
+              </select>
+            </div>
+          </div>
         </div>
       </div>
 
