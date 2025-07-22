@@ -19,12 +19,16 @@ const DownloadButton = ({ cardRef, cardData }) => {
       // Canvas要素を作成してポケモンカードの寸法を設定
       const canvas = document.createElement('canvas')
       const ctx = canvas.getContext('2d')
-      
+      // 高解像度対応: 2倍スケール
+      const scale = 2
       // 標準的なポケモンカードの寸法 (縦横比 0.718)
       const cardWidth = 660
       const cardHeight = 921
-      canvas.width = cardWidth
-      canvas.height = cardHeight
+      canvas.width = cardWidth * scale
+      canvas.height = cardHeight * scale
+      canvas.style.width = cardWidth + 'px'
+      canvas.style.height = cardHeight + 'px'
+      ctx.setTransform(scale, 0, 0, scale, 0, 0)
 
       // 角丸のためのクリッピングパスを作成
       const radius = 30 // 角丸の半径
@@ -160,6 +164,10 @@ const DownloadButton = ({ cardRef, cardData }) => {
       ctx.font = 'bold 36px system-ui, -apple-system, sans-serif'
       ctx.textAlign = 'left'
       const nameText = cardData.name.toUpperCase()
+      ctx.lineWidth = 4
+      ctx.strokeStyle = '#fff'
+      ctx.strokeText(nameText, 30, 60)
+      ctx.fillStyle = '#000'
       ctx.fillText(nameText, 30, 60)
 
       // タイプアイコンの描画（色付き円）
@@ -183,6 +191,10 @@ const DownloadButton = ({ cardRef, cardData }) => {
       ctx.font = 'bold 28px system-ui, -apple-system, sans-serif'
       ctx.textAlign = 'right'
       const hpText = `HP ${cardData.hp}`
+      ctx.lineWidth = 3
+      ctx.strokeStyle = '#fff'
+      ctx.strokeText(hpText, cardWidth - 30, 60)
+      ctx.fillStyle = '#000'
       ctx.fillText(hpText, cardWidth - 30, 60)
 
       // タイプラベル
@@ -191,7 +203,6 @@ const DownloadButton = ({ cardRef, cardData }) => {
       const typeText = cardData.type.charAt(0).toUpperCase() + cardData.type.slice(1)
       ctx.font = 'bold 16px system-ui, -apple-system, sans-serif'
       const typeWidth = ctx.measureText(typeText).width
-      
       // タイプラベル背景
       const bgX = 30, bgY = 75, bgWidth = typeWidth + 16, bgHeight = 25, bgRadius = 12
       ctx.beginPath()
@@ -205,7 +216,6 @@ const DownloadButton = ({ cardRef, cardData }) => {
       ctx.lineTo(bgX, bgY + bgRadius)
       ctx.quadraticCurveTo(bgX, bgY, bgX + bgRadius, bgY)
       ctx.fill()
-      
       ctx.fillStyle = '#fff'
       ctx.textAlign = 'left'
       ctx.fillText(typeText, 38, 92)
@@ -217,7 +227,6 @@ const DownloadButton = ({ cardRef, cardData }) => {
       // 技の描画（背景なしのシンプルなスタイル）
       let yPos = middleY
       ctx.fillStyle = '#000'  // 黒色テキスト
-      
       cardData.abilities.forEach((ability) => {
         if (ability.name) {
           // エネルギーコストアイコン
@@ -230,37 +239,41 @@ const DownloadButton = ({ cardRef, cardData }) => {
             ctx.fill()
           }
           ctx.restore()
-          
           // 技名（シンプルなスタイル）
           ctx.fillStyle = '#000'
           ctx.font = 'bold 18px system-ui, -apple-system, sans-serif'
           ctx.textAlign = 'left'
+          ctx.lineWidth = 2
+          ctx.strokeStyle = '#fff'
           const abilityX = 55 + energyCost * 20 + 10
+          ctx.strokeText(ability.name, abilityX, yPos)
           ctx.fillText(ability.name, abilityX, yPos)
-          
           // ダメージ値
           if (ability.damage) {
             ctx.font = 'bold 22px system-ui, -apple-system, sans-serif'
             ctx.textAlign = 'right'
+            ctx.strokeStyle = '#fff'
+            ctx.lineWidth = 2
             ctx.fillStyle = '#000'  // 黒色に変更
+            ctx.strokeText(ability.damage, cardWidth - 50, yPos)
             ctx.fillText(ability.damage, cardWidth - 50, yPos)
           }
-          
           // 技の説明（シンプルなスタイル）
           if (ability.description) {
             yPos += 20
             ctx.fillStyle = '#000'
             ctx.font = '14px system-ui, -apple-system, sans-serif'
             ctx.textAlign = 'left'
+            ctx.lineWidth = 1.5
+            ctx.strokeStyle = '#fff'
             const maxWidth = cardWidth - 120
             const words = ability.description.split(' ')
             let line = ''
-            
             for (let i = 0; i < words.length; i++) {
               const testLine = line + words[i] + ' '
               const metrics = ctx.measureText(testLine)
-              
               if (metrics.width > maxWidth && i > 0) {
+                ctx.strokeText(line, 60, yPos)
                 ctx.fillText(line, 60, yPos)
                 line = words[i] + ' '
                 yPos += 18
@@ -268,9 +281,9 @@ const DownloadButton = ({ cardRef, cardData }) => {
                 line = testLine
               }
             }
+            ctx.strokeText(line, 60, yPos)
             ctx.fillText(line, 60, yPos)
           }
-          
           yPos += 35
         }
       })
@@ -283,6 +296,9 @@ const DownloadButton = ({ cardRef, cardData }) => {
         ctx.fillStyle = '#000'  // 黒色テキスト
         ctx.font = 'italic 14px system-ui, -apple-system, sans-serif'
         ctx.textAlign = 'right'  // 右寄せ
+        ctx.lineWidth = 1.5
+        ctx.strokeStyle = '#fff'
+        ctx.strokeText(cardData.description, cardWidth - 45, footerY)
         ctx.fillText(cardData.description, cardWidth - 45, footerY)
       }
 
@@ -313,22 +329,30 @@ const DownloadButton = ({ cardRef, cardData }) => {
       ctx.font = 'bold 14px system-ui, -apple-system, sans-serif'
       ctx.textAlign = 'left'
       ctx.fillStyle = '#666'  // グレー
+      ctx.lineWidth = 1.5
+      ctx.strokeStyle = '#fff'
+      ctx.strokeText(cardData.cardNumber || '001/100', 30, metaY)
       ctx.fillText(cardData.cardNumber || '001/100', 30, metaY)
       
       // レアリティシンボル
       ctx.textAlign = 'right'
       const raritySymbols = { common: '○', uncommon: '●', rare: '♦', holo: '★' }
       const rarityColors = { common: '#adb5bd', uncommon: '#51cf66', rare: '#4dabf7', holo: '#ffd43b' }
-      
-      ctx.fillStyle = rarityColors[cardData.rarity] || rarityColors.common
       ctx.font = 'bold 18px system-ui, -apple-system, sans-serif'
+      ctx.strokeStyle = '#fff'
+      ctx.lineWidth = 2
+      ctx.strokeText(raritySymbols[cardData.rarity] || raritySymbols.common, cardWidth - 30, metaY)
+      ctx.fillStyle = rarityColors[cardData.rarity] || rarityColors.common
       ctx.fillText(raritySymbols[cardData.rarity] || raritySymbols.common, cardWidth - 30, metaY)
       
       // 著作権表示を追加
       ctx.font = '14px system-ui, -apple-system, sans-serif'
       ctx.textAlign = 'center'
       ctx.fillStyle = 'rgba(0, 0, 0, 0.6)'  // 黒色ベースの半透明
+      ctx.strokeStyle = '#fff'
+      ctx.lineWidth = 1
       const copyrightText = 'Created with Pokemon Cards CSS (GPL-3.0)'
+      ctx.strokeText(copyrightText, cardWidth / 2, cardHeight - 15)
       ctx.fillText(copyrightText, cardWidth / 2, cardHeight - 15)
 
       // 画像をダウンロード
