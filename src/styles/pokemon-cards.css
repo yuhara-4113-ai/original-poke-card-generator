@@ -1,0 +1,87 @@
+/*
+  Interactive presentation adapted from @simeydotme/pokemon-cards-css.
+  Licensed under GPL-3.0. Original: https://github.com/simeydotme/pokemon-cards-css
+*/
+
+.card {
+  position: relative;
+  width: min(100%, 390px);
+  aspect-ratio: 660 / 921;
+  perspective: 1000px;
+  transform-style: preserve-3d;
+  --pointer-x: 50%;
+  --pointer-y: 50%;
+  --card-opacity: 0;
+  --rotate-x: 0deg;
+  --rotate-y: 0deg;
+}
+
+.card__rotator {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 4.8% / 3.5%;
+  transform: rotateX(var(--rotate-x)) rotateY(var(--rotate-y));
+  transform-style: preserve-3d;
+  transition: transform 180ms ease-out;
+  will-change: transform;
+}
+
+.card-artwork {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  border-radius: inherit;
+}
+
+.card__shine,
+.card__glare {
+  position: absolute;
+  inset: 1.5%;
+  overflow: hidden;
+  pointer-events: none;
+  border-radius: 4.4% / 3.2%;
+  opacity: var(--card-opacity);
+  transition: opacity 240ms ease;
+}
+
+.card__shine {
+  z-index: 2;
+  background:
+    repeating-linear-gradient(
+      112deg,
+      rgba(255, 86, 117, 0) 0%,
+      rgba(255, 196, 75, 0.33) 8%,
+      rgba(94, 224, 210, 0.32) 15%,
+      rgba(108, 142, 255, 0.3) 23%,
+      rgba(223, 107, 247, 0) 31%
+    );
+  background-position: var(--pointer-x) var(--pointer-y);
+  background-size: 220% 220%;
+  mix-blend-mode: color-dodge;
+  filter: saturate(1.35) contrast(1.1);
+}
+
+.card__glare {
+  z-index: 3;
+  background: radial-gradient(
+    circle at var(--pointer-x) var(--pointer-y),
+    rgba(255, 255, 255, 0.72) 0,
+    rgba(255, 255, 255, 0.18) 22%,
+    transparent 50%
+  );
+  mix-blend-mode: overlay;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card__rotator {
+    transform: none !important;
+    transition: none;
+  }
+
+  .card__shine,
+  .card__glare {
+    display: none;
+  }
+}
