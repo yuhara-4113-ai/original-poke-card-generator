@@ -8,7 +8,8 @@ const CardForm = ({
   onImageUpload, 
   onAbilityChange, 
   onAddAbility, 
-  onRemoveAbility 
+  onRemoveAbility,
+  imageError,
 }) => {
   const fileInputRef = useRef(null)
   const { t } = useLanguage() // 翻訳機能を使用
@@ -73,7 +74,7 @@ const CardForm = ({
 
       {/* 画像アップロードセクション */}
       <div className="form-group">
-        <label>{t('pokemonImage')}</label>
+        <span className="group-label">{t('pokemonImage')}</span>
         <div className="image-upload-section">
           <button
             type="button"
@@ -84,23 +85,26 @@ const CardForm = ({
           </button>
           <input
             ref={fileInputRef}
+            id="pokemon-image"
             type="file"
             accept="image/*"
             onChange={onImageUpload}
-            style={{ display: 'none' }}
+            hidden
           />
           <small>{t('recommendedImage')}</small>
+          {imageError && <small className="download-error" role="alert">{imageError}</small>}
         </div>
       </div>
 
       {/* 技（アビリティ）セクション - エネルギーコストとダメージ対応 */}
       <div className="form-group">
-        <label>{t('abilities')}</label>
+        <span className="group-label">{t('abilities')}</span>
         <div className="abilities-section">
           {cardData.abilities.map((ability, index) => (
             <div key={index} className="ability-group">
               <div className="ability-header">
                 <input
+                  aria-label={`${t('abilityName')} ${index + 1}`}
                   type="text"
                   value={ability.name}
                   onChange={(e) => onAbilityChange(index, 'name', e.target.value)}
@@ -113,6 +117,7 @@ const CardForm = ({
                     type="button"
                     className="remove-ability"
                     onClick={() => onRemoveAbility(index)}
+                    aria-label={`${t('removeAbility')} ${index + 1}`}
                   >
                     ×
                   </button>
@@ -124,6 +129,7 @@ const CardForm = ({
                 <div className="energy-cost-group">
                   <label>{t('energyCost')}</label>
                   <select
+                    aria-label={`${t('energyCost')} ${index + 1}`}
                     value={ability.energyCost || 1}
                     onChange={(e) => onAbilityChange(index, 'energyCost', parseInt(e.target.value))}
                   >
@@ -136,6 +142,7 @@ const CardForm = ({
                 <div className="damage-group">
                   <label>{t('damage')}</label>
                   <input
+                    aria-label={`${t('damage')} ${index + 1}`}
                     type="number"
                     value={ability.damage || ''}
                     onChange={(e) => onAbilityChange(index, 'damage', e.target.value)}
@@ -147,6 +154,7 @@ const CardForm = ({
               </div>
               
               <textarea
+                aria-label={`${t('abilityDescription')} ${index + 1}`}
                 value={ability.description}
                 onChange={(e) => onAbilityChange(index, 'description', e.target.value)}
                 placeholder={t('abilityDescription')}
@@ -170,12 +178,13 @@ const CardForm = ({
 
       {/* カード詳細情報セクション - にげるコスト */}
       <div className="form-group">
-        <label>{t('cardDetails')}</label>
+        <span className="group-label">{t('cardDetails')}</span>
         <div className="card-details-section">
           <div className="detail-row">
             <div className="detail-group">
               <label>{t('retreatCost')}</label>
               <select
+                aria-label={t('retreatCost')}
                 value={cardData.retreatCost || 1}
                 onChange={(e) => onInputChange('retreatCost', parseInt(e.target.value))}
               >
@@ -190,6 +199,7 @@ const CardForm = ({
             <div className="detail-group">
               <label>{t('cardNumber')}</label>
               <input
+                aria-label={t('cardNumber')}
                 type="text"
                 value={cardData.cardNumber || '001/100'}
                 onChange={(e) => onInputChange('cardNumber', e.target.value)}
@@ -201,6 +211,7 @@ const CardForm = ({
             <div className="detail-group">
               <label>{t('rarity')}</label>
               <select
+                aria-label={t('rarity')}
                 value={cardData.rarity || 'common'}
                 onChange={(e) => onInputChange('rarity', e.target.value)}
               >

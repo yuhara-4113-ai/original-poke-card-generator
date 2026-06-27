@@ -5,6 +5,12 @@ import './LanguageSwitcher.css'
 const LanguageSwitcher = () => {
   const { language, switchLanguage, t } = useLanguage()
 
+  const handleLanguageChange = (event) => {
+    const nextLanguage = event.target.value
+    document.documentElement.lang = nextLanguage
+    switchLanguage(nextLanguage)
+  }
+
   return (
     <div className="language-switcher">
       <label htmlFor="language-select" className="language-label">
@@ -13,7 +19,7 @@ const LanguageSwitcher = () => {
       <select
         id="language-select"
         value={language}
-        onChange={(e) => switchLanguage(e.target.value)}
+        onChange={handleLanguageChange}
         className="language-select"
       >
         <option value="en">{t('english')}</option>

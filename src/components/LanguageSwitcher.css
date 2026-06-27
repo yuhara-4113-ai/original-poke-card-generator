@@ -2,49 +2,51 @@
 .language-switcher {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin: 10px 0;
+  gap: 10px;
 }
 
 .language-label {
   font-size: 14px;
-  color: #fff;
-  font-weight: 500;
+  color: #aeb9c1;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
 }
 
 .language-select {
-  padding: 4px 8px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  background-color: #fff;
-  font-size: 14px;
+  min-height: 38px;
+  padding: 6px 32px 6px 12px;
+  color: #f8fafc;
+  border: 1px solid #55616c;
+  border-radius: 999px;
+  background-color: #293641;
+  font-size: 13px;
   cursor: pointer;
   transition: border-color 0.2s ease;
 }
 
 .language-select:hover {
-  border-color: #007bff;
+  border-color: #9ba8b2;
 }
 
 .language-select:focus {
   outline: none;
-  border-color: #007bff;
-  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+  border-color: #c7d0d7;
+  box-shadow: 0 0 0 3px rgba(199, 208, 215, 0.18);
 }
 
 /* モバイル対応 */
 @media (max-width: 768px) {
   .language-switcher {
-    justify-content: center;
-    margin: 5px 0;
+    gap: 0;
   }
-  
+
   .language-label {
-    font-size: 12px;
-  }
-  
-  .language-select {
-    font-size: 12px;
-    padding: 2px 6px;
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
   }
 }

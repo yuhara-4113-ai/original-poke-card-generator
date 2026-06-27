@@ -12,21 +12,18 @@ function AppContent() {
   return (
     <div className="App">
       <header className="App-header">
-        {/* 言語切り替えボタンをヘッダーに配置 */}
-        <LanguageSwitcher />
-        
-        {/* アプリタイトル - 翻訳対応 */}
-        <h1>{t('appTitle')}</h1>
-        <p>{t('appSubtitle')}</p>
-        
-        {/* ライセンス情報 - 翻訳対応 */}
-        <p className="license-info">
-          <small>
-            {t('builtWith')} <a href="https://github.com/simeydotme/pokemon-cards-css" target="_blank" rel="noopener noreferrer">
-              @simeydotme/pokemon-cards-css
-            </a> {t('gplLicense')}
-          </small>
-        </p>
+        <div className="header-bar">
+          <div className="wordmark">
+            <span className="wordmark-mark" aria-hidden="true">◆</span>
+            Original Card Studio
+          </div>
+          <LanguageSwitcher />
+        </div>
+        <div className="hero-copy">
+          <p className="hero-kicker">Design your own collectible</p>
+          <h1>{t('appTitle')}</h1>
+          <p className="hero-subtitle">{t('appSubtitle')}</p>
+        </div>
       </header>
       
       {/* メインコンテンツエリア */}
@@ -34,15 +31,12 @@ function AppContent() {
         <PokemonCardGenerator />
       </main>
       
-      {/* フッターのライセンス表示 */}
-      <a 
-        href="https://github.com/simeydotme/pokemon-cards-css" 
-        className="license-notice"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        {t('licenseNotice')}
-      </a>
+      <footer className="App-footer">
+        <span>{t('fanDisclaimer')}</span>
+        <a href="https://github.com/simeydotme/pokemon-cards-css" target="_blank" rel="noopener noreferrer">
+          {t('builtWith')} @simeydotme/pokemon-cards-css {t('gplLicense')}
+        </a>
+      </footer>
     </div>
   )
 }

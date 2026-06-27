@@ -32,6 +32,7 @@ const PokemonCardGenerator = () => {
   })
 
   const [imagePreview, setImagePreview] = useState(null)
+  const [imageError, setImageError] = useState('')
   const cardRef = useRef(null)
 
   // サンプルカードのデータ - 現在の言語に基づいて動的に取得
@@ -92,14 +93,26 @@ const PokemonCardGenerator = () => {
   // 画像アップロード処理
   const handleImageUpload = (event) => {
     const file = event.target.files[0]
-    if (file) {
-      const reader = new FileReader()
-      reader.onload = (e) => {
-        setImagePreview(e.target.result)
-        setCardData(prev => ({ ...prev, image: e.target.result }))
-      }
-      reader.readAsDataURL(file)
+    if (!file) return
+    if (!file.type.startsWith('image/')) {
+      setImageError(t('alerts.invalidImage'))
+      event.target.value = ''
+      return
     }
+    if (file.size > 8 * 1024 * 1024) {
+      setImageError(t('alerts.imageTooLarge'))
+      event.target.value = ''
+      return
+    }
+
+    setImageError('')
+    const reader = new FileReader()
+    reader.onload = (readerEvent) => {
+      setImagePreview(readerEvent.target.result)
+      setCardData(prev => ({ ...prev, image: readerEvent.target.result }))
+    }
+    reader.onerror = () => setImageError(t('alerts.invalidImage'))
+    reader.readAsDataURL(file)
   }
 
   // 入力フィールドの値変更処理
@@ -136,6 +149,7 @@ const PokemonCardGenerator = () => {
   const loadSampleCard = (sample) => {
     setCardData({ ...sample, image: null })
     setImagePreview(null)
+    setImageError('')
   }
 
   // カードリセット処理 - 言語に応じたデフォルト値に戻す
@@ -161,6 +175,7 @@ const PokemonCardGenerator = () => {
       rarity: 'common'
     })
     setImagePreview(null)
+    setImageError('')
   }
 
   const sampleCards = getSampleCards()
@@ -169,8 +184,13 @@ const PokemonCardGenerator = () => {
     <div className="card-generator">
       <div className="generator-layout">
         {/* 左側：フォームセクション */}
-        <div className="form-section">
-          <h2>{t('cardCustomization')}</h2>
+        <section className="form-section" aria-labelledby="customization-title">
+          <div className="section-heading">
+            <div>
+              <span className="section-step">01 / Design</span>
+              <h2 id="customization-title">{t('cardCustomization')}</h2>
+            </div>
+          </div>
           
           {/* サンプルカードセクション */}
           <div className="samples-section">
@@ -202,12 +222,19 @@ const PokemonCardGenerator = () => {
             onAbilityChange={handleAbilityChange}
             onAddAbility={addAbility}
             onRemoveAbility={removeAbility}
+            imageError={imageError}
           />
-        </div>
+        </section>
         
         {/* 右側：プレビューセクション */}
-        <div className="preview-section">
-          <h2>{t('cardPreview')}</h2>
+        <section className="preview-section" aria-labelledby="preview-title">
+          <div className="section-heading">
+            <div>
+              <span className="section-step">02 / Preview</span>
+              <h2 id="preview-title">{t('cardPreview')}</h2>
+            </div>
+            <span className="preview-hint">{t('previewHint')}</span>
+          </div>
           <div className="card-preview">
             <PokemonCard 
               ref={cardRef}
@@ -217,7 +244,7 @@ const PokemonCardGenerator = () => {
           </div>
           {/* ダウンロードボタン */}
           <DownloadButton cardRef={cardRef} cardData={cardData} />
-        </div>
+        </section>
       </div>
     </div>
   )

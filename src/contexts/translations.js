@@ -7,6 +7,8 @@ export const translations = {
     builtWith: 'Built with',
     gplLicense: '(GPL-3.0)',
     licenseNotice: 'GPL-3.0 Licensed',
+    fanDisclaimer: 'Independent fan-made tool. Not affiliated with or endorsed by The Pokémon Company.',
+    previewHint: 'Move your pointer to see the foil',
     
     // メインセクション
     cardCustomization: 'Card Customization',
@@ -56,12 +58,14 @@ export const translations = {
     uploadImage: 'Upload Image',
     changeImage: 'Change Image',
     addAbility: '+ Add Ability',
-    downloadCard: '📥 Download Card',
+    removeAbility: 'Remove ability',
+    downloadCard: 'Download high-resolution PNG',
     generating: 'Generating...',
+    downloadSuccess: 'Your PNG is ready.',
     
     // 情報テキスト
-    recommendedImage: 'Recommended: Square images work best',
-    downloadInfo: 'Downloads as PNG image (660×921px)',
+    recommendedImage: 'JPG, PNG or WebP · up to 8 MB · portrait images work best',
+    downloadInfo: 'Exports the exact preview at 1320 × 1842 px',
     
     // ポケモンタイプ
     types: {
@@ -123,7 +127,9 @@ export const translations = {
     // アラートメッセージ
     alerts: {
       cardNotAvailable: 'Card preview not available',
-      errorGenerating: 'Error generating card image. Please try again.'
+      errorGenerating: 'Error generating card image. Please try again.',
+      invalidImage: 'Please choose a valid image file.',
+      imageTooLarge: 'Please choose an image smaller than 8 MB.'
     },
     
     // 言語切り替え
@@ -139,6 +145,8 @@ export const translations = {
     builtWith: '使用ライブラリ',
     gplLicense: '(GPL-3.0)',
     licenseNotice: 'GPL-3.0 ライセンス',
+    fanDisclaimer: '非公式のファンメイドツールです。株式会社ポケモンおよび関連各社とは関係ありません。',
+    previewHint: 'カードを動かすと光沢が変化します',
     
     // メインセクション
     cardCustomization: 'カードカスタマイズ',
@@ -188,12 +196,14 @@ export const translations = {
     uploadImage: '画像をアップロード',
     changeImage: '画像を変更',
     addAbility: '+ 技を追加',
-    downloadCard: '📥 カードをダウンロード',
+    removeAbility: '技を削除',
+    downloadCard: '高解像度PNGをダウンロード',
     generating: '生成中...',
+    downloadSuccess: 'PNGを保存しました。',
     
     // 情報テキスト
-    recommendedImage: '推奨：正方形の画像が最適です',
-    downloadInfo: 'PNG画像としてダウンロード (660×921px)',
+    recommendedImage: 'JPG・PNG・WebP／8MBまで／縦長画像がおすすめです',
+    downloadInfo: 'プレビューと同じ内容を1320 × 1842 pxで保存します',
     
     // ポケモンタイプ
     types: {
@@ -255,7 +265,9 @@ export const translations = {
     // アラートメッセージ
     alerts: {
       cardNotAvailable: 'カードプレビューが利用できません',
-      errorGenerating: 'カード画像の生成中にエラーが発生しました。もう一度お試しください。'
+      errorGenerating: 'カード画像の生成中にエラーが発生しました。もう一度お試しください。',
+      invalidImage: '有効な画像ファイルを選択してください。',
+      imageTooLarge: '8MB未満の画像を選択してください。'
     },
     
     // 言語切り替え
