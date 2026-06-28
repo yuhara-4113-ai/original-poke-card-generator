@@ -1,4 +1,5 @@
-<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <polygon points="8,2 12,2 10,8 14,8 6,18 8,10 4,10" fill="#ffd43b"/>
-  <polygon points="10,8 12,2 14,8" fill="#ffec99"/>
+<svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+  <defs><radialGradient id="e" cx="35%" cy="25%"><stop stop-color="#fffbd0"/><stop offset=".5" stop-color="#f7d83f"/><stop offset="1" stop-color="#c48b10"/></radialGradient></defs>
+  <circle cx="10" cy="10" r="9.3" fill="#4c3a0d"/><circle cx="10" cy="10" r="8.2" fill="url(#e)" stroke="#fffbe1" stroke-width=".65"/>
+  <path d="M10.3 2.9 5.8 10h3l-1 7.1 6.4-9h-3.3l1.6-5.2z" fill="#2d260e"/>
 </svg>

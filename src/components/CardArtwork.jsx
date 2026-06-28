@@ -5,7 +5,7 @@ const CARD_HEIGHT = 921
 const ART_X = 47
 const ART_Y = 116
 const ART_WIDTH = 566
-const ART_HEIGHT = 365
+const ART_HEIGHT = 356
 const FULL_ART_X = 30
 const FULL_ART_Y = 30
 const FULL_ART_WIDTH = 600
@@ -188,8 +188,7 @@ const FullArtCard = ({ cardData, imagePreview, imageAdjustment, svgRef }) => {
       <text x="548" y="113" textAnchor="end" fill="#111516" fontFamily="Arial, Helvetica, sans-serif" fontSize="35" fontWeight="850">
         {cardData.hp || '—'}
       </text>
-      <circle cx="580" cy="96" r="27" fill="#fff" fillOpacity="0.86" stroke="#2b3233" strokeWidth="2" />
-      <image href={typeIcon} xlinkHref={typeIcon} x="561" y="77" width="38" height="38" />
+      <image href={typeIcon} xlinkHref={typeIcon} x="556" y="72" width="48" height="48" />
 
       {abilities.map((ability, index) => {
         const y = abilityStartY + index * 101
@@ -202,10 +201,7 @@ const FullArtCard = ({ cardData, imagePreview, imageAdjustment, svgRef }) => {
           <g key={`${ability.name}-${index}`} filter="url(#full-art-panel-shadow)">
             <rect x="46" y={y} width="568" height="91" rx="17" fill="#f8faf8" fillOpacity="0.84" stroke="#d8dfdd" strokeWidth="2" />
             {Array.from({ length: cost }).map((_, energyIndex) => (
-              <g key={energyIndex}>
-                <circle cx={77 + energyIndex * 29} cy={y + 29} r="13" fill="#fff" stroke="#303738" strokeWidth="1.4" />
-                <image href={typeIcon} xlinkHref={typeIcon} x={67 + energyIndex * 29} y={y + 19} width="20" height="20" />
-              </g>
+              <image key={energyIndex} href={typeIcon} xlinkHref={typeIcon} x={64 + energyIndex * 29} y={y + 16} width="26" height="26" />
             ))}
             <text x={abilityX} y={y + 36} fill="#111516" fontFamily="Arial, Helvetica, sans-serif" fontSize={abilityNameSize} fontWeight="850">
               {ability.name}
@@ -233,7 +229,7 @@ const FullArtCard = ({ cardData, imagePreview, imageAdjustment, svgRef }) => {
       </g>
       <text x="65" y="837" fill="#252b2c" fontFamily="Arial, Helvetica, sans-serif" fontSize="11" fontWeight="800" letterSpacing="0.8">RETREAT</text>
       {Array.from({ length: Math.min(Number(cardData.retreatCost) || 0, 5) }).map((_, index) => (
-        <circle key={index} cx={132 + index * 19} cy="833" r="7" fill="#fff" stroke="#303738" strokeWidth="1.6" />
+        <image key={index} href={getTypeIcon('normal')} xlinkHref={getTypeIcon('normal')} x={124 + index * 21} y="824" width="18" height="18" />
       ))}
       <text x="330" y="837" textAnchor="middle" fill="#303738" fontFamily="Arial, Helvetica, sans-serif" fontSize="11" fontWeight="750" letterSpacing="0.8">FAN-MADE • NOT FOR SALE</text>
       <text x="65" y="868" fill="#252b2c" fontFamily="Arial, Helvetica, sans-serif" fontSize="14" fontWeight="850">{cardData.cardNumber || '001/100'}</text>
@@ -263,7 +259,6 @@ const CardArtwork = ({ cardData, layoutMode, imagePreview, imageAdjustment, svgR
   const theme = getTypeTheme(cardData.type)
   const typeIcon = getTypeIcon(cardData.type)
   const abilities = cardData.abilities.filter((ability) => ability.name).slice(0, 3)
-  const rowHeight = Math.min(92, 238 / Math.max(abilities.length, 1))
   const nameUnits = getTextUnits(cardData.name || '')
   const nameSize = Math.max(21, 35 - Math.max(0, nameUnits - 10) * 1.4)
   const raritySymbols = { common: '○', uncommon: '●', rare: '◆', holo: '★' }
@@ -273,6 +268,8 @@ const CardArtwork = ({ cardData, layoutMode, imagePreview, imageAdjustment, svgR
     width: ART_WIDTH,
     height: ART_HEIGHT,
   })
+  const weaknessIcon = cardData.weakness !== 'none' ? getTypeIcon(cardData.weakness) : null
+  const resistanceIcon = cardData.resistance !== 'none' ? getTypeIcon(cardData.resistance) : null
 
   return (
     <svg
@@ -286,13 +283,26 @@ const CardArtwork = ({ cardData, layoutMode, imagePreview, imageAdjustment, svgR
     >
       <defs>
         <linearGradient id="card-edge" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stopColor="#fff1a5" />
-          <stop offset="0.28" stopColor={theme.light} />
-          <stop offset="0.62" stopColor="#b98b2f" />
-          <stop offset="1" stopColor="#f7dda0" />
+          <stop offset="0" stopColor="#fff8c7" />
+          <stop offset="0.2" stopColor="#d6aa3f" />
+          <stop offset="0.48" stopColor="#fff1a0" />
+          <stop offset="0.72" stopColor="#ad7923" />
+          <stop offset="1" stopColor="#f5d87d" />
         </linearGradient>
+        <linearGradient id="edge-bevel" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#fffbd4" stopOpacity="0.95" />
+          <stop offset="0.06" stopColor="#fff" stopOpacity="0.2" />
+          <stop offset="0.5" stopColor="#8b621d" stopOpacity="0.2" />
+          <stop offset="0.94" stopColor="#4a3211" stopOpacity="0.72" />
+          <stop offset="1" stopColor="#fff0a3" stopOpacity="0.7" />
+        </linearGradient>
+        <pattern id="edge-grain" width="9" height="9" patternUnits="userSpaceOnUse" patternTransform="rotate(12)">
+          <path d="M0 1h9M0 5h9" stroke="#fff" strokeOpacity="0.12" strokeWidth="0.7" />
+          <path d="M0 3h9M0 8h9" stroke="#5a3d10" strokeOpacity="0.11" strokeWidth="0.7" />
+        </pattern>
         <linearGradient id="card-surface" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor={theme.surface} />
+          <stop offset="0" stopColor={theme.light} />
+          <stop offset="0.48" stopColor={theme.surface} />
           <stop offset="1" stopColor={theme.light} />
         </linearGradient>
         <linearGradient id="art-placeholder" x1="0" y1="0" x2="1" y2="1">
@@ -307,6 +317,16 @@ const CardArtwork = ({ cardData, layoutMode, imagePreview, imageAdjustment, svgR
           <stop offset="0" stopColor="#fff" stopOpacity="0.65" />
           <stop offset="1" stopColor="#fff" stopOpacity="0" />
         </radialGradient>
+        <radialGradient id="type-aura" cx="85%" cy="8%" r="82%">
+          <stop offset="0" stopColor="#fff" stopOpacity="0.7" />
+          <stop offset="0.3" stopColor={theme.primary} stopOpacity="0.2" />
+          <stop offset="1" stopColor={theme.dark} stopOpacity="0" />
+        </radialGradient>
+        <pattern id="card-grain" width="13" height="13" patternUnits="userSpaceOnUse">
+          <circle cx="2" cy="3" r="0.7" fill="#fff" fillOpacity="0.34" />
+          <circle cx="9" cy="8" r="0.65" fill={theme.dark} fillOpacity="0.12" />
+          <path d="M0 11L4 10M8 2l3-1" stroke="#fff" strokeOpacity="0.22" strokeWidth="0.7" />
+        </pattern>
         <filter id="card-shadow" x="-20%" y="-20%" width="140%" height="150%">
           <feDropShadow dx="0" dy="14" stdDeviation="13" floodColor="#07101f" floodOpacity="0.28" />
         </filter>
@@ -314,7 +334,7 @@ const CardArtwork = ({ cardData, layoutMode, imagePreview, imageAdjustment, svgR
           <feDropShadow dx="0" dy="2" stdDeviation="3" floodColor={theme.dark} floodOpacity="0.32" />
         </filter>
         <clipPath id="art-clip">
-          <rect x="47" y="116" width="566" height="365" rx="14" />
+          <rect x="47" y="116" width="566" height="356" rx="8" />
         </clipPath>
         <clipPath id="card-clip">
           <rect x="10" y="10" width="640" height="901" rx="33" />
@@ -325,32 +345,36 @@ const CardArtwork = ({ cardData, layoutMode, imagePreview, imageAdjustment, svgR
       </defs>
 
       <g filter="url(#card-shadow)">
-        <rect x="10" y="10" width="640" height="901" rx="33" fill="url(#card-edge)" />
-        <rect x="24" y="24" width="612" height="873" rx="25" fill={theme.dark} />
-        <rect x="33" y="33" width="594" height="855" rx="20" fill="url(#card-surface)" />
+        <rect x="8" y="8" width="644" height="905" rx="35" fill="#31230f" />
+        <rect x="12" y="12" width="636" height="897" rx="32" fill="url(#card-edge)" />
+        <rect x="12" y="12" width="636" height="897" rx="32" fill="url(#edge-grain)" />
+        <rect x="16" y="16" width="628" height="889" rx="29" fill="none" stroke="url(#edge-bevel)" strokeWidth="8" />
+        <rect x="27" y="27" width="606" height="867" rx="23" fill="#463115" />
+        <rect x="30" y="30" width="600" height="861" rx="21" fill="url(#card-edge)" />
+        <rect x="36" y="36" width="588" height="849" rx="17" fill="url(#card-surface)" />
       </g>
 
-      <g clipPath="url(#card-clip)" opacity="0.13" fill="none" stroke={theme.primary}>
-        <circle cx="600" cy="70" r="150" strokeWidth="34" />
-        <circle cx="46" cy="838" r="170" strokeWidth="44" />
-        <path d="M-20 345 C170 260 240 385 402 312 S705 262 730 176" strokeWidth="16" />
+      <rect x="36" y="36" width="588" height="849" rx="17" fill="url(#type-aura)" />
+      <g clipPath="url(#card-clip)" opacity="0.14" fill="none" stroke={theme.primary}>
+        <circle cx="594" cy="72" r="142" strokeWidth="31" />
+        <circle cx="50" cy="846" r="164" strokeWidth="38" />
+        <path d="M-20 347 C168 262 246 386 402 315 S705 264 730 180" strokeWidth="12" />
       </g>
+      <rect x="36" y="36" width="588" height="849" rx="17" fill="url(#card-grain)" />
 
-      <text x="52" y="66" fill={theme.dark} fontFamily="Arial, Helvetica, sans-serif" fontSize="12" fontWeight="700" letterSpacing="1.7">
-        ORIGINAL CREATURE
-      </text>
-      <text x="52" y="106" clipPath="url(#header-name-clip)" fill="#151616" fontFamily="Arial, Helvetica, sans-serif" fontSize={nameSize} fontWeight="800">
+      <rect x="48" y="48" width="86" height="19" rx="9.5" fill={theme.dark} />
+      <text x="91" y="61" textAnchor="middle" fill="#fff" fontFamily="Arial, Helvetica, sans-serif" fontSize="9.5" fontWeight="800" letterSpacing="1.2">BASIC</text>
+      <text x="51" y="105" clipPath="url(#header-name-clip)" fill="#111" fontFamily="Arial, Helvetica, sans-serif" fontSize={nameSize} fontWeight="850" letterSpacing="-0.5">
         {cardData.name || 'Untitled'}
       </text>
-      <text x="474" y="94" fill={theme.dark} fontFamily="Arial, Helvetica, sans-serif" fontSize="17" fontWeight="700">HP</text>
-      <text x="558" y="96" textAnchor="end" fill="#161616" fontFamily="Arial, Helvetica, sans-serif" fontSize="34" fontWeight="800">
+      <text x="472" y="94" fill={theme.dark} fontFamily="Arial, Helvetica, sans-serif" fontSize="13" fontWeight="850">HP</text>
+      <text x="558" y="97" textAnchor="end" fill="#111" fontFamily="Arial, Helvetica, sans-serif" fontSize="36" fontWeight="900" letterSpacing="-1">
         {cardData.hp || '—'}
       </text>
-      <circle cx="588" cy="82" r="26" fill="#fff" fillOpacity="0.72" stroke={theme.primary} strokeWidth="2" />
-      <image href={typeIcon} xlinkHref={typeIcon} x="569" y="63" width="38" height="38" />
+      <image href={typeIcon} xlinkHref={typeIcon} x="566" y="57" width="46" height="46" />
 
       <g clipPath="url(#art-clip)">
-        <rect x="47" y="116" width="566" height="365" fill="url(#art-placeholder)" />
+        <rect x="47" y="116" width="566" height="356" fill="url(#art-placeholder)" />
         {imagePreview ? (
           <image
             href={imagePreview}
@@ -370,34 +394,33 @@ const CardArtwork = ({ cardData, layoutMode, imagePreview, imageAdjustment, svgR
             <text x="330" y="349" textAnchor="middle" fill="#fff" fontFamily="Arial, Helvetica, sans-serif" fontSize="19" fontWeight="700" letterSpacing="0.5">ADD YOUR ARTWORK</text>
           </g>
         )}
-        <rect data-export-effect="artwork-lighting" x="47" y="116" width="566" height="365" fill="url(#art-shade)" />
-        <rect data-export-effect="artwork-lighting" x="47" y="116" width="566" height="365" fill="url(#soft-light)" />
+        <rect data-export-effect="artwork-lighting" x="47" y="116" width="566" height="356" fill="url(#art-shade)" />
+        <rect data-export-effect="artwork-lighting" x="47" y="116" width="566" height="356" fill="url(#soft-light)" />
       </g>
-      <rect x="47" y="116" width="566" height="365" rx="14" fill="none" stroke={theme.dark} strokeWidth="6" filter="url(#inner-shadow)" />
-      <rect x="62" y="442" width="116" height="26" rx="13" fill={theme.dark} fillOpacity="0.9" />
-      <text x="120" y="460" textAnchor="middle" fill="#fff" fontFamily="Arial, Helvetica, sans-serif" fontSize="13" fontWeight="700" letterSpacing="1">
-        {String(cardData.type || 'normal').toUpperCase()}
+      <rect x="44" y="113" width="572" height="362" rx="10" fill="none" stroke="#5b4318" strokeWidth="7" filter="url(#inner-shadow)" />
+      <rect x="49" y="118" width="562" height="352" rx="5" fill="none" stroke="#fff1a7" strokeOpacity="0.74" strokeWidth="2" />
+      <path d="M59 477H601L586 505H74Z" fill={theme.dark} />
+      <text x="330" y="496" textAnchor="middle" fill="#fff" fontFamily="Arial, Helvetica, sans-serif" fontSize="11.5" fontWeight="750" letterSpacing="0.45">
+        NO. 001  ORIGINAL CREATURE  ·  HT: 1.2 m  ·  WT: 24.0 kg
       </text>
 
-      <rect x="47" y="500" width="566" height="247" rx="13" fill="#fff" fillOpacity="0.66" stroke={theme.primary} strokeOpacity="0.45" strokeWidth="2" />
+      <rect x="48" y="516" width="564" height="224" rx="4" fill="#fff" fillOpacity="0.28" stroke={theme.dark} strokeOpacity="0.22" />
       {abilities.length === 0 ? (
-        <text x="330" y="628" textAnchor="middle" fill={theme.dark} fillOpacity="0.56" fontFamily="Arial, Helvetica, sans-serif" fontSize="18">Add an ability to complete the card</text>
+        <text x="330" y="630" textAnchor="middle" fill={theme.dark} fillOpacity="0.6" fontFamily="Arial, Helvetica, sans-serif" fontSize="18">Add an ability to complete the card</text>
       ) : abilities.map((ability, index) => {
-        const y = 523 + index * rowHeight
+        const abilityRowHeight = Math.min(74, 218 / Math.max(abilities.length, 1))
+        const y = 525 + index * abilityRowHeight
         const cost = Math.min(Number(ability.energyCost) || 1, 5)
-        const abilityX = 69 + cost * 31
+        const abilityX = 68 + cost * 32
         const abilityNameSize = Math.max(16, 23 - Math.max(0, getTextUnits(ability.name) - 11) * 0.85)
         const descriptionLines = wrapText(ability.description, Math.max(24, 52 - cost * 2.5), 2)
         return (
           <g key={`${ability.name}-${index}`}>
-            {index > 0 && <line x1="67" y1={y - 13} x2="593" y2={y - 13} stroke={theme.primary} strokeOpacity="0.27" />}
+            {index > 0 && <line x1="66" y1={y - 9} x2="594" y2={y - 9} stroke={theme.dark} strokeOpacity="0.35" strokeWidth="1.2" />}
             {Array.from({ length: cost }).map((_, energyIndex) => (
-              <g key={energyIndex}>
-                <circle cx={82 + energyIndex * 31} cy={y + 17} r="13" fill="#fff" stroke={theme.primary} strokeWidth="1.5" />
-                <image href={typeIcon} xlinkHref={typeIcon} x={72 + energyIndex * 31} y={y + 7} width="20" height="20" />
-              </g>
+              <image key={energyIndex} href={typeIcon} xlinkHref={typeIcon} x={68 + energyIndex * 32} y={y + 2} width="28" height="28" />
             ))}
-            <text x={abilityX} y={y + 23} fill="#121313" fontFamily="Arial, Helvetica, sans-serif" fontSize={abilityNameSize} fontWeight="800">
+            <text x={abilityX} y={y + 23} fill="#0c0d0d" fontFamily="Arial, Helvetica, sans-serif" fontSize={abilityNameSize} fontWeight="850">
               {ability.name}
             </text>
             {ability.damage && (
@@ -407,43 +430,49 @@ const CardArtwork = ({ cardData, layoutMode, imagePreview, imageAdjustment, svgR
             )}
             <TextLines
               lines={descriptionLines}
-              x={abilityX}
+              x="82"
               y={y + 47}
-              lineHeight="17"
-              fill="#303333"
+              lineHeight="15"
+              fill="#252727"
               fontFamily="Arial, Helvetica, sans-serif"
-              fontSize="14"
+              fontSize="12.5"
             />
           </g>
         )
       })}
 
-      <line x1="55" y1="772" x2="605" y2="772" stroke={theme.dark} strokeOpacity="0.35" />
+      <rect x="48" y="751" width="564" height="58" rx="4" fill={theme.dark} fillOpacity="0.12" />
+      <line x1="236" y1="758" x2="236" y2="801" stroke={theme.dark} strokeOpacity="0.28" />
+      <line x1="422" y1="758" x2="422" y2="801" stroke={theme.dark} strokeOpacity="0.28" />
+      <text x="67" y="769" fill={theme.dark} fontFamily="Arial, Helvetica, sans-serif" fontSize="10" fontWeight="850" letterSpacing="0.7">WEAKNESS</text>
+      {weaknessIcon ? <image href={weaknessIcon} xlinkHref={weaknessIcon} x="72" y="775" width="25" height="25" /> : <text x="82" y="795" fill={theme.dark}>—</text>}
+      {weaknessIcon && <text x="105" y="795" fill={theme.dark} fontFamily="Arial, Helvetica, sans-serif" fontSize="15" fontWeight="850">×2</text>}
+      <text x="254" y="769" fill={theme.dark} fontFamily="Arial, Helvetica, sans-serif" fontSize="10" fontWeight="850" letterSpacing="0.7">RESISTANCE</text>
+      {resistanceIcon ? <image href={resistanceIcon} xlinkHref={resistanceIcon} x="280" y="775" width="25" height="25" /> : <text x="292" y="795" fill={theme.dark}>—</text>}
+      {resistanceIcon && <text x="312" y="795" fill={theme.dark} fontFamily="Arial, Helvetica, sans-serif" fontSize="15" fontWeight="850">−30</text>}
+      <text x="442" y="769" fill={theme.dark} fontFamily="Arial, Helvetica, sans-serif" fontSize="10" fontWeight="850" letterSpacing="0.7">RETREAT</text>
+      {Array.from({ length: Math.min(Number(cardData.retreatCost) || 0, 5) }).map((_, index) => (
+        <image key={index} href={getTypeIcon('normal')} xlinkHref={getTypeIcon('normal')} x={444 + index * 27} y="777" width="23" height="23" />
+      ))}
+
       <TextLines
         lines={wrapText(cardData.description, 65, 2)}
         x="330"
-        y="800"
-        lineHeight="20"
+        y="830"
+        lineHeight="17"
         textAnchor="middle"
         fill="#2f3030"
         fontFamily="Georgia, Times New Roman, serif"
-        fontSize="15"
+        fontSize="13"
         fontStyle="italic"
       />
-
-      <g transform="translate(53 843)">
-        <text x="0" y="12" fill={theme.dark} fontFamily="Arial, Helvetica, sans-serif" fontSize="12" fontWeight="700" letterSpacing="0.8">RETREAT</text>
-        {Array.from({ length: Math.min(Number(cardData.retreatCost) || 0, 5) }).map((_, index) => (
-          <circle key={index} cx={78 + index * 20} cy="8" r="7" fill="#fff" stroke={theme.dark} strokeWidth="1.8" />
-        ))}
-      </g>
-      <text x="330" y="855" textAnchor="middle" fill={theme.dark} fontFamily="Arial, Helvetica, sans-serif" fontSize="13" fontWeight="700" letterSpacing="1.1">
-        FAN-MADE • NOT FOR SALE
-      </text>
-      <text x="53" y="879" fill={theme.dark} fontFamily="Arial, Helvetica, sans-serif" fontSize="14" fontWeight="800">{cardData.cardNumber || '001/100'}</text>
-      <text x="607" y="880" textAnchor="end" fill={theme.dark} fontFamily="Arial, Helvetica, sans-serif" fontSize="22" fontWeight="800">
+      <line x1="52" y1="858" x2="608" y2="858" stroke={theme.dark} strokeOpacity="0.36" />
+      <text x="52" y="876" fill={theme.dark} fontFamily="Arial, Helvetica, sans-serif" fontSize="13" fontWeight="850">{cardData.cardNumber || '001/100'}</text>
+      <text x="330" y="875" textAnchor="middle" fill={theme.dark} fontFamily="Arial, Helvetica, sans-serif" fontSize="9.5" fontWeight="750" letterSpacing="0.85">ORIGINAL CARD STUDIO • FAN-MADE • NOT FOR SALE</text>
+      <text x="607" y="878" textAnchor="end" fill={theme.dark} fontFamily="Arial, Helvetica, sans-serif" fontSize="21" fontWeight="900">
         {raritySymbols[cardData.rarity] || raritySymbols.common}
       </text>
+      <rect x="12" y="12" width="636" height="897" rx="32" fill="none" stroke="#fff8d5" strokeOpacity="0.72" strokeWidth="2" />
     </svg>
   )
 }

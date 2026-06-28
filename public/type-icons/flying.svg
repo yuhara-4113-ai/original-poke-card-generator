@@ -1,4 +1,5 @@
-<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <ellipse cx="10" cy="15" rx="7" ry="3" fill="#e5dbff"/>
-  <path d="M3 13 Q10 2 17 13" stroke="#74c0fc" stroke-width="2" fill="none"/>
+<svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+  <defs><radialGradient id="e" cx="35%" cy="25%"><stop stop-color="#eaf7ff"/><stop offset=".48" stop-color="#91badd"/><stop offset="1" stop-color="#55739b"/></radialGradient></defs>
+  <circle cx="10" cy="10" r="9.3" fill="#344962"/><circle cx="10" cy="10" r="8.2" fill="url(#e)" stroke="#f5fbff" stroke-width=".65"/>
+  <path d="M3.6 12.3c3.1-5.1 7.4-7.4 12.8-7-2.7.7-4.9 2-6.5 3.8 1.7-.5 3.2-.5 4.6.1-2.4.2-4.2.9-5.5 2.1 1.4-.1 2.6.2 3.5.9-3.1-.1-5.4.8-7 2.7.2-1 .7-1.8 1.3-2.6z" fill="#2b3c51"/>
 </svg>

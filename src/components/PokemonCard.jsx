@@ -4,6 +4,8 @@ import CardArtwork from './CardArtwork'
 const initialStyle = {
   '--pointer-x': '50%',
   '--pointer-y': '50%',
+  '--card-brightness': '0.72',
+  '--glare-brightness': '0.95',
   '--card-opacity': '0',
   '--rotate-x': '0deg',
   '--rotate-y': '0deg',
@@ -30,11 +32,17 @@ const PokemonCard = forwardRef(({ cardData, layoutMode, imagePreview, imageAdjus
     const y = Math.max(0, Math.min(clientY - rect.top, rect.height))
     const pointerX = (x / rect.width) * 100
     const pointerY = (y / rect.height) * 100
+    const pointerFromCenter = Math.min(
+      1,
+      Math.hypot(pointerX - 50, pointerY - 50) / 50,
+    )
 
     setCardStyle({
       '--pointer-x': `${pointerX}%`,
       '--pointer-y': `${pointerY}%`,
-      '--card-opacity': '0.55',
+      '--card-brightness': (0.72 + pointerFromCenter * 0.22).toFixed(3),
+      '--glare-brightness': (0.85 + (pointerY / 100) * 0.2).toFixed(3),
+      '--card-opacity': '1',
       '--rotate-x': `${((pointerY - 50) / 9).toFixed(2)}deg`,
       '--rotate-y': `${((50 - pointerX) / 9).toFixed(2)}deg`,
     })
@@ -61,6 +69,8 @@ const PokemonCard = forwardRef(({ cardData, layoutMode, imagePreview, imageAdjus
     <div
       ref={containerRef}
       className={`card interactive ${cardData.type}`}
+      data-rarity={cardData.rarity}
+      data-layout={layoutMode}
       style={cardStyle}
       onPointerDown={handlePointerInteraction}
       onPointerMove={handlePointerInteraction}
@@ -76,6 +86,7 @@ const PokemonCard = forwardRef(({ cardData, layoutMode, imagePreview, imageAdjus
           imageAdjustment={imageAdjustment}
           svgRef={svgRef}
         />
+        <div className="card__texture" aria-hidden="true" />
         <div className="card__shine" aria-hidden="true" />
         <div className="card__glare" aria-hidden="true" />
       </div>
