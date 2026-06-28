@@ -25,7 +25,65 @@ const inlineExternalImages = async (svg) => {
   }))
 }
 
-const svgToPng = async (sourceSvg) => {
+const roundedRect = (context, x, y, width, height, radius) => {
+  context.beginPath()
+  context.moveTo(x + radius, y)
+  context.lineTo(x + width - radius, y)
+  context.quadraticCurveTo(x + width, y, x + width, y + radius)
+  context.lineTo(x + width, y + height - radius)
+  context.quadraticCurveTo(x + width, y + height, x + width - radius, y + height)
+  context.lineTo(x + radius, y + height)
+  context.quadraticCurveTo(x, y + height, x, y + height - radius)
+  context.lineTo(x, y + radius)
+  context.quadraticCurveTo(x, y, x + radius, y)
+  context.closePath()
+}
+
+const drawFoilEffect = (context, foilPosition) => {
+  const width = CARD_WIDTH * EXPORT_SCALE
+  const height = CARD_HEIGHT * EXPORT_SCALE
+  const pointerX = (foilPosition.x / 100) * width
+  const pointerY = (foilPosition.y / 100) * height
+
+  context.save()
+  roundedRect(
+    context,
+    10 * EXPORT_SCALE,
+    10 * EXPORT_SCALE,
+    640 * EXPORT_SCALE,
+    901 * EXPORT_SCALE,
+    33 * EXPORT_SCALE,
+  )
+  context.clip()
+
+  context.globalCompositeOperation = 'screen'
+  const foil = context.createLinearGradient(
+    pointerX - width,
+    pointerY + height,
+    pointerX + width,
+    pointerY - height,
+  )
+  foil.addColorStop(0, 'rgba(255, 255, 255, 0)')
+  foil.addColorStop(0.28, 'rgba(255, 92, 145, 0.18)')
+  foil.addColorStop(0.39, 'rgba(255, 221, 105, 0.42)')
+  foil.addColorStop(0.5, 'rgba(91, 231, 218, 0.4)')
+  foil.addColorStop(0.61, 'rgba(105, 146, 255, 0.38)')
+  foil.addColorStop(0.72, 'rgba(226, 111, 255, 0.2)')
+  foil.addColorStop(1, 'rgba(255, 255, 255, 0)')
+  context.fillStyle = foil
+  context.fillRect(0, 0, width, height)
+
+  const glareRadius = Math.max(width, height) * 0.58
+  const glare = context.createRadialGradient(pointerX, pointerY, 0, pointerX, pointerY, glareRadius)
+  glare.addColorStop(0, 'rgba(255, 255, 255, 0.52)')
+  glare.addColorStop(0.2, 'rgba(255, 255, 255, 0.2)')
+  glare.addColorStop(0.52, 'rgba(255, 255, 255, 0)')
+  context.fillStyle = glare
+  context.fillRect(0, 0, width, height)
+  context.restore()
+}
+
+const svgToPng = async (sourceSvg, includeFoil, foilPosition) => {
   const svg = sourceSvg.cloneNode(true)
   svg.setAttribute('width', CARD_WIDTH)
   svg.setAttribute('height', CARD_HEIGHT)
@@ -53,6 +111,7 @@ const svgToPng = async (sourceSvg) => {
     context.imageSmoothingEnabled = true
     context.imageSmoothingQuality = 'high'
     context.drawImage(image, 0, 0, canvas.width, canvas.height)
+    if (includeFoil) drawFoilEffect(context, foilPosition)
 
     return await new Promise((resolve, reject) => {
       canvas.toBlob((blob) => blob ? resolve(blob) : reject(new Error('Could not create PNG')), 'image/png', 1)
@@ -64,6 +123,7 @@ const svgToPng = async (sourceSvg) => {
 
 const DownloadButton = ({ cardRef, cardData }) => {
   const [isGenerating, setIsGenerating] = useState(false)
+  const [includeFoil, setIncludeFoil] = useState(true)
   const [error, setError] = useState('')
   const [status, setStatus] = useState('')
   const { t } = useLanguage()
@@ -80,7 +140,8 @@ const DownloadButton = ({ cardRef, cardData }) => {
     setStatus('')
     try {
       await document.fonts?.ready
-      const blob = await svgToPng(svg)
+      const foilPosition = cardRef.current?.getFoilPosition?.() || { x: 50, y: 50 }
+      const blob = await svgToPng(svg, includeFoil, foilPosition)
       const url = URL.createObjectURL(blob)
       const link = document.createElement('a')
       const safeName = (cardData.name || 'original-card').trim().replace(/[^\p{L}\p{N}_-]+/gu, '_')
@@ -101,6 +162,17 @@ const DownloadButton = ({ cardRef, cardData }) => {
 
   return (
     <div className="download-section">
+      <label className="foil-toggle">
+        <input
+          type="checkbox"
+          checked={includeFoil}
+          onChange={(event) => setIncludeFoil(event.target.checked)}
+          disabled={isGenerating}
+        />
+        <span className="foil-toggle-track" aria-hidden="true" />
+        <span className="foil-toggle-label">{t('includeFoil')}</span>
+        <strong>{includeFoil ? t('foilOn') : t('foilOff')}</strong>
+      </label>
       <button
         type="button"
         className="download-button"

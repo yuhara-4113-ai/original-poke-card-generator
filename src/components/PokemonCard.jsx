@@ -17,6 +17,10 @@ const PokemonCard = forwardRef(({ cardData, imagePreview, imageAdjustment }, ref
   useImperativeHandle(ref, () => ({
     getElement: () => containerRef.current,
     getSvgElement: () => svgRef.current,
+    getFoilPosition: () => ({
+      x: Number.parseFloat(cardStyle['--pointer-x']) || 50,
+      y: Number.parseFloat(cardStyle['--pointer-y']) || 50,
+    }),
   }))
 
   const updateCardStyle = (clientX, clientY) => {
