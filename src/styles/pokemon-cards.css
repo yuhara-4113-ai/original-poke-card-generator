@@ -16,6 +16,11 @@
   --rotate-y: 0deg;
 }
 
+.card.interactive {
+  touch-action: pan-y;
+  -webkit-tap-highlight-color: transparent;
+}
+
 .card__rotator {
   position: relative;
   width: 100%;

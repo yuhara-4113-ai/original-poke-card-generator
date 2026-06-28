@@ -19,7 +19,7 @@ const PokemonCard = forwardRef(({ cardData, imagePreview, imageAdjustment }, ref
     getSvgElement: () => svgRef.current,
   }))
 
-  const handlePointerMove = (event) => {
+  const updateCardStyle = (event) => {
     const rect = containerRef.current?.getBoundingClientRect()
     if (!rect) return
     const x = Math.max(0, Math.min(event.clientX - rect.left, rect.width))
@@ -36,13 +36,35 @@ const PokemonCard = forwardRef(({ cardData, imagePreview, imageAdjustment }, ref
     })
   }
 
+  const handlePointerDown = (event) => {
+    updateCardStyle(event)
+    if (event.pointerType === 'touch') {
+      event.currentTarget.setPointerCapture?.(event.pointerId)
+    }
+  }
+
+  const handlePointerEnd = (event) => {
+    if (event.currentTarget.hasPointerCapture?.(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId)
+    }
+  }
+
+  const handlePointerLeave = (event) => {
+    if (event.pointerType !== 'touch') {
+      setCardStyle(initialStyle)
+    }
+  }
+
   return (
     <div
       ref={containerRef}
       className={`card interactive ${cardData.type}`}
       style={cardStyle}
-      onPointerMove={handlePointerMove}
-      onPointerLeave={() => setCardStyle(initialStyle)}
+      onPointerDown={handlePointerDown}
+      onPointerMove={updateCardStyle}
+      onPointerUp={handlePointerEnd}
+      onPointerCancel={handlePointerEnd}
+      onPointerLeave={handlePointerLeave}
     >
       <div className="card__rotator">
         <CardArtwork
