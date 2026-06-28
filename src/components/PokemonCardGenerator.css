@@ -480,7 +480,6 @@
   .preview-section {
     position: relative;
     top: 0;
-    grid-row: 1;
   }
 
   .card-preview {
@@ -525,6 +524,10 @@
   .form-group:nth-child(5),
   .form-group:last-child {
     grid-column: 1;
+  }
+
+  .image-upload-group {
+    order: 1;
   }
 
   .sample-button.reset {

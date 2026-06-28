@@ -4,10 +4,10 @@ import { LanguageContext } from './context'
 
 // 言語プロバイダーコンポーネント
 export const LanguageProvider = ({ children }) => {
-  // ローカルストレージから言語設定を読み込み、デフォルトは英語
+  // ローカルストレージから言語設定を読み込み、初回アクセス時は日本語
   const [language, setLanguage] = useState(() => {
     const savedLanguage = localStorage.getItem('pokemonCardLanguage')
-    return savedLanguage || 'en'
+    return translations[savedLanguage] ? savedLanguage : 'ja'
   })
 
   // 言語が変更されたときにローカルストレージに保存

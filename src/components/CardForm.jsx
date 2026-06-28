@@ -76,7 +76,7 @@ const CardForm = ({
       </div>
 
       {/* 画像アップロードセクション */}
-      <div className="form-group">
+      <div className="form-group image-upload-group">
         <span className="group-label">{t('pokemonImage')}</span>
         <div className="image-upload-section">
           <button
