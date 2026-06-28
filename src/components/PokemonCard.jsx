@@ -9,7 +9,7 @@ const initialStyle = {
   '--rotate-y': '0deg',
 }
 
-const PokemonCard = forwardRef(({ cardData, imagePreview }, ref) => {
+const PokemonCard = forwardRef(({ cardData, imagePreview, imageAdjustment }, ref) => {
   const containerRef = useRef(null)
   const svgRef = useRef(null)
   const [cardStyle, setCardStyle] = useState(initialStyle)
@@ -45,7 +45,12 @@ const PokemonCard = forwardRef(({ cardData, imagePreview }, ref) => {
       onPointerLeave={() => setCardStyle(initialStyle)}
     >
       <div className="card__rotator">
-        <CardArtwork cardData={cardData} imagePreview={imagePreview} svgRef={svgRef} />
+        <CardArtwork
+          cardData={cardData}
+          imagePreview={imagePreview}
+          imageAdjustment={imageAdjustment}
+          svgRef={svgRef}
+        />
         <div className="card__shine" aria-hidden="true" />
         <div className="card__glare" aria-hidden="true" />
       </div>

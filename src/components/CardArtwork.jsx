@@ -2,6 +2,10 @@ import { getTypeIcon, getTypeTheme } from './cardTheme'
 
 const CARD_WIDTH = 660
 const CARD_HEIGHT = 921
+const ART_X = 47
+const ART_Y = 116
+const ART_WIDTH = 566
+const ART_HEIGHT = 365
 
 const getTextUnits = (text) => [...text].reduce((total, character) => (
   total + (/\p{Script=Han}|\p{Script=Hiragana}|\p{Script=Katakana}/u.test(character) ? 1 : 0.56)
@@ -42,7 +46,7 @@ const TextLines = ({ lines, x, y, lineHeight, ...props }) => (
   </text>
 )
 
-const CardArtwork = ({ cardData, imagePreview, svgRef }) => {
+const CardArtwork = ({ cardData, imagePreview, imageAdjustment, svgRef }) => {
   const theme = getTypeTheme(cardData.type)
   const typeIcon = getTypeIcon(cardData.type)
   const abilities = cardData.abilities.filter((ability) => ability.name).slice(0, 3)
@@ -50,6 +54,16 @@ const CardArtwork = ({ cardData, imagePreview, svgRef }) => {
   const nameUnits = getTextUnits(cardData.name || '')
   const nameSize = Math.max(21, 35 - Math.max(0, nameUnits - 10) * 1.4)
   const raritySymbols = { common: '○', uncommon: '●', rare: '◆', holo: '★' }
+  const naturalWidth = imageAdjustment?.width || ART_WIDTH
+  const naturalHeight = imageAdjustment?.height || ART_HEIGHT
+  const zoom = Math.min(2.5, Math.max(1, imageAdjustment?.zoom || 1))
+  const baseImageScale = Math.max(ART_WIDTH / naturalWidth, ART_HEIGHT / naturalHeight)
+  const imageWidth = naturalWidth * baseImageScale * zoom
+  const imageHeight = naturalHeight * baseImageScale * zoom
+  const overflowX = Math.max(0, imageWidth - ART_WIDTH)
+  const overflowY = Math.max(0, imageHeight - ART_HEIGHT)
+  const imageX = ART_X - overflowX / 2 + ((imageAdjustment?.x || 0) / 100) * (overflowX / 2)
+  const imageY = ART_Y - overflowY / 2 + ((imageAdjustment?.y || 0) / 100) * (overflowY / 2)
 
   return (
     <svg
@@ -97,7 +111,7 @@ const CardArtwork = ({ cardData, imagePreview, svgRef }) => {
           <rect x="10" y="10" width="640" height="901" rx="33" />
         </clipPath>
         <clipPath id="header-name-clip">
-          <rect x="48" y="80" width="410" height="36" />
+          <rect x="48" y="70" width="410" height="46" />
         </clipPath>
       </defs>
 
@@ -113,7 +127,7 @@ const CardArtwork = ({ cardData, imagePreview, svgRef }) => {
         <path d="M-20 345 C170 260 240 385 402 312 S705 262 730 176" strokeWidth="16" />
       </g>
 
-      <text x="52" y="78" fill={theme.dark} fontFamily="Arial, Helvetica, sans-serif" fontSize="13" fontWeight="700" letterSpacing="1.7">
+      <text x="52" y="66" fill={theme.dark} fontFamily="Arial, Helvetica, sans-serif" fontSize="12" fontWeight="700" letterSpacing="1.7">
         ORIGINAL CREATURE
       </text>
       <text x="52" y="106" clipPath="url(#header-name-clip)" fill="#151616" fontFamily="Arial, Helvetica, sans-serif" fontSize={nameSize} fontWeight="800">
@@ -132,11 +146,11 @@ const CardArtwork = ({ cardData, imagePreview, svgRef }) => {
           <image
             href={imagePreview}
             xlinkHref={imagePreview}
-            x="47"
-            y="116"
-            width="566"
-            height="365"
-            preserveAspectRatio="xMidYMid slice"
+            x={imageX}
+            y={imageY}
+            width={imageWidth}
+            height={imageHeight}
+            preserveAspectRatio="none"
           />
         ) : (
           <g>

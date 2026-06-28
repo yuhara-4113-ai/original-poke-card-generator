@@ -5,6 +5,14 @@ import DownloadButton from './DownloadButton'
 import { useLanguage } from '../contexts/useLanguage'
 import './PokemonCardGenerator.css'
 
+const initialImageAdjustment = {
+  x: 0,
+  y: 0,
+  zoom: 1,
+  width: 0,
+  height: 0,
+}
+
 // メインのポケモンカードジェネレーターコンポーネント
 const PokemonCardGenerator = () => {
   const { t } = useLanguage() // 翻訳機能とユーザーの言語設定を取得
@@ -32,8 +40,10 @@ const PokemonCardGenerator = () => {
   })
 
   const [imagePreview, setImagePreview] = useState(null)
+  const [imageAdjustment, setImageAdjustment] = useState(initialImageAdjustment)
   const [imageError, setImageError] = useState('')
   const cardRef = useRef(null)
+  const imageUploadIdRef = useRef(0)
 
   // サンプルカードのデータ - 現在の言語に基づいて動的に取得
   const getSampleCards = () => {
@@ -94,6 +104,7 @@ const PokemonCardGenerator = () => {
   const handleImageUpload = (event) => {
     const file = event.target.files[0]
     if (!file) return
+    const uploadId = ++imageUploadIdRef.current
     if (!file.type.startsWith('image/')) {
       setImageError(t('alerts.invalidImage'))
       event.target.value = ''
@@ -108,16 +119,48 @@ const PokemonCardGenerator = () => {
     setImageError('')
     const reader = new FileReader()
     reader.onload = (readerEvent) => {
-      setImagePreview(readerEvent.target.result)
-      setCardData(prev => ({ ...prev, image: readerEvent.target.result }))
+      if (imageUploadIdRef.current !== uploadId) return
+      const imageUrl = readerEvent.target.result
+      const image = new Image()
+      image.onload = () => {
+        if (imageUploadIdRef.current !== uploadId) return
+        setImagePreview(imageUrl)
+        setImageAdjustment({
+          ...initialImageAdjustment,
+          width: image.naturalWidth,
+          height: image.naturalHeight,
+        })
+        setCardData(prev => ({ ...prev, image: imageUrl }))
+      }
+      image.onerror = () => {
+        if (imageUploadIdRef.current !== uploadId) return
+        setImageError(t('alerts.invalidImage'))
+      }
+      image.src = imageUrl
     }
-    reader.onerror = () => setImageError(t('alerts.invalidImage'))
+    reader.onerror = () => {
+      if (imageUploadIdRef.current !== uploadId) return
+      setImageError(t('alerts.invalidImage'))
+    }
     reader.readAsDataURL(file)
+    event.target.value = ''
   }
 
   // 入力フィールドの値変更処理
   const handleInputChange = (field, value) => {
     setCardData(prev => ({ ...prev, [field]: value }))
+  }
+
+  const handleImageAdjustment = (field, value) => {
+    setImageAdjustment(prev => ({ ...prev, [field]: Number(value) }))
+  }
+
+  const resetImageAdjustment = () => {
+    setImageAdjustment(prev => ({
+      ...initialImageAdjustment,
+      width: prev.width,
+      height: prev.height,
+    }))
   }
 
   // 技（アビリティ）の変更処理
@@ -147,13 +190,16 @@ const PokemonCardGenerator = () => {
 
   // サンプルカードの読み込み処理
   const loadSampleCard = (sample) => {
+    imageUploadIdRef.current += 1
     setCardData({ ...sample, image: null })
     setImagePreview(null)
+    setImageAdjustment(initialImageAdjustment)
     setImageError('')
   }
 
   // カードリセット処理 - 言語に応じたデフォルト値に戻す
   const resetCard = () => {
+    imageUploadIdRef.current += 1
     setCardData({
       name: t('defaultCard.name'),
       hp: '100',
@@ -175,6 +221,7 @@ const PokemonCardGenerator = () => {
       rarity: 'common'
     })
     setImagePreview(null)
+    setImageAdjustment(initialImageAdjustment)
     setImageError('')
   }
 
@@ -223,6 +270,9 @@ const PokemonCardGenerator = () => {
             onAddAbility={addAbility}
             onRemoveAbility={removeAbility}
             imageError={imageError}
+            imageAdjustment={imageAdjustment}
+            onImageAdjustment={handleImageAdjustment}
+            onResetImageAdjustment={resetImageAdjustment}
           />
         </section>
         
@@ -240,6 +290,7 @@ const PokemonCardGenerator = () => {
               ref={cardRef}
               cardData={cardData}
               imagePreview={imagePreview}
+              imageAdjustment={imageAdjustment}
             />
           </div>
           {/* ダウンロードボタン */}
