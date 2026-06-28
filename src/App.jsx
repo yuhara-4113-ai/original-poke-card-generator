@@ -14,7 +14,12 @@ function AppContent() {
       <header className="App-header">
         <div className="header-bar">
           <div className="wordmark">
-            <span className="wordmark-mark" aria-hidden="true">◆</span>
+            <img
+              className="wordmark-mark"
+              src={`${import.meta.env.BASE_URL}favicon.png`}
+              alt=""
+              aria-hidden="true"
+            />
             Original Card Studio
           </div>
           <LanguageSwitcher />

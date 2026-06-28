@@ -46,15 +46,13 @@
 }
 
 .wordmark-mark {
-  display: grid;
-  width: 30px;
-  height: 30px;
-  place-items: center;
-  color: #fff;
-  background: var(--accent);
-  border: 2px solid rgba(255, 255, 255, 0.72);
-  border-radius: 50%;
-  box-shadow: inset 0 0 0 5px var(--accent), inset 0 0 0 7px rgba(255, 255, 255, 0.66);
+  display: block;
+  width: 32px;
+  height: 32px;
+  flex: 0 0 32px;
+  border-radius: 7px;
+  object-fit: cover;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
 }
 
 .hero-copy {
