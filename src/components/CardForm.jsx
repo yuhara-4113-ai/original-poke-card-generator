@@ -10,7 +10,7 @@ const CardForm = ({
   onAddAbility, 
   onRemoveAbility,
   imageError,
-  imageAdjustment,
+  imageAdjustment = { x: 0, y: 0, zoom: 1 },
   onImageAdjustment,
   onResetImageAdjustment,
 }) => {

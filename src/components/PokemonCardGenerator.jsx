@@ -43,6 +43,7 @@ const PokemonCardGenerator = () => {
   const [imageAdjustment, setImageAdjustment] = useState(initialImageAdjustment)
   const [imageError, setImageError] = useState('')
   const cardRef = useRef(null)
+  const imageUploadIdRef = useRef(0)
 
   // サンプルカードのデータ - 現在の言語に基づいて動的に取得
   const getSampleCards = () => {
@@ -103,6 +104,7 @@ const PokemonCardGenerator = () => {
   const handleImageUpload = (event) => {
     const file = event.target.files[0]
     if (!file) return
+    const uploadId = ++imageUploadIdRef.current
     if (!file.type.startsWith('image/')) {
       setImageError(t('alerts.invalidImage'))
       event.target.value = ''
@@ -117,9 +119,11 @@ const PokemonCardGenerator = () => {
     setImageError('')
     const reader = new FileReader()
     reader.onload = (readerEvent) => {
+      if (imageUploadIdRef.current !== uploadId) return
       const imageUrl = readerEvent.target.result
       const image = new Image()
       image.onload = () => {
+        if (imageUploadIdRef.current !== uploadId) return
         setImagePreview(imageUrl)
         setImageAdjustment({
           ...initialImageAdjustment,
@@ -128,11 +132,18 @@ const PokemonCardGenerator = () => {
         })
         setCardData(prev => ({ ...prev, image: imageUrl }))
       }
-      image.onerror = () => setImageError(t('alerts.invalidImage'))
+      image.onerror = () => {
+        if (imageUploadIdRef.current !== uploadId) return
+        setImageError(t('alerts.invalidImage'))
+      }
       image.src = imageUrl
     }
-    reader.onerror = () => setImageError(t('alerts.invalidImage'))
+    reader.onerror = () => {
+      if (imageUploadIdRef.current !== uploadId) return
+      setImageError(t('alerts.invalidImage'))
+    }
     reader.readAsDataURL(file)
+    event.target.value = ''
   }
 
   // 入力フィールドの値変更処理
@@ -179,6 +190,7 @@ const PokemonCardGenerator = () => {
 
   // サンプルカードの読み込み処理
   const loadSampleCard = (sample) => {
+    imageUploadIdRef.current += 1
     setCardData({ ...sample, image: null })
     setImagePreview(null)
     setImageAdjustment(initialImageAdjustment)
@@ -187,6 +199,7 @@ const PokemonCardGenerator = () => {
 
   // カードリセット処理 - 言語に応じたデフォルト値に戻す
   const resetCard = () => {
+    imageUploadIdRef.current += 1
     setCardData({
       name: t('defaultCard.name'),
       hp: '100',
