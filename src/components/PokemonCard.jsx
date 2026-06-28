@@ -19,11 +19,11 @@ const PokemonCard = forwardRef(({ cardData, imagePreview, imageAdjustment }, ref
     getSvgElement: () => svgRef.current,
   }))
 
-  const updateCardStyle = (event) => {
+  const updateCardStyle = (clientX, clientY) => {
     const rect = containerRef.current?.getBoundingClientRect()
     if (!rect) return
-    const x = Math.max(0, Math.min(event.clientX - rect.left, rect.width))
-    const y = Math.max(0, Math.min(event.clientY - rect.top, rect.height))
+    const x = Math.max(0, Math.min(clientX - rect.left, rect.width))
+    const y = Math.max(0, Math.min(clientY - rect.top, rect.height))
     const pointerX = (x / rect.width) * 100
     const pointerY = (y / rect.height) * 100
 
@@ -36,22 +36,20 @@ const PokemonCard = forwardRef(({ cardData, imagePreview, imageAdjustment }, ref
     })
   }
 
-  const handlePointerDown = (event) => {
-    updateCardStyle(event)
-    if (event.pointerType === 'touch') {
-      event.currentTarget.setPointerCapture?.(event.pointerId)
-    }
-  }
-
-  const handlePointerEnd = (event) => {
-    if (event.currentTarget.hasPointerCapture?.(event.pointerId)) {
-      event.currentTarget.releasePointerCapture(event.pointerId)
-    }
+  const handlePointerInteraction = (event) => {
+    updateCardStyle(event.clientX, event.clientY)
   }
 
   const handlePointerLeave = (event) => {
-    if (event.pointerType !== 'touch') {
+    if (event.pointerType === 'mouse') {
       setCardStyle(initialStyle)
+    }
+  }
+
+  const handleTouchInteraction = (event) => {
+    const touch = event.touches[0]
+    if (touch) {
+      updateCardStyle(touch.clientX, touch.clientY)
     }
   }
 
@@ -60,11 +58,11 @@ const PokemonCard = forwardRef(({ cardData, imagePreview, imageAdjustment }, ref
       ref={containerRef}
       className={`card interactive ${cardData.type}`}
       style={cardStyle}
-      onPointerDown={handlePointerDown}
-      onPointerMove={updateCardStyle}
-      onPointerUp={handlePointerEnd}
-      onPointerCancel={handlePointerEnd}
+      onPointerDown={handlePointerInteraction}
+      onPointerMove={handlePointerInteraction}
       onPointerLeave={handlePointerLeave}
+      onTouchStart={handleTouchInteraction}
+      onTouchMove={handleTouchInteraction}
     >
       <div className="card__rotator">
         <CardArtwork

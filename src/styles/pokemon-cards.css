@@ -87,6 +87,6 @@
 
   .card__shine,
   .card__glare {
-    display: none;
+    transition: none;
   }
 }
