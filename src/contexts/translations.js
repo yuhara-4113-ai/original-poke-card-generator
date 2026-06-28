@@ -57,6 +57,11 @@ export const translations = {
     // ボタンテキスト
     uploadImage: 'Upload Image',
     changeImage: 'Change Image',
+    imageAdjustment: 'Image framing',
+    imagePositionX: 'Horizontal position',
+    imagePositionY: 'Vertical position',
+    imageZoom: 'Zoom',
+    resetImageAdjustment: 'Reset',
     addAbility: '+ Add Ability',
     removeAbility: 'Remove ability',
     downloadCard: 'Download high-resolution PNG',
@@ -195,6 +200,11 @@ export const translations = {
     // ボタンテキスト
     uploadImage: '画像をアップロード',
     changeImage: '画像を変更',
+    imageAdjustment: '画像の表示調整',
+    imagePositionX: '左右の位置',
+    imagePositionY: '上下の位置',
+    imageZoom: '拡大・縮小',
+    resetImageAdjustment: '調整をリセット',
     addAbility: '+ 技を追加',
     removeAbility: '技を削除',
     downloadCard: '高解像度PNGをダウンロード',

@@ -10,6 +10,9 @@ const CardForm = ({
   onAddAbility, 
   onRemoveAbility,
   imageError,
+  imageAdjustment,
+  onImageAdjustment,
+  onResetImageAdjustment,
 }) => {
   const fileInputRef = useRef(null)
   const { t } = useLanguage() // 翻訳機能を使用
@@ -92,7 +95,57 @@ const CardForm = ({
             hidden
           />
           <small>{t('recommendedImage')}</small>
-          {imageError && <small className="download-error" role="alert">{imageError}</small>}
+          {imageError && (
+            <div className="image-upload-error" role="alert">
+              <span aria-hidden="true">!</span>
+              {imageError}
+            </div>
+          )}
+          {cardData.image && (
+            <div className="image-adjustments">
+              <div className="image-adjustments-heading">
+                <strong>{t('imageAdjustment')}</strong>
+                <button type="button" onClick={onResetImageAdjustment}>
+                  {t('resetImageAdjustment')}
+                </button>
+              </div>
+              <label htmlFor="image-position-x">
+                <span>{t('imagePositionX')}</span>
+                <input
+                  id="image-position-x"
+                  type="range"
+                  min="-100"
+                  max="100"
+                  value={imageAdjustment.x}
+                  onChange={(event) => onImageAdjustment('x', event.target.value)}
+                />
+              </label>
+              <label htmlFor="image-position-y">
+                <span>{t('imagePositionY')}</span>
+                <input
+                  id="image-position-y"
+                  type="range"
+                  min="-100"
+                  max="100"
+                  value={imageAdjustment.y}
+                  onChange={(event) => onImageAdjustment('y', event.target.value)}
+                />
+              </label>
+              <label htmlFor="image-zoom">
+                <span>{t('imageZoom')}</span>
+                <input
+                  id="image-zoom"
+                  type="range"
+                  min="1"
+                  max="2.5"
+                  step="0.05"
+                  value={imageAdjustment.zoom}
+                  onChange={(event) => onImageAdjustment('zoom', event.target.value)}
+                />
+                <output htmlFor="image-zoom">{Math.round(imageAdjustment.zoom * 100)}%</output>
+              </label>
+            </div>
+          )}
         </div>
       </div>
 
