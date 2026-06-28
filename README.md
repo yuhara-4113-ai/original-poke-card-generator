@@ -16,6 +16,10 @@
 
 ![Original Card Studioのトップページ](docs/assets/app-overview.png)
 
+## Live Demo
+
+[Original Card Studioを開く](https://yuhara-4113-ai.github.io/original-poke-card-generator/)
+
 ## Features
 
 | | 機能 | 内容 |
@@ -102,6 +106,12 @@ npm run build    # 本番ビルド
 npm run preview  # ビルド結果の確認
 npm run lint     # ESLint
 ```
+
+## Deployment
+
+このサイトはGitHub Pagesで公開しています。`main`ブランチへのpush（Pull Requestのマージを含む）が行われると、GitHub Actionsがlintとproduction buildを実行し、成功した場合だけ自動的にデプロイします。
+
+初回のみ、リポジトリの **Settings → Pages → Build and deployment → Source** で **GitHub Actions** を選択してください。Actionsタブからワークフローを手動実行することもできます。
 
 ## License & Disclaimer
 
