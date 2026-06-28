@@ -111,7 +111,7 @@ const CardArtwork = ({ cardData, imagePreview, imageAdjustment, svgRef }) => {
           <rect x="10" y="10" width="640" height="901" rx="33" />
         </clipPath>
         <clipPath id="header-name-clip">
-          <rect x="48" y="80" width="410" height="36" />
+          <rect x="48" y="70" width="410" height="46" />
         </clipPath>
       </defs>
 
