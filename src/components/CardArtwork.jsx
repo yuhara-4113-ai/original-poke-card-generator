@@ -161,8 +161,8 @@ const CardArtwork = ({ cardData, imagePreview, imageAdjustment, svgRef }) => {
             <text x="330" y="349" textAnchor="middle" fill="#fff" fontFamily="Arial, Helvetica, sans-serif" fontSize="19" fontWeight="700" letterSpacing="0.5">ADD YOUR ARTWORK</text>
           </g>
         )}
-        <rect x="47" y="116" width="566" height="365" fill="url(#art-shade)" />
-        <rect x="47" y="116" width="566" height="365" fill="url(#soft-light)" />
+        <rect data-export-effect="artwork-lighting" x="47" y="116" width="566" height="365" fill="url(#art-shade)" />
+        <rect data-export-effect="artwork-lighting" x="47" y="116" width="566" height="365" fill="url(#soft-light)" />
       </g>
       <rect x="47" y="116" width="566" height="365" rx="14" fill="none" stroke={theme.dark} strokeWidth="6" filter="url(#inner-shadow)" />
       <rect x="62" y="442" width="116" height="26" rx="13" fill={theme.dark} fillOpacity="0.9" />

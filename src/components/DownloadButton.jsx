@@ -90,6 +90,9 @@ const svgToPng = async (sourceSvg, includeFoil, foilPosition) => {
   svg.removeAttribute('class')
   svg.removeAttribute('role')
   svg.removeAttribute('aria-label')
+  if (!includeFoil) {
+    svg.querySelectorAll('[data-export-effect]').forEach((effect) => effect.remove())
+  }
   await inlineExternalImages(svg)
 
   const svgSource = new XMLSerializer().serializeToString(svg)
