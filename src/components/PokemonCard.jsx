@@ -9,7 +9,7 @@ const initialStyle = {
   '--rotate-y': '0deg',
 }
 
-const PokemonCard = forwardRef(({ cardData, imagePreview, imageAdjustment }, ref) => {
+const PokemonCard = forwardRef(({ cardData, layoutMode, imagePreview, imageAdjustment }, ref) => {
   const containerRef = useRef(null)
   const svgRef = useRef(null)
   const [cardStyle, setCardStyle] = useState(initialStyle)
@@ -71,6 +71,7 @@ const PokemonCard = forwardRef(({ cardData, imagePreview, imageAdjustment }, ref
       <div className="card__rotator">
         <CardArtwork
           cardData={cardData}
+          layoutMode={layoutMode}
           imagePreview={imagePreview}
           imageAdjustment={imageAdjustment}
           svgRef={svgRef}

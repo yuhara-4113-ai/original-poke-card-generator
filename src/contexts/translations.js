@@ -24,6 +24,11 @@ export const translations = {
 
     // フォームラベル
     pokemonName: "Pokemon Name",
+    cardLayout: "Card Layout",
+    standardLayout: "Standard",
+    standardLayoutDescription: "Artwork window with all card details",
+    fullArtLayout: "Full Art",
+    fullArtLayoutDescription: "Photo across the card with a premium zebra frame",
     hp: "HP",
     type: "Type",
     pokemonImage: "Pokemon Image",
@@ -181,6 +186,11 @@ export const translations = {
 
     // フォームラベル
     pokemonName: "ポケモン名",
+    cardLayout: "カードレイアウト",
+    standardLayout: "通常",
+    standardLayoutDescription: "画像枠とすべてのカード情報を表示",
+    fullArtLayout: "全面アート",
+    fullArtLayoutDescription: "カード全面に写真を表示する高級感のあるゼブラフレーム",
     hp: "HP",
     type: "タイプ",
     pokemonImage: "ポケモン画像",

@@ -141,12 +141,84 @@
   box-shadow: 0 8px 24px rgba(66, 56, 42, 0.055);
 }
 
-.form-group:first-child,
-.form-group:nth-child(3),
-.form-group:nth-child(4),
-.form-group:nth-child(5),
-.form-group:last-child {
+.card-layout-group,
+.pokemon-name-group,
+.image-upload-group,
+.abilities-form-group,
+.card-details-form-group,
+.description-form-group {
   grid-column: 1 / -1;
+}
+
+.card-layout-group {
+  min-width: 0;
+  margin: 0;
+}
+
+.card-layout-group legend {
+  padding: 0;
+}
+
+.layout-options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.layout-option {
+  position: relative;
+  min-width: 0;
+  cursor: pointer;
+}
+
+.form-group .layout-option input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  min-height: 0;
+  padding: 0;
+  opacity: 0;
+  border: 0;
+}
+
+.layout-option > span {
+  display: flex;
+  min-height: 72px;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+  padding: 12px 14px;
+  color: #48535d;
+  background: #faf8f3;
+  border: 1px solid #cbc6bb;
+  border-radius: 11px;
+  transition: border-color 150ms ease, box-shadow 150ms ease, background 150ms ease;
+}
+
+.layout-option strong {
+  color: var(--ink);
+  font-size: 0.88rem;
+}
+
+.layout-option small {
+  color: var(--muted);
+  font-size: 0.72rem;
+  line-height: 1.35;
+}
+
+.layout-option:hover > span {
+  border-color: #a9a297;
+}
+
+.layout-option input:checked + span {
+  background: #fff7f3;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(157, 56, 42, 0.11);
+}
+
+.layout-option input:focus-visible + span {
+  outline: 3px solid color-mix(in srgb, var(--focus) 70%, white);
+  outline-offset: 2px;
 }
 
 .form-row {
@@ -586,17 +658,19 @@
   }
 
   .card-form,
-  .form-row {
+  .form-row,
+  .layout-options {
     grid-template-columns: 1fr;
   }
 
   .form-group,
   .form-row,
-  .form-group:first-child,
-  .form-group:nth-child(3),
-  .form-group:nth-child(4),
-  .form-group:nth-child(5),
-  .form-group:last-child {
+  .card-layout-group,
+  .pokemon-name-group,
+  .image-upload-group,
+  .abilities-form-group,
+  .card-details-form-group,
+  .description-form-group {
     grid-column: 1;
   }
 

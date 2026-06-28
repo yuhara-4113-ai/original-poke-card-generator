@@ -41,6 +41,7 @@ const PokemonCardGenerator = () => {
 
   const [imagePreview, setImagePreview] = useState(null)
   const [imageAdjustment, setImageAdjustment] = useState(initialImageAdjustment)
+  const [layoutMode, setLayoutMode] = useState('standard')
   const [imageError, setImageError] = useState('')
   const cardRef = useRef(null)
   const imageUploadIdRef = useRef(0)
@@ -222,6 +223,7 @@ const PokemonCardGenerator = () => {
     })
     setImagePreview(null)
     setImageAdjustment(initialImageAdjustment)
+    setLayoutMode('standard')
     setImageError('')
   }
 
@@ -264,6 +266,8 @@ const PokemonCardGenerator = () => {
           {/* カード入力フォーム */}
           <CardForm
             cardData={cardData}
+            layoutMode={layoutMode}
+            onLayoutModeChange={setLayoutMode}
             onInputChange={handleInputChange}
             onImageUpload={handleImageUpload}
             onAbilityChange={handleAbilityChange}
@@ -289,6 +293,7 @@ const PokemonCardGenerator = () => {
             <PokemonCard 
               ref={cardRef}
               cardData={cardData}
+              layoutMode={layoutMode}
               imagePreview={imagePreview}
               imageAdjustment={imageAdjustment}
             />

@@ -4,6 +4,8 @@ import { useLanguage } from '../contexts/useLanguage'
 // カード入力フォームコンポーネント - 各入力項目を管理
 const CardForm = ({ 
   cardData, 
+  layoutMode,
+  onLayoutModeChange,
   onInputChange, 
   onImageUpload, 
   onAbilityChange, 
@@ -31,8 +33,40 @@ const CardForm = ({
 
   return (
     <div className="card-form">
+      <fieldset className="form-group card-layout-group">
+        <legend className="group-label">{t('cardLayout')}</legend>
+        <div className="layout-options">
+          <label className="layout-option">
+            <input
+              type="radio"
+              name="card-layout"
+              value="standard"
+              checked={layoutMode === 'standard'}
+              onChange={(event) => onLayoutModeChange(event.target.value)}
+            />
+            <span>
+              <strong>{t('standardLayout')}</strong>
+              <small>{t('standardLayoutDescription')}</small>
+            </span>
+          </label>
+          <label className="layout-option">
+            <input
+              type="radio"
+              name="card-layout"
+              value="fullArt"
+              checked={layoutMode === 'fullArt'}
+              onChange={(event) => onLayoutModeChange(event.target.value)}
+            />
+            <span>
+              <strong>{t('fullArtLayout')}</strong>
+              <small>{t('fullArtLayoutDescription')}</small>
+            </span>
+          </label>
+        </div>
+      </fieldset>
+
       {/* ポケモン名入力 */}
-      <div className="form-group">
+      <div className="form-group pokemon-name-group">
         <label htmlFor="pokemon-name">{t('pokemonName')}</label>
         <input
           id="pokemon-name"
@@ -150,7 +184,7 @@ const CardForm = ({
       </div>
 
       {/* 技（アビリティ）セクション - エネルギーコストとダメージ対応 */}
-      <div className="form-group">
+      <div className="form-group abilities-form-group">
         <span className="group-label">{t('abilities')}</span>
         <div className="abilities-section">
           {cardData.abilities.map((ability, index) => (
@@ -230,7 +264,7 @@ const CardForm = ({
       </div>
 
       {/* カード詳細情報セクション - にげるコスト */}
-      <div className="form-group">
+      <div className="form-group card-details-form-group">
         <span className="group-label">{t('cardDetails')}</span>
         <div className="card-details-section">
           <div className="detail-row">
@@ -279,7 +313,7 @@ const CardForm = ({
       </div>
 
       {/* ポケモンの説明入力 */}
-      <div className="form-group">
+      <div className="form-group description-form-group">
         <label htmlFor="pokemon-description">{t('description')}</label>
         <textarea
           id="pokemon-description"
