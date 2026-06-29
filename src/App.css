@@ -62,11 +62,36 @@
   padding-top: 12px;
 }
 
+.hero-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  margin-bottom: 4px;
+}
+
+.environment-badge {
+  display: inline-flex;
+  min-height: 24px;
+  align-items: center;
+  padding: 3px 10px;
+  color: #1f2933;
+  background: #f3c85b;
+  border: 1px solid #ffe6a4;
+  border-radius: 999px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.22);
+  font-size: 0.68rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
 .hero-kicker {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  margin: 0 0 4px;
+  margin: 0;
   color: #efb9a9;
   font-size: 0.74rem;
   font-weight: 800;

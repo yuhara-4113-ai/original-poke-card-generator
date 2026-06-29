@@ -143,28 +143,10 @@ const CardForm = ({
                   {t('resetImageAdjustment')}
                 </button>
               </div>
-              <label htmlFor="image-position-x">
-                <span>{t('imagePositionX')}</span>
-                <input
-                  id="image-position-x"
-                  type="range"
-                  min="-100"
-                  max="100"
-                  value={imageAdjustment.x}
-                  onChange={(event) => onImageAdjustment('x', event.target.value)}
-                />
-              </label>
-              <label htmlFor="image-position-y">
-                <span>{t('imagePositionY')}</span>
-                <input
-                  id="image-position-y"
-                  type="range"
-                  min="-100"
-                  max="100"
-                  value={imageAdjustment.y}
-                  onChange={(event) => onImageAdjustment('y', event.target.value)}
-                />
-              </label>
+              <p className="image-drag-instruction">
+                <span aria-hidden="true">↔</span>
+                {t('directImageAdjustmentHelp')}
+              </p>
               <label htmlFor="image-zoom">
                 <span>{t('imageZoom')}</span>
                 <input

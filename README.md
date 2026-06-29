@@ -236,6 +236,13 @@ npm run lint     # ESLint
 
 このサイトはGitHub Pagesで公開しています。`main`ブランチへのpush（Pull Requestのマージを含む）が行われると、GitHub Actionsがlintとproduction buildを実行し、成功した場合だけ自動的にデプロイします。
 
+`codex/**`ブランチへのpushでは、`main`の内容を本番URLに維持したまま、対象ブランチを次の検証URLへデプロイします。
+
+- 本番: [https://yuhara-4113-ai.github.io/original-poke-card-generator/](https://yuhara-4113-ai.github.io/original-poke-card-generator/)
+- 検証: [https://yuhara-4113-ai.github.io/original-poke-card-generator/staging/](https://yuhara-4113-ai.github.io/original-poke-card-generator/staging/)
+
+検証環境は1つです。複数の`codex/**`ブランチをpushした場合、最後に完了したデプロイ内容で上書きされます。`main`へマージすると本番ワークフローが本番だけを再デプロイし、検証URLは削除されます。
+
 初回のみ、リポジトリの **Settings → Pages → Build and deployment → Source** で **GitHub Actions** を選択してください。Actionsタブからワークフローを手動実行することもできます。
 
 ## License & Disclaimer

@@ -1,0 +1,79 @@
+name: Deploy staging to GitHub Pages
+
+on:
+  push:
+    branches:
+      - 'codex/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    environment:
+      name: staging
+      url: https://yuhara-4113-ai.github.io/original-poke-card-generator/staging/
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout staging source
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+        with:
+          path: staging-source
+
+      - name: Checkout production source
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+        with:
+          ref: main
+          path: production-source
+
+      - name: Set up Node.js
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: staging-source/package-lock.json
+
+      - name: Build production from main
+        working-directory: production-source
+        run: |
+          npm ci
+          npm run build
+
+      - name: Validate and build staging
+        working-directory: staging-source
+        env:
+          VITE_APP_ENV: staging
+        run: |
+          npm ci
+          npm run lint
+          npm run build -- --base /original-poke-card-generator/staging/
+
+      - name: Assemble Pages artifact
+        run: |
+          mkdir -p site/staging
+          cp -R production-source/dist/. site/
+          cp -R staging-source/dist/. site/staging/
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5
+        with:
+          path: site
+
+  deploy:
+    needs: build
+    environment:
+      name: github-pages
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy staging to GitHub Pages
+        uses: actions/deploy-pages@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128 # v5

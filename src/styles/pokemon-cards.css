@@ -72,6 +72,49 @@
   border-radius: inherit;
 }
 
+.image-drag-surface {
+  position: absolute;
+  z-index: 5;
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior: contain;
+  touch-action: none;
+}
+
+.image-drag-surface--standard {
+  top: 12.92%;
+  left: 7.12%;
+  width: 85.76%;
+  height: 38.65%;
+  border-radius: 1.3%;
+}
+
+.image-drag-surface--fullArt {
+  top: 3.26%;
+  left: 4.55%;
+  width: 90.91%;
+  height: 93.49%;
+  border-radius: 4.3%;
+}
+
+.card.is-dragging-image .image-drag-surface {
+  cursor: grabbing;
+}
+
+.card.is-dragging-image .card__rotator {
+  transform: none;
+  transition: none;
+}
+
+.card.is-image-adjustable:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 5px;
+  border-radius: 5%;
+}
+
 .card__texture,
 .card__shine,
 .card__glare {
