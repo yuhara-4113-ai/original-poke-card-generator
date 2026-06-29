@@ -11,6 +11,9 @@
 
 ## Pull request review workflow
 
-- After creating or updating a pull request, check the latest Gemini Code Assist review before reporting the pull request as ready, merging it, or deploying it to production.
+- This Gemini-specific workflow expires on 2026-07-17. On or after that date, remove this section before continuing because the consumer review service is scheduled to be unavailable.
+- After creating a pull request or pushing a code change, post `/gemini review` on the pull request and record the current head commit and request time. Documentation-only changes do not require another review.
+- Poll for a Gemini Code Assist review submitted after the request time for up to five minutes. Treat the review as complete only when it covers the recorded head commit and all actionable comments have been evaluated.
+- If Gemini does not respond within five minutes, report the timeout and treat Gemini review as unavailable; do not imply that Gemini approved or completed the review.
 - Evaluate each Gemini comment against the repository's actual data flow and component contracts. Apply valid actionable feedback, and document why any rejected suggestion is unnecessary or harmful.
-- After pushing review fixes, check Gemini again for follow-up comments. Repeat until there are no unresolved actionable comments, unless Gemini review is unavailable or the user explicitly asks to proceed without it.
+- After pushing review fixes, request another Gemini review and repeat this workflow until there are no unresolved actionable comments, unless Gemini review is unavailable or the user explicitly asks to proceed without it.
