@@ -181,7 +181,7 @@ const FullArtCard = ({ cardData, imagePreview, imageAdjustment, svgRef }) => {
       <rect x="45" y="45" width="570" height="103" rx="23" fill="url(#full-art-header)" stroke="#dce3e1" strokeWidth="2" filter="url(#full-art-panel-shadow)" />
       <rect x="61" y="58" width="103" height="24" rx="12" fill="#202627" fillOpacity="0.88" />
       <text x="112.5" y="75" textAnchor="middle" fill="#fff" fontFamily="Arial, Helvetica, sans-serif" fontSize="11" fontWeight="800" letterSpacing="1.3">ORIGINAL</text>
-      <text x="61" y="123" clipPath="url(#full-art-name-clip)" fill="#111516" fontFamily="Arial, Helvetica, sans-serif" fontSize={nameSize} fontWeight="850">
+      <text x="61" y="113" clipPath="url(#full-art-name-clip)" fill="#111516" fontFamily="Arial, Helvetica, sans-serif" fontSize={nameSize} fontWeight="850">
         {cardData.name || 'Untitled'}
       </text>
       <text x="466" y="107" fill="#303637" fontFamily="Arial, Helvetica, sans-serif" fontSize="15" fontWeight="800">HP</text>
@@ -364,7 +364,7 @@ const CardArtwork = ({ cardData, layoutMode, imagePreview, imageAdjustment, svgR
 
       <rect x="48" y="48" width="86" height="19" rx="9.5" fill={theme.dark} />
       <text x="91" y="61" textAnchor="middle" fill="#fff" fontFamily="Arial, Helvetica, sans-serif" fontSize="9.5" fontWeight="800" letterSpacing="1.2">BASIC</text>
-      <text x="51" y="105" clipPath="url(#header-name-clip)" fill="#111" fontFamily="Arial, Helvetica, sans-serif" fontSize={nameSize} fontWeight="850" letterSpacing="-0.5">
+      <text x="51" y="97" clipPath="url(#header-name-clip)" fill="#111" fontFamily="Arial, Helvetica, sans-serif" fontSize={nameSize} fontWeight="850" letterSpacing="-0.5">
         {cardData.name || 'Untitled'}
       </text>
       <text x="472" y="94" fill={theme.dark} fontFamily="Arial, Helvetica, sans-serif" fontSize="13" fontWeight="850">HP</text>
