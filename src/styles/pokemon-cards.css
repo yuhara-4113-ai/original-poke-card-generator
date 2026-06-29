@@ -72,6 +72,27 @@
   border-radius: inherit;
 }
 
+.image-drag-handle {
+  cursor: grab;
+  outline: none;
+  touch-action: none;
+}
+
+.card.is-dragging-image .image-drag-handle {
+  cursor: grabbing;
+}
+
+.card.is-dragging-image .card__rotator {
+  transform: none;
+  transition: none;
+}
+
+.card.is-image-adjustable:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 5px;
+  border-radius: 5%;
+}
+
 .card__texture,
 .card__shine,
 .card__glare {

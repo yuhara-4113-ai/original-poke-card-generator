@@ -156,6 +156,10 @@ const PokemonCardGenerator = () => {
     setImageAdjustment(prev => ({ ...prev, [field]: Number(value) }))
   }
 
+  const handleImageAdjustmentChange = (changes) => {
+    setImageAdjustment(prev => ({ ...prev, ...changes }))
+  }
+
   const resetImageAdjustment = () => {
     setImageAdjustment(prev => ({
       ...initialImageAdjustment,
@@ -296,6 +300,8 @@ const PokemonCardGenerator = () => {
               layoutMode={layoutMode}
               imagePreview={imagePreview}
               imageAdjustment={imageAdjustment}
+              imageDragLabel={t('directImageAdjustmentLabel')}
+              onImageAdjustmentChange={handleImageAdjustmentChange}
             />
           </div>
           {/* ダウンロードボタン */}

@@ -1,6 +1,14 @@
 import { forwardRef, useImperativeHandle, useRef, useState } from 'react'
 import CardArtwork from './CardArtwork'
 
+const CARD_WIDTH = 660
+const IMAGE_BOUNDS = {
+  standard: { width: 566, height: 356 },
+  fullArt: { width: 600, height: 861 },
+}
+
+const clamp = (value, min, max) => Math.min(max, Math.max(min, value))
+
 const initialStyle = {
   '--pointer-x': '50%',
   '--pointer-y': '50%',
@@ -11,10 +19,19 @@ const initialStyle = {
   '--rotate-y': '0deg',
 }
 
-const PokemonCard = forwardRef(({ cardData, layoutMode, imagePreview, imageAdjustment }, ref) => {
+const PokemonCard = forwardRef(({
+  cardData,
+  layoutMode,
+  imagePreview,
+  imageAdjustment,
+  imageDragLabel,
+  onImageAdjustmentChange,
+}, ref) => {
   const containerRef = useRef(null)
   const svgRef = useRef(null)
+  const dragStateRef = useRef(null)
   const [cardStyle, setCardStyle] = useState(initialStyle)
+  const [isDraggingImage, setIsDraggingImage] = useState(false)
 
   useImperativeHandle(ref, () => ({
     getElement: () => containerRef.current,
@@ -49,7 +66,80 @@ const PokemonCard = forwardRef(({ cardData, layoutMode, imagePreview, imageAdjus
   }
 
   const handlePointerInteraction = (event) => {
+    const dragState = dragStateRef.current
+    if (dragState && event.pointerId === dragState.pointerId) {
+      const rect = containerRef.current?.getBoundingClientRect()
+      if (!rect) return
+
+      const bounds = IMAGE_BOUNDS[layoutMode]
+      const naturalWidth = imageAdjustment.width || bounds.width
+      const naturalHeight = imageAdjustment.height || bounds.height
+      const zoom = clamp(imageAdjustment.zoom || 1, 1, 2.5)
+      const coverScale = Math.max(bounds.width / naturalWidth, bounds.height / naturalHeight)
+      const overflowX = Math.max(0, naturalWidth * coverScale * zoom - bounds.width)
+      const overflowY = Math.max(0, naturalHeight * coverScale * zoom - bounds.height)
+      const svgScale = CARD_WIDTH / rect.width
+      const deltaX = (event.clientX - dragState.clientX) * svgScale
+      const deltaY = (event.clientY - dragState.clientY) * svgScale
+
+      onImageAdjustmentChange({
+        x: overflowX > 0
+          ? clamp(dragState.x + (deltaX * 200) / overflowX, -100, 100)
+          : dragState.x,
+        y: overflowY > 0
+          ? clamp(dragState.y + (deltaY * 200) / overflowY, -100, 100)
+          : dragState.y,
+      })
+      return
+    }
+
     updateCardStyle(event.clientX, event.clientY)
+  }
+
+  const handlePointerDown = (event) => {
+    const isDragHandle = event.target.closest?.('[data-image-drag-handle]')
+    if (isDragHandle && imagePreview && onImageAdjustmentChange) {
+      event.preventDefault()
+      event.currentTarget.setPointerCapture(event.pointerId)
+      dragStateRef.current = {
+        pointerId: event.pointerId,
+        clientX: event.clientX,
+        clientY: event.clientY,
+        x: imageAdjustment.x,
+        y: imageAdjustment.y,
+      }
+      setCardStyle(initialStyle)
+      setIsDraggingImage(true)
+      return
+    }
+
+    handlePointerInteraction(event)
+  }
+
+  const finishImageDrag = (event) => {
+    if (dragStateRef.current?.pointerId !== event.pointerId) return
+    dragStateRef.current = null
+    setIsDraggingImage(false)
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId)
+    }
+  }
+
+  const handleImageKeyDown = (event) => {
+    if (!imagePreview || !onImageAdjustmentChange) return
+
+    const step = event.shiftKey ? 1 : 5
+    const changes = {
+      ArrowLeft: { x: clamp(imageAdjustment.x - step, -100, 100) },
+      ArrowRight: { x: clamp(imageAdjustment.x + step, -100, 100) },
+      ArrowUp: { y: clamp(imageAdjustment.y - step, -100, 100) },
+      ArrowDown: { y: clamp(imageAdjustment.y + step, -100, 100) },
+    }
+    const change = changes[event.key]
+    if (!change) return
+
+    event.preventDefault()
+    onImageAdjustmentChange(change)
   }
 
   const handlePointerLeave = (event) => {
@@ -58,25 +148,23 @@ const PokemonCard = forwardRef(({ cardData, layoutMode, imagePreview, imageAdjus
     }
   }
 
-  const handleTouchInteraction = (event) => {
-    const touch = event.touches[0]
-    if (touch) {
-      updateCardStyle(touch.clientX, touch.clientY)
-    }
-  }
-
   return (
     <div
       ref={containerRef}
-      className={`card interactive ${cardData.type}`}
+      className={`card interactive ${cardData.type}${imagePreview ? ' is-image-adjustable' : ''}${isDraggingImage ? ' is-dragging-image' : ''}`}
+      role={imagePreview ? 'group' : undefined}
+      tabIndex={imagePreview ? 0 : undefined}
+      aria-label={imagePreview ? imageDragLabel : undefined}
       data-rarity={cardData.rarity}
       data-layout={layoutMode}
       style={cardStyle}
-      onPointerDown={handlePointerInteraction}
+      onPointerDown={handlePointerDown}
       onPointerMove={handlePointerInteraction}
+      onPointerUp={finishImageDrag}
+      onPointerCancel={finishImageDrag}
+      onLostPointerCapture={finishImageDrag}
       onPointerLeave={handlePointerLeave}
-      onTouchStart={handleTouchInteraction}
-      onTouchMove={handleTouchInteraction}
+      onKeyDown={handleImageKeyDown}
     >
       <div className="card__rotator">
         <CardArtwork

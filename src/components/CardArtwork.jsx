@@ -50,6 +50,20 @@ const TextLines = ({ lines, x, y, lineHeight, ...props }) => (
   </text>
 )
 
+const ImageDragHandle = ({ bounds }) => (
+  <rect
+    className="image-drag-handle"
+    data-image-drag-handle="true"
+    x={bounds.x}
+    y={bounds.y}
+    width={bounds.width}
+    height={bounds.height}
+    rx={bounds.rx}
+    fill="transparent"
+    pointerEvents="all"
+  />
+)
+
 const getCoverLayout = (imageAdjustment, bounds) => {
   const naturalWidth = imageAdjustment?.width || bounds.width
   const naturalHeight = imageAdjustment?.height || bounds.height
@@ -240,6 +254,11 @@ const FullArtCard = ({ cardData, imagePreview, imageAdjustment, svgRef }) => {
       <rect x="30" y="30" width="600" height="861" rx="25" fill="none" stroke="#090c0d" strokeWidth="5" />
       <rect x="25" y="25" width="610" height="871" rx="27" fill="none" stroke="#d6c8a8" strokeOpacity="0.78" strokeWidth="2" />
       <rect x="12" y="12" width="636" height="897" rx="32" fill="none" stroke="#fffaf0" strokeOpacity="0.82" strokeWidth="2" />
+      {imagePreview && (
+        <ImageDragHandle
+          bounds={{ x: FULL_ART_X, y: FULL_ART_Y, width: FULL_ART_WIDTH, height: FULL_ART_HEIGHT, rx: 26 }}
+        />
+      )}
     </svg>
   )
 }
@@ -473,6 +492,11 @@ const CardArtwork = ({ cardData, layoutMode, imagePreview, imageAdjustment, svgR
         {raritySymbols[cardData.rarity] || raritySymbols.common}
       </text>
       <rect x="12" y="12" width="636" height="897" rx="32" fill="none" stroke="#fff8d5" strokeOpacity="0.72" strokeWidth="2" />
+      {imagePreview && (
+        <ImageDragHandle
+          bounds={{ x: ART_X, y: ART_Y, width: ART_WIDTH, height: ART_HEIGHT, rx: 8 }}
+        />
+      )}
     </svg>
   )
 }
