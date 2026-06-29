@@ -3,7 +3,7 @@ import { getTypeIcon, getTypeTheme } from './cardTheme'
 const CARD_WIDTH = 660
 const CARD_HEIGHT = 921
 const ART_X = 47
-const ART_Y = 116
+const ART_Y = 119
 const ART_WIDTH = 566
 const ART_HEIGHT = 356
 const FULL_ART_X = 30
@@ -181,14 +181,14 @@ const FullArtCard = ({ cardData, imagePreview, imageAdjustment, svgRef }) => {
       <rect x="45" y="45" width="570" height="103" rx="23" fill="url(#full-art-header)" stroke="#dce3e1" strokeWidth="2" filter="url(#full-art-panel-shadow)" />
       <rect x="61" y="58" width="103" height="24" rx="12" fill="#202627" fillOpacity="0.88" />
       <text x="112.5" y="75" textAnchor="middle" fill="#fff" fontFamily="Arial, Helvetica, sans-serif" fontSize="11" fontWeight="800" letterSpacing="1.3">ORIGINAL</text>
-      <text x="61" y="113" clipPath="url(#full-art-name-clip)" fill="#111516" fontFamily="Arial, Helvetica, sans-serif" fontSize={nameSize} fontWeight="850">
+      <text x="61" y="116" clipPath="url(#full-art-name-clip)" fill="#111516" fontFamily="Arial, Helvetica, sans-serif" fontSize={nameSize} fontWeight="850">
         {cardData.name || 'Untitled'}
       </text>
-      <text x="466" y="107" fill="#303637" fontFamily="Arial, Helvetica, sans-serif" fontSize="15" fontWeight="800">HP</text>
-      <text x="548" y="113" textAnchor="end" fill="#111516" fontFamily="Arial, Helvetica, sans-serif" fontSize="35" fontWeight="850">
+      <text x="466" y="110" fill="#303637" fontFamily="Arial, Helvetica, sans-serif" fontSize="15" fontWeight="800">HP</text>
+      <text x="548" y="116" textAnchor="end" fill="#111516" fontFamily="Arial, Helvetica, sans-serif" fontSize="35" fontWeight="850">
         {cardData.hp || '—'}
       </text>
-      <image href={typeIcon} xlinkHref={typeIcon} x="556" y="72" width="48" height="48" />
+      <image href={typeIcon} xlinkHref={typeIcon} x="556" y="75" width="48" height="48" />
 
       {abilities.map((ability, index) => {
         const y = abilityStartY + index * 101
@@ -334,7 +334,7 @@ const CardArtwork = ({ cardData, layoutMode, imagePreview, imageAdjustment, svgR
           <feDropShadow dx="0" dy="2" stdDeviation="3" floodColor={theme.dark} floodOpacity="0.32" />
         </filter>
         <clipPath id="art-clip">
-          <rect x="47" y="116" width="566" height="356" rx="8" />
+          <rect x="47" y="119" width="566" height="356" rx="8" />
         </clipPath>
         <clipPath id="card-clip">
           <rect x="10" y="10" width="640" height="901" rx="33" />
@@ -364,7 +364,7 @@ const CardArtwork = ({ cardData, layoutMode, imagePreview, imageAdjustment, svgR
 
       <rect x="48" y="48" width="86" height="19" rx="9.5" fill={theme.dark} />
       <text x="91" y="61" textAnchor="middle" fill="#fff" fontFamily="Arial, Helvetica, sans-serif" fontSize="9.5" fontWeight="800" letterSpacing="1.2">BASIC</text>
-      <text x="51" y="97" clipPath="url(#header-name-clip)" fill="#111" fontFamily="Arial, Helvetica, sans-serif" fontSize={nameSize} fontWeight="850" letterSpacing="-0.5">
+      <text x="51" y="100" clipPath="url(#header-name-clip)" fill="#111" fontFamily="Arial, Helvetica, sans-serif" fontSize={nameSize} fontWeight="850" letterSpacing="-0.5">
         {cardData.name || 'Untitled'}
       </text>
       <text x="472" y="94" fill={theme.dark} fontFamily="Arial, Helvetica, sans-serif" fontSize="13" fontWeight="850">HP</text>
@@ -374,7 +374,7 @@ const CardArtwork = ({ cardData, layoutMode, imagePreview, imageAdjustment, svgR
       <image href={typeIcon} xlinkHref={typeIcon} x="566" y="57" width="46" height="46" />
 
       <g clipPath="url(#art-clip)">
-        <rect x="47" y="116" width="566" height="356" fill="url(#art-placeholder)" />
+        <rect x="47" y="119" width="566" height="356" fill="url(#art-placeholder)" />
         {imagePreview ? (
           <image
             href={imagePreview}
@@ -387,29 +387,29 @@ const CardArtwork = ({ cardData, layoutMode, imagePreview, imageAdjustment, svgR
           />
         ) : (
           <g>
-            <circle cx="330" cy="275" r="104" fill="#fff" fillOpacity="0.16" />
-            <circle cx="330" cy="275" r="65" fill="#fff" fillOpacity="0.18" stroke="#fff" strokeOpacity="0.45" strokeWidth="3" />
-            <path d="M292 289l42-54 31 40 21-24 42 55H272z" fill="#fff" fillOpacity="0.82" />
-            <circle cx="302" cy="244" r="11" fill={theme.primary} />
-            <text x="330" y="349" textAnchor="middle" fill="#fff" fontFamily="Arial, Helvetica, sans-serif" fontSize="19" fontWeight="700" letterSpacing="0.5">ADD YOUR ARTWORK</text>
+            <circle cx="330" cy="278" r="104" fill="#fff" fillOpacity="0.16" />
+            <circle cx="330" cy="278" r="65" fill="#fff" fillOpacity="0.18" stroke="#fff" strokeOpacity="0.45" strokeWidth="3" />
+            <path d="M292 292l42-54 31 40 21-24 42 55H272z" fill="#fff" fillOpacity="0.82" />
+            <circle cx="302" cy="247" r="11" fill={theme.primary} />
+            <text x="330" y="352" textAnchor="middle" fill="#fff" fontFamily="Arial, Helvetica, sans-serif" fontSize="19" fontWeight="700" letterSpacing="0.5">ADD YOUR ARTWORK</text>
           </g>
         )}
-        <rect data-export-effect="artwork-lighting" x="47" y="116" width="566" height="356" fill="url(#art-shade)" />
-        <rect data-export-effect="artwork-lighting" x="47" y="116" width="566" height="356" fill="url(#soft-light)" />
+        <rect data-export-effect="artwork-lighting" x="47" y="119" width="566" height="356" fill="url(#art-shade)" />
+        <rect data-export-effect="artwork-lighting" x="47" y="119" width="566" height="356" fill="url(#soft-light)" />
       </g>
-      <rect x="44" y="113" width="572" height="362" rx="10" fill="none" stroke="#5b4318" strokeWidth="7" filter="url(#inner-shadow)" />
-      <rect x="49" y="118" width="562" height="352" rx="5" fill="none" stroke="#fff1a7" strokeOpacity="0.74" strokeWidth="2" />
-      <path d="M59 477H601L586 505H74Z" fill={theme.dark} />
-      <text x="330" y="496" textAnchor="middle" fill="#fff" fontFamily="Arial, Helvetica, sans-serif" fontSize="11.5" fontWeight="750" letterSpacing="0.45">
+      <rect x="44" y="116" width="572" height="362" rx="10" fill="none" stroke="#5b4318" strokeWidth="7" filter="url(#inner-shadow)" />
+      <rect x="49" y="121" width="562" height="352" rx="5" fill="none" stroke="#fff1a7" strokeOpacity="0.74" strokeWidth="2" />
+      <path d="M59 480H601L586 508H74Z" fill={theme.dark} />
+      <text x="330" y="499" textAnchor="middle" fill="#fff" fontFamily="Arial, Helvetica, sans-serif" fontSize="11.5" fontWeight="750" letterSpacing="0.45">
         NO. 001  ORIGINAL CREATURE  ·  HT: 1.2 m  ·  WT: 24.0 kg
       </text>
 
-      <rect x="48" y="516" width="564" height="224" rx="4" fill="#fff" fillOpacity="0.28" stroke={theme.dark} strokeOpacity="0.22" />
+      <rect x="48" y="519" width="564" height="221" rx="4" fill="#fff" fillOpacity="0.28" stroke={theme.dark} strokeOpacity="0.22" />
       {abilities.length === 0 ? (
         <text x="330" y="630" textAnchor="middle" fill={theme.dark} fillOpacity="0.6" fontFamily="Arial, Helvetica, sans-serif" fontSize="18">Add an ability to complete the card</text>
       ) : abilities.map((ability, index) => {
-        const abilityRowHeight = Math.min(74, 218 / Math.max(abilities.length, 1))
-        const y = 525 + index * abilityRowHeight
+        const abilityRowHeight = Math.min(73, 215 / Math.max(abilities.length, 1))
+        const y = 528 + index * abilityRowHeight
         const cost = Math.min(Number(ability.energyCost) || 1, 5)
         const abilityX = 68 + cost * 32
         const abilityNameSize = Math.max(16, 23 - Math.max(0, getTextUnits(ability.name) - 11) * 0.85)
