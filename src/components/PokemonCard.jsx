@@ -8,6 +8,10 @@ const IMAGE_BOUNDS = {
 }
 
 const clamp = (value, min, max) => Math.min(max, Math.max(min, value))
+const getPointerDistance = (first, second) => Math.hypot(
+  second.clientX - first.clientX,
+  second.clientY - first.clientY,
+)
 
 const initialStyle = {
   '--pointer-x': '50%',
@@ -29,7 +33,9 @@ const PokemonCard = forwardRef(({
 }, ref) => {
   const containerRef = useRef(null)
   const svgRef = useRef(null)
+  const activePointersRef = useRef(new Map())
   const dragStateRef = useRef(null)
+  const pinchStateRef = useRef(null)
   const [cardStyle, setCardStyle] = useState(initialStyle)
   const [isDraggingImage, setIsDraggingImage] = useState(false)
 
@@ -66,6 +72,34 @@ const PokemonCard = forwardRef(({
   }
 
   const handlePointerInteraction = (event) => {
+    const activePointers = activePointersRef.current
+    if (activePointers.has(event.pointerId)) {
+      event.preventDefault()
+      activePointers.set(event.pointerId, {
+        clientX: event.clientX,
+        clientY: event.clientY,
+      })
+
+      const pinchState = pinchStateRef.current
+      if (pinchState) {
+        const first = activePointers.get(pinchState.pointerIds[0])
+        const second = activePointers.get(pinchState.pointerIds[1])
+        if (first && second) {
+          const distance = getPointerDistance(first, second)
+          onImageAdjustmentChange({
+            zoom: clamp(
+              pinchState.zoom * (distance / pinchState.distance),
+              1,
+              2.5,
+            ),
+          })
+        }
+        return
+      }
+    }
+
+    if (pinchStateRef.current) return
+
     const dragState = dragStateRef.current
     if (dragState && event.pointerId === dragState.pointerId) {
       const rect = containerRef.current?.getBoundingClientRect()
@@ -100,13 +134,35 @@ const PokemonCard = forwardRef(({
     const isDragHandle = event.target.closest?.('[data-image-drag-handle]')
     if (isDragHandle && imagePreview && onImageAdjustmentChange) {
       event.preventDefault()
+      const activePointers = activePointersRef.current
+      if (activePointers.size >= 2) return
+
       event.currentTarget.setPointerCapture(event.pointerId)
-      dragStateRef.current = {
-        pointerId: event.pointerId,
+      activePointers.set(event.pointerId, {
         clientX: event.clientX,
         clientY: event.clientY,
-        x: imageAdjustment.x,
-        y: imageAdjustment.y,
+      })
+
+      if (activePointers.size === 2) {
+        const pointerEntries = [...activePointers.entries()]
+        pinchStateRef.current = {
+          pointerIds: pointerEntries.map(([pointerId]) => pointerId),
+          distance: Math.max(
+            1,
+            getPointerDistance(pointerEntries[0][1], pointerEntries[1][1]),
+          ),
+          zoom: clamp(imageAdjustment.zoom || 1, 1, 2.5),
+        }
+        dragStateRef.current = null
+      } else {
+        pinchStateRef.current = null
+        dragStateRef.current = {
+          pointerId: event.pointerId,
+          clientX: event.clientX,
+          clientY: event.clientY,
+          x: imageAdjustment.x,
+          y: imageAdjustment.y,
+        }
       }
       setCardStyle(initialStyle)
       setIsDraggingImage(true)
@@ -117,12 +173,29 @@ const PokemonCard = forwardRef(({
   }
 
   const finishImageDrag = (event) => {
-    if (dragStateRef.current?.pointerId !== event.pointerId) return
-    dragStateRef.current = null
-    setIsDraggingImage(false)
+    const activePointers = activePointersRef.current
+    if (!activePointers.has(event.pointerId)) return
+
+    activePointers.delete(event.pointerId)
     if (event.currentTarget.hasPointerCapture(event.pointerId)) {
       event.currentTarget.releasePointerCapture(event.pointerId)
     }
+
+    pinchStateRef.current = null
+    if (activePointers.size === 1) {
+      const [pointerId, pointer] = activePointers.entries().next().value
+      dragStateRef.current = {
+        pointerId,
+        clientX: pointer.clientX,
+        clientY: pointer.clientY,
+        x: imageAdjustment.x,
+        y: imageAdjustment.y,
+      }
+      return
+    }
+
+    dragStateRef.current = null
+    setIsDraggingImage(false)
   }
 
   const handleImageKeyDown = (event) => {
