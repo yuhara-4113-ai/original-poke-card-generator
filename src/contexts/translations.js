@@ -4,6 +4,7 @@ export const translations = {
     // ヘッダー部分
     appTitle: "Pokemon Card Generator",
     appSubtitle: "Create your own custom Pokemon-style cards!",
+    stagingEnvironment: "Staging",
     builtWith: "Built with",
     gplLicense: "(GPL-3.0)",
     licenseNotice: "GPL-3.0 Licensed",
@@ -166,6 +167,7 @@ export const translations = {
     // ヘッダー部分
     appTitle: "ポケモンカードジェネレーター",
     appSubtitle: "オリジナルのポケモン風カードを作成しよう！",
+    stagingEnvironment: "検証環境",
     builtWith: "使用ライブラリ",
     gplLicense: "(GPL-3.0)",
     licenseNotice: "GPL-3.0 ライセンス",

@@ -48,6 +48,8 @@ jobs:
 
       - name: Validate and build staging
         working-directory: staging-source
+        env:
+          VITE_APP_ENV: staging
         run: |
           npm ci
           npm run lint
