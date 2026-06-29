@@ -6,8 +6,16 @@ const IMAGE_BOUNDS = {
   standard: { width: 566, height: 356 },
   fullArt: { width: 600, height: 861 },
 }
+const DEFAULT_IMAGE_ADJUSTMENT = {
+  x: 0,
+  y: 0,
+  zoom: 1,
+  width: 0,
+  height: 0,
+}
 
 const clamp = (value, min, max) => Math.min(max, Math.max(min, value))
+const finiteOr = (value, fallback) => Number.isFinite(value) ? value : fallback
 const getPointerDistance = (first, second) => Math.hypot(
   second.clientX - first.clientX,
   second.clientY - first.clientY,
@@ -27,7 +35,7 @@ const PokemonCard = forwardRef(({
   cardData,
   layoutMode,
   imagePreview,
-  imageAdjustment,
+  imageAdjustment = DEFAULT_IMAGE_ADJUSTMENT,
   imageDragLabel,
   onImageAdjustmentChange,
 }, ref) => {
@@ -38,6 +46,15 @@ const PokemonCard = forwardRef(({
   const pinchStateRef = useRef(null)
   const [cardStyle, setCardStyle] = useState(initialStyle)
   const [isDraggingImage, setIsDraggingImage] = useState(false)
+  const resolvedLayoutMode = layoutMode === 'fullArt' ? 'fullArt' : 'standard'
+  const sourceAdjustment = imageAdjustment ?? DEFAULT_IMAGE_ADJUSTMENT
+  const adjustment = {
+    x: finiteOr(sourceAdjustment.x, 0),
+    y: finiteOr(sourceAdjustment.y, 0),
+    zoom: finiteOr(sourceAdjustment.zoom, 1),
+    width: finiteOr(sourceAdjustment.width, 0),
+    height: finiteOr(sourceAdjustment.height, 0),
+  }
 
   useImperativeHandle(ref, () => ({
     getElement: () => containerRef.current,
@@ -50,7 +67,7 @@ const PokemonCard = forwardRef(({
 
   const updateCardStyle = (clientX, clientY) => {
     const rect = containerRef.current?.getBoundingClientRect()
-    if (!rect) return
+    if (!rect || rect.width <= 0 || rect.height <= 0) return
     const x = Math.max(0, Math.min(clientX - rect.left, rect.width))
     const y = Math.max(0, Math.min(clientY - rect.top, rect.height))
     const pointerX = (x / rect.width) * 100
@@ -103,12 +120,12 @@ const PokemonCard = forwardRef(({
     const dragState = dragStateRef.current
     if (dragState && event.pointerId === dragState.pointerId) {
       const rect = containerRef.current?.getBoundingClientRect()
-      if (!rect) return
+      if (!rect || rect.width <= 0) return
 
-      const bounds = IMAGE_BOUNDS[layoutMode]
-      const naturalWidth = imageAdjustment.width || bounds.width
-      const naturalHeight = imageAdjustment.height || bounds.height
-      const zoom = clamp(imageAdjustment.zoom || 1, 1, 2.5)
+      const bounds = IMAGE_BOUNDS[resolvedLayoutMode]
+      const naturalWidth = adjustment.width > 0 ? adjustment.width : bounds.width
+      const naturalHeight = adjustment.height > 0 ? adjustment.height : bounds.height
+      const zoom = clamp(adjustment.zoom, 1, 2.5)
       const coverScale = Math.max(bounds.width / naturalWidth, bounds.height / naturalHeight)
       const overflowX = Math.max(0, naturalWidth * coverScale * zoom - bounds.width)
       const overflowY = Math.max(0, naturalHeight * coverScale * zoom - bounds.height)
@@ -151,7 +168,7 @@ const PokemonCard = forwardRef(({
             1,
             getPointerDistance(pointerEntries[0][1], pointerEntries[1][1]),
           ),
-          zoom: clamp(imageAdjustment.zoom || 1, 1, 2.5),
+          zoom: clamp(adjustment.zoom, 1, 2.5),
         }
         dragStateRef.current = null
       } else {
@@ -160,8 +177,8 @@ const PokemonCard = forwardRef(({
           pointerId: event.pointerId,
           clientX: event.clientX,
           clientY: event.clientY,
-          x: imageAdjustment.x,
-          y: imageAdjustment.y,
+          x: adjustment.x,
+          y: adjustment.y,
         }
       }
       setCardStyle(initialStyle)
@@ -188,8 +205,8 @@ const PokemonCard = forwardRef(({
         pointerId,
         clientX: pointer.clientX,
         clientY: pointer.clientY,
-        x: imageAdjustment.x,
-        y: imageAdjustment.y,
+        x: adjustment.x,
+        y: adjustment.y,
       }
       return
     }
@@ -203,10 +220,10 @@ const PokemonCard = forwardRef(({
 
     const step = event.shiftKey ? 1 : 5
     const changes = {
-      ArrowLeft: { x: clamp(imageAdjustment.x - step, -100, 100) },
-      ArrowRight: { x: clamp(imageAdjustment.x + step, -100, 100) },
-      ArrowUp: { y: clamp(imageAdjustment.y - step, -100, 100) },
-      ArrowDown: { y: clamp(imageAdjustment.y + step, -100, 100) },
+      ArrowLeft: { x: clamp(adjustment.x - step, -100, 100) },
+      ArrowRight: { x: clamp(adjustment.x + step, -100, 100) },
+      ArrowUp: { y: clamp(adjustment.y - step, -100, 100) },
+      ArrowDown: { y: clamp(adjustment.y + step, -100, 100) },
     }
     const change = changes[event.key]
     if (!change) return
@@ -229,7 +246,7 @@ const PokemonCard = forwardRef(({
       tabIndex={imagePreview ? 0 : undefined}
       aria-label={imagePreview ? imageDragLabel : undefined}
       data-rarity={cardData.rarity}
-      data-layout={layoutMode}
+      data-layout={resolvedLayoutMode}
       style={cardStyle}
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerInteraction}
@@ -242,9 +259,9 @@ const PokemonCard = forwardRef(({
       <div className="card__rotator">
         <CardArtwork
           cardData={cardData}
-          layoutMode={layoutMode}
+          layoutMode={resolvedLayoutMode}
           imagePreview={imagePreview}
-          imageAdjustment={imageAdjustment}
+          imageAdjustment={adjustment}
           svgRef={svgRef}
         />
         <div className="card__texture" aria-hidden="true" />
@@ -252,7 +269,7 @@ const PokemonCard = forwardRef(({
         <div className="card__glare" aria-hidden="true" />
         {imagePreview && (
           <div
-            className={`image-drag-surface image-drag-surface--${layoutMode}`}
+            className={`image-drag-surface image-drag-surface--${resolvedLayoutMode}`}
             data-image-drag-handle="true"
             aria-hidden="true"
           />
