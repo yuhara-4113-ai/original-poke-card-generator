@@ -177,6 +177,13 @@ const PokemonCard = forwardRef(({
         <div className="card__texture" aria-hidden="true" />
         <div className="card__shine" aria-hidden="true" />
         <div className="card__glare" aria-hidden="true" />
+        {imagePreview && (
+          <div
+            className={`image-drag-surface image-drag-surface--${layoutMode}`}
+            data-image-drag-handle="true"
+            aria-hidden="true"
+          />
+        )}
       </div>
     </div>
   )
