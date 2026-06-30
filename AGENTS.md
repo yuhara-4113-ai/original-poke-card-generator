@@ -9,6 +9,10 @@
 - Do not use a stalled `update_ref` response as evidence of an authentication problem. Check the branch contents directly and switch to sequential `update_file` calls when needed.
 - Report whether the remote branch was updated and whether local Git metadata still needs synchronization.
 
+## Pull request language
+
+- Write pull request titles and descriptions in Japanese unless the user explicitly requests another language. Keep code identifiers, commands, file paths, and product names in their original form where clearer.
+
 ## Pull request review workflow
 
 - This Gemini-specific workflow expires on 2026-07-17. On or after that date, remove this section before continuing because the consumer review service is scheduled to be unavailable.
