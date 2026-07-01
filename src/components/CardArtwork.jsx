@@ -189,7 +189,7 @@ const FullArtCard = ({ cardData, imagePreview, imageAdjustment, svgRef }) => {
       <text x="61" y="116" clipPath="url(#full-art-name-clip)" fill="#111516" fontFamily="Arial, Helvetica, sans-serif" fontSize={nameSize} fontWeight="850">
         {cardData.name || 'Untitled'}
       </text>
-      <text x="553" y="116" textAnchor="end" fontFamily="Arial, Helvetica, sans-serif">
+      <text x="558" y="116" textAnchor="end" fontFamily="Arial, Helvetica, sans-serif">
         <tspan fill="#303637" fontSize="20" fontWeight="900">HP</tspan>
         <tspan fill="#111516" fontSize="35" fontWeight="850" dx="5">{cardData.hp || '—'}</tspan>
       </text>
@@ -378,7 +378,7 @@ const CardArtwork = ({ cardData, layoutMode, imagePreview, imageAdjustment, svgR
       <text x="51" y="100" clipPath="url(#header-name-clip)" fill="#111" fontFamily="Arial, Helvetica, sans-serif" fontSize={nameSize} fontWeight="850" letterSpacing="-0.5">
         {cardData.name || 'Untitled'}
       </text>
-      <text x="563" y="97" textAnchor="end" fontFamily="Arial, Helvetica, sans-serif">
+      <text x="568" y="97" textAnchor="end" fontFamily="Arial, Helvetica, sans-serif">
         <tspan fill={theme.dark} fontSize="20" fontWeight="900">HP</tspan>
         <tspan fill="#111" fontSize="36" fontWeight="900" letterSpacing="-1" dx="5">{cardData.hp || '—'}</tspan>
       </text>
