@@ -55,6 +55,40 @@ const TextLines = ({ lines, x, y, lineHeight, ...props }) => (
   </text>
 )
 
+const HpDisplay = ({
+  typeIcon,
+  value,
+  x,
+  y,
+  iconSize,
+  baseline,
+  labelColor,
+  valueColor,
+  valueSize,
+  valueWeight,
+  valueLetterSpacing,
+}) => (
+  <g transform={`translate(${x} ${y})`}>
+    <text
+      x="-8"
+      y={baseline}
+      textAnchor="end"
+      fontFamily="Arial, Helvetica, sans-serif"
+    >
+      <tspan fill={labelColor} fontSize="20" fontWeight="900">HP</tspan>
+      <tspan
+        fill={valueColor}
+        fontSize={valueSize}
+        fontWeight={valueWeight}
+        letterSpacing={valueLetterSpacing}
+      >
+        {value || '—'}
+      </tspan>
+    </text>
+    <image href={typeIcon} xlinkHref={typeIcon} x="0" y="0" width={iconSize} height={iconSize} />
+  </g>
+)
+
 const getCoverLayout = (imageAdjustment, bounds) => {
   const naturalWidth = imageAdjustment?.width || bounds.width
   const naturalHeight = imageAdjustment?.height || bounds.height
@@ -87,6 +121,9 @@ const FullArtCard = ({ cardData, imagePreview, imageAdjustment, svgRef }) => {
     height: FULL_ART_HEIGHT,
   })
   const abilityStartY = abilities.length > 1 ? 590 : 690
+  const stageLabel = { x: 61, y: 58, width: 103, height: 24 }
+  const nameMarginTop = 10
+  const nameY = stageLabel.y + stageLabel.height + nameMarginTop
 
   return (
     <svg
@@ -150,7 +187,7 @@ const FullArtCard = ({ cardData, imagePreview, imageAdjustment, svgRef }) => {
           <rect x={FULL_ART_X} y={FULL_ART_Y} width={FULL_ART_WIDTH} height={FULL_ART_HEIGHT} rx="26" />
         </clipPath>
         <clipPath id="full-art-name-clip">
-          <rect x="59" y="78" width="370" height="49" />
+          <rect x="59" y={nameY - 6} width="370" height="52" />
         </clipPath>
       </defs>
 
@@ -184,16 +221,23 @@ const FullArtCard = ({ cardData, imagePreview, imageAdjustment, svgRef }) => {
       </g>
 
       <rect x="45" y="45" width="570" height="103" rx="23" fill="url(#full-art-header)" stroke="#dce3e1" strokeWidth="2" filter="url(#full-art-panel-shadow)" />
-      <rect x="61" y="58" width="103" height="24" rx="12" fill="#202627" fillOpacity="0.88" />
-      <text x="112.5" y="75" textAnchor="middle" fill="#fff" fontFamily="Arial, Helvetica, sans-serif" fontSize="11" fontWeight="800" letterSpacing="1.3">ORIGINAL</text>
-      <text x="61" y="116" clipPath="url(#full-art-name-clip)" fill="#111516" fontFamily="Arial, Helvetica, sans-serif" fontSize={nameSize} fontWeight="850">
+      <rect {...stageLabel} rx="12" fill="#202627" fillOpacity="0.88" />
+      <text x={stageLabel.x + stageLabel.width / 2} y={stageLabel.y + 17} textAnchor="middle" fill="#fff" fontFamily="Arial, Helvetica, sans-serif" fontSize="11" fontWeight="800" letterSpacing="1.3">BASIC</text>
+      <text x={stageLabel.x} y={nameY} dominantBaseline="hanging" clipPath="url(#full-art-name-clip)" fill="#111516" fontFamily="Arial, Helvetica, sans-serif" fontSize={nameSize} fontWeight="850">
         {cardData.name || 'Untitled'}
       </text>
-      <text x="548" y="116" textAnchor="end" fontFamily="Arial, Helvetica, sans-serif">
-        <tspan fill="#303637" fontSize="25" fontWeight="900" dy="-6">HP</tspan>
-        <tspan fill="#111516" fontSize="35" fontWeight="850" dy="6" dx="5">{cardData.hp || '—'}</tspan>
-      </text>
-      <image href={typeIcon} xlinkHref={typeIcon} x="556" y="75" width="48" height="48" />
+      <HpDisplay
+        typeIcon={typeIcon}
+        value={cardData.hp}
+        x={556}
+        y={75}
+        iconSize={48}
+        baseline={41}
+        labelColor="#303637"
+        valueColor="#111516"
+        valueSize={35}
+        valueWeight="850"
+      />
 
       {abilities.map((ability, index) => {
         const y = abilityStartY + index * 101
@@ -378,11 +422,19 @@ const CardArtwork = ({ cardData, layoutMode, imagePreview, imageAdjustment, svgR
       <text x="51" y="100" clipPath="url(#header-name-clip)" fill="#111" fontFamily="Arial, Helvetica, sans-serif" fontSize={nameSize} fontWeight="850" letterSpacing="-0.5">
         {cardData.name || 'Untitled'}
       </text>
-      <text x="558" y="97" textAnchor="end" fontFamily="Arial, Helvetica, sans-serif">
-        <tspan fill={theme.dark} fontSize="25" fontWeight="900" dy="-3">HP</tspan>
-        <tspan fill="#111" fontSize="36" fontWeight="900" letterSpacing="-1" dy="3" dx="5">{cardData.hp || '—'}</tspan>
-      </text>
-      <image href={typeIcon} xlinkHref={typeIcon} x="566" y="57" width="46" height="46" />
+      <HpDisplay
+        typeIcon={typeIcon}
+        value={cardData.hp}
+        x={566}
+        y={57}
+        iconSize={46}
+        baseline={40}
+        labelColor={theme.dark}
+        valueColor="#111"
+        valueSize={36}
+        valueWeight="900"
+        valueLetterSpacing="-1"
+      />
 
       <g clipPath="url(#art-clip)">
         <rect x="47" y="119" width="566" height="356" fill="url(#art-placeholder)" />
