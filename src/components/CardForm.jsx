@@ -86,7 +86,10 @@ const CardForm = ({
             id="pokemon-hp"
             type="number"
             value={cardData.hp}
-            onChange={(e) => onInputChange('hp', e.target.value.slice(0, 4))}
+            onChange={(e) => {
+              const hp = e.target.value
+              onInputChange('hp', Number(hp) > 9999 ? '9999' : hp.slice(0, 4))
+            }}
             placeholder="100"
             min="10"
             max="9999"
