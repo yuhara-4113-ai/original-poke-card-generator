@@ -62,7 +62,7 @@ export const translations = {
     pokemonDescriptionPlaceholder: "A brief description of your Pokemon",
 
     // ボタンテキスト
-    uploadImage: "Upload Image",
+    uploadImage: "Choose Image",
     changeImage: "Change Image",
     imageAdjustment: "Image framing",
     imageZoom: "Zoom",
@@ -81,6 +81,7 @@ export const translations = {
     // 情報テキスト
     recommendedImage:
       "JPG, PNG or WebP · up to 8 MB · portrait images work best",
+    imagePrivacyNotice: "Your image is processed only in this browser and is not uploaded to a server.",
     downloadInfo: "Exports the exact preview at 1320 × 1842 px",
 
     // ポケモンタイプ
@@ -225,7 +226,7 @@ export const translations = {
     pokemonDescriptionPlaceholder: "ポケモンの簡単な説明",
 
     // ボタンテキスト
-    uploadImage: "画像をアップロード",
+    uploadImage: "画像を選択",
     changeImage: "画像を変更",
     imageAdjustment: "画像の表示調整",
     imageZoom: "拡大・縮小",
@@ -243,6 +244,7 @@ export const translations = {
 
     // 情報テキスト
     recommendedImage: "JPG・PNG・WebP／8MBまで／縦長画像がおすすめです",
+    imagePrivacyNotice: "※画像はサーバーにアップロードされません",
     downloadInfo: "プレビューと同じ内容を1320 × 1842 pxで保存します",
 
     // ポケモンタイプ
