@@ -88,7 +88,8 @@ const CardForm = ({
             value={cardData.hp}
             onChange={(e) => {
               const hp = e.target.value.replace(/\D/g, '')
-              onInputChange('hp', Number(hp) > 9999 ? '9999' : hp.slice(0, 4))
+              const parsedHp = Number.parseInt(hp, 10)
+              onInputChange('hp', Number.isNaN(parsedHp) ? '' : String(Math.min(parsedHp, 9999)))
             }}
             placeholder="100"
             min="10"
