@@ -8,7 +8,7 @@ const INPUT_LIMITS = {
   pokemonDescription: 100,
 }
 
-const CharacterCount = ({ currentLength, maxLength, messageId, t }) => {
+const CharacterCount = ({ currentLength = 0, maxLength, messageId, t }) => {
   const isAtLimit = currentLength >= maxLength
 
   return (
@@ -98,16 +98,13 @@ const CardForm = ({
           id="pokemon-name"
           type="text"
           value={cardData.name}
-          onChange={(e) => onInputChange(
-            'name',
-            e.target.value.slice(0, INPUT_LIMITS.pokemonName),
-          )}
+          onChange={(e) => onInputChange('name', e.target.value)}
           placeholder={t('enterPokemonName')}
           maxLength={INPUT_LIMITS.pokemonName}
           aria-describedby="pokemon-name-limit"
         />
         <CharacterCount
-          currentLength={cardData.name.length}
+          currentLength={cardData.name?.length}
           maxLength={INPUT_LIMITS.pokemonName}
           messageId="pokemon-name-limit"
           t={t}
@@ -220,11 +217,7 @@ const CardForm = ({
                   aria-label={`${t('abilityName')} ${index + 1}`}
                   type="text"
                   value={ability.name}
-                  onChange={(e) => onAbilityChange(
-                    index,
-                    'name',
-                    e.target.value.slice(0, INPUT_LIMITS.abilityName),
-                  )}
+                  onChange={(e) => onAbilityChange(index, 'name', e.target.value)}
                   placeholder={t('abilityName')}
                   maxLength={INPUT_LIMITS.abilityName}
                   aria-describedby={`ability-name-${index}-limit`}
@@ -242,7 +235,7 @@ const CardForm = ({
                 )}
               </div>
               <CharacterCount
-                currentLength={ability.name.length}
+                currentLength={ability.name?.length}
                 maxLength={INPUT_LIMITS.abilityName}
                 messageId={`ability-name-${index}-limit`}
                 t={t}
@@ -282,17 +275,13 @@ const CardForm = ({
                 aria-label={`${t('abilityDescription')} ${index + 1}`}
                 type="text"
                 value={ability.description}
-                onChange={(e) => onAbilityChange(
-                  index,
-                  'description',
-                  e.target.value.slice(0, INPUT_LIMITS.abilityDescription),
-                )}
+                onChange={(e) => onAbilityChange(index, 'description', e.target.value)}
                 placeholder={t('abilityDescription')}
                 maxLength={INPUT_LIMITS.abilityDescription}
                 aria-describedby={`ability-description-${index}-limit`}
               />
               <CharacterCount
-                currentLength={ability.description.length}
+                currentLength={ability.description?.length}
                 maxLength={INPUT_LIMITS.abilityDescription}
                 messageId={`ability-description-${index}-limit`}
                 t={t}
@@ -369,7 +358,6 @@ const CardForm = ({
           value={cardData.description}
           onChange={(e) => {
             const twoLineValue = e.target.value
-              .slice(0, INPUT_LIMITS.pokemonDescription)
               .split(/\r?\n/)
               .slice(0, 2)
               .join('\n')
@@ -381,7 +369,7 @@ const CardForm = ({
           aria-describedby="pokemon-description-limit"
         />
         <CharacterCount
-          currentLength={cardData.description.length}
+          currentLength={cardData.description?.length}
           maxLength={INPUT_LIMITS.pokemonDescription}
           messageId="pokemon-description-limit"
           t={t}
