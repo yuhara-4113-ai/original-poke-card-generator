@@ -145,7 +145,7 @@ const FullArtCard = ({ cardData, imagePreview, imageAdjustment, svgRef }) => {
           <rect x={FULL_ART_X} y={FULL_ART_Y} width={FULL_ART_WIDTH} height={FULL_ART_HEIGHT} rx="26" />
         </clipPath>
         <clipPath id="full-art-name-clip">
-          <rect x="59" y="78" width="405" height="49" />
+          <rect x="59" y="78" width="370" height="49" />
         </clipPath>
       </defs>
 
@@ -184,9 +184,9 @@ const FullArtCard = ({ cardData, imagePreview, imageAdjustment, svgRef }) => {
       <text x="61" y="116" clipPath="url(#full-art-name-clip)" fill="#111516" fontFamily="Arial, Helvetica, sans-serif" fontSize={nameSize} fontWeight="850">
         {cardData.name || 'Untitled'}
       </text>
-      <text x="460" y="110" textAnchor="end" fill="#303637" fontFamily="Arial, Helvetica, sans-serif" fontSize="15" fontWeight="800">HP</text>
-      <text x="548" y="116" textAnchor="end" fill="#111516" fontFamily="Arial, Helvetica, sans-serif" fontSize="35" fontWeight="850">
-        {cardData.hp || '—'}
+      <text x="548" y="116" textAnchor="end" fontFamily="Arial, Helvetica, sans-serif">
+        <tspan fill="#303637" fontSize="15" fontWeight="800" dy="-6">HP</tspan>
+        <tspan fill="#111516" fontSize="35" fontWeight="850" dy="6">{' '}{cardData.hp || '—'}</tspan>
       </text>
       <image href={typeIcon} xlinkHref={typeIcon} x="556" y="75" width="48" height="48" />
 
@@ -228,7 +228,7 @@ const FullArtCard = ({ cardData, imagePreview, imageAdjustment, svgRef }) => {
         <rect x="45" y="808" width="570" height="75" rx="18" fill="#f5f8f5" fillOpacity="0.86" stroke="#d7dedc" strokeWidth="2" />
       </g>
       <text x="65" y="837" fill="#252b2c" fontFamily="Arial, Helvetica, sans-serif" fontSize="11" fontWeight="800" letterSpacing="0.8">RETREAT</text>
-      {Array.from({ length: Math.min(Number(cardData.retreatCost) || 0, 5) }).map((_, index) => (
+      {Array.from({ length: Math.min(Number(cardData.retreatCost ?? 1), 5) }).map((_, index) => (
         <image key={index} href={getTypeIcon('normal')} xlinkHref={getTypeIcon('normal')} x={124 + index * 21} y="824" width="18" height="18" />
       ))}
       <text x="330" y="837" textAnchor="middle" fill="#303738" fontFamily="Arial, Helvetica, sans-serif" fontSize="11" fontWeight="750" letterSpacing="0.8">FAN-MADE • NOT FOR SALE</text>
@@ -340,7 +340,7 @@ const CardArtwork = ({ cardData, layoutMode, imagePreview, imageAdjustment, svgR
           <rect x="10" y="10" width="640" height="901" rx="33" />
         </clipPath>
         <clipPath id="header-name-clip">
-          <rect x="48" y="70" width="410" height="46" />
+          <rect x="48" y="70" width="380" height="46" />
         </clipPath>
       </defs>
 
@@ -367,9 +367,9 @@ const CardArtwork = ({ cardData, layoutMode, imagePreview, imageAdjustment, svgR
       <text x="51" y="100" clipPath="url(#header-name-clip)" fill="#111" fontFamily="Arial, Helvetica, sans-serif" fontSize={nameSize} fontWeight="850" letterSpacing="-0.5">
         {cardData.name || 'Untitled'}
       </text>
-      <text x="468" y="94" textAnchor="end" fill={theme.dark} fontFamily="Arial, Helvetica, sans-serif" fontSize="13" fontWeight="850">HP</text>
-      <text x="558" y="97" textAnchor="end" fill="#111" fontFamily="Arial, Helvetica, sans-serif" fontSize="36" fontWeight="900" letterSpacing="-1">
-        {cardData.hp || '—'}
+      <text x="558" y="97" textAnchor="end" fontFamily="Arial, Helvetica, sans-serif">
+        <tspan fill={theme.dark} fontSize="13" fontWeight="850" dy="-3">HP</tspan>
+        <tspan fill="#111" fontSize="36" fontWeight="900" letterSpacing="-1" dy="3">{' '}{cardData.hp || '—'}</tspan>
       </text>
       <image href={typeIcon} xlinkHref={typeIcon} x="566" y="57" width="46" height="46" />
 
@@ -451,7 +451,7 @@ const CardArtwork = ({ cardData, layoutMode, imagePreview, imageAdjustment, svgR
       {resistanceIcon ? <image href={resistanceIcon} xlinkHref={resistanceIcon} x="280" y="775" width="25" height="25" /> : <text x="292" y="795" fill={theme.dark}>—</text>}
       {resistanceIcon && <text x="312" y="795" fill={theme.dark} fontFamily="Arial, Helvetica, sans-serif" fontSize="15" fontWeight="850">−30</text>}
       <text x="442" y="769" fill={theme.dark} fontFamily="Arial, Helvetica, sans-serif" fontSize="10" fontWeight="850" letterSpacing="0.7">RETREAT</text>
-      {Array.from({ length: Math.min(Number(cardData.retreatCost) || 0, 5) }).map((_, index) => (
+      {Array.from({ length: Math.min(Number(cardData.retreatCost ?? 1), 5) }).map((_, index) => (
         <image key={index} href={getTypeIcon('normal')} xlinkHref={getTypeIcon('normal')} x={444 + index * 27} y="777" width="23" height="23" />
       ))}
 
