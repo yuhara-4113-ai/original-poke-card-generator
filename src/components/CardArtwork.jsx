@@ -55,6 +55,40 @@ const TextLines = ({ lines, x, y, lineHeight, ...props }) => (
   </text>
 )
 
+const HpDisplay = ({
+  typeIcon,
+  value,
+  x,
+  y,
+  iconSize,
+  baseline,
+  labelColor,
+  valueColor,
+  valueSize,
+  valueWeight,
+  valueLetterSpacing,
+}) => (
+  <g transform={`translate(${x} ${y})`}>
+    <text
+      x="-8"
+      y={baseline}
+      textAnchor="end"
+      fontFamily="Arial, Helvetica, sans-serif"
+    >
+      <tspan fill={labelColor} fontSize="20" fontWeight="900">HP</tspan>
+      <tspan
+        fill={valueColor}
+        fontSize={valueSize}
+        fontWeight={valueWeight}
+        letterSpacing={valueLetterSpacing}
+      >
+        {value || '—'}
+      </tspan>
+    </text>
+    <image href={typeIcon} xlinkHref={typeIcon} x="0" y="0" width={iconSize} height={iconSize} />
+  </g>
+)
+
 const getCoverLayout = (imageAdjustment, bounds) => {
   const naturalWidth = imageAdjustment?.width || bounds.width
   const naturalHeight = imageAdjustment?.height || bounds.height
@@ -189,11 +223,18 @@ const FullArtCard = ({ cardData, imagePreview, imageAdjustment, svgRef }) => {
       <text x="61" y="116" clipPath="url(#full-art-name-clip)" fill="#111516" fontFamily="Arial, Helvetica, sans-serif" fontSize={nameSize} fontWeight="850">
         {cardData.name || 'Untitled'}
       </text>
-      <text x="558" y="116" textAnchor="end" fontFamily="Arial, Helvetica, sans-serif">
-        <tspan fill="#303637" fontSize="20" fontWeight="900">HP</tspan>
-        <tspan fill="#111516" fontSize="35" fontWeight="850" dx="5">{cardData.hp || '—'}</tspan>
-      </text>
-      <image href={typeIcon} xlinkHref={typeIcon} x="556" y="75" width="48" height="48" />
+      <HpDisplay
+        typeIcon={typeIcon}
+        value={cardData.hp}
+        x={556}
+        y={75}
+        iconSize={48}
+        baseline={41}
+        labelColor="#303637"
+        valueColor="#111516"
+        valueSize={35}
+        valueWeight="850"
+      />
 
       {abilities.map((ability, index) => {
         const y = abilityStartY + index * 101
@@ -378,11 +419,19 @@ const CardArtwork = ({ cardData, layoutMode, imagePreview, imageAdjustment, svgR
       <text x="51" y="100" clipPath="url(#header-name-clip)" fill="#111" fontFamily="Arial, Helvetica, sans-serif" fontSize={nameSize} fontWeight="850" letterSpacing="-0.5">
         {cardData.name || 'Untitled'}
       </text>
-      <text x="568" y="97" textAnchor="end" fontFamily="Arial, Helvetica, sans-serif">
-        <tspan fill={theme.dark} fontSize="20" fontWeight="900">HP</tspan>
-        <tspan fill="#111" fontSize="36" fontWeight="900" letterSpacing="-1" dx="5">{cardData.hp || '—'}</tspan>
-      </text>
-      <image href={typeIcon} xlinkHref={typeIcon} x="566" y="57" width="46" height="46" />
+      <HpDisplay
+        typeIcon={typeIcon}
+        value={cardData.hp}
+        x={566}
+        y={57}
+        iconSize={46}
+        baseline={40}
+        labelColor={theme.dark}
+        valueColor="#111"
+        valueSize={36}
+        valueWeight="900"
+        valueLetterSpacing="-1"
+      />
 
       <g clipPath="url(#art-clip)">
         <rect x="47" y="119" width="566" height="356" fill="url(#art-placeholder)" />
