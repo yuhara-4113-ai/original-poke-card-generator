@@ -20,4 +20,5 @@
 - Poll for a Gemini Code Assist review submitted after the request time for up to five minutes. Treat the review as complete only when it covers the recorded head commit and all actionable comments have been evaluated.
 - If Gemini does not respond within five minutes, report the timeout and treat Gemini review as unavailable; do not imply that Gemini approved or completed the review.
 - Evaluate each Gemini comment against the repository's actual data flow and component contracts. Apply valid actionable feedback, and document why any rejected suggestion is unnecessary or harmful.
-- After pushing review fixes, request another Gemini review and repeat this workflow until there are no unresolved actionable comments, unless Gemini review is unavailable or the user explicitly asks to proceed without it.
+- Apply and push at most two rounds of fixes prompted by Gemini reviews. Count each pushed batch of review fixes as one round.
+- After the first review-fix round, request another Gemini review and repeat this workflow. After the second review-fix round, do not apply further Gemini suggestions or request another review automatically; ask the user whether another fix round is necessary.

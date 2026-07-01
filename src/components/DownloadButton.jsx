@@ -126,7 +126,7 @@ const svgToPng = async (sourceSvg, includeFoil, foilPosition) => {
 
 const DownloadButton = ({ cardRef, cardData }) => {
   const [isGenerating, setIsGenerating] = useState(false)
-  const [includeFoil, setIncludeFoil] = useState(true)
+  const [includeFoil, setIncludeFoil] = useState(false)
   const [error, setError] = useState('')
   const [status, setStatus] = useState('')
   const { t } = useLanguage()

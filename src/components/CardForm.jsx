@@ -33,8 +33,12 @@ const CardForm = ({
 
   return (
     <div className="card-form">
-      <fieldset className="form-group card-layout-group">
-        <legend className="group-label">{t('cardLayout')}</legend>
+      <div
+        className="form-group card-layout-group"
+        role="radiogroup"
+        aria-labelledby="card-layout-label"
+      >
+        <span id="card-layout-label" className="group-label">{t('cardLayout')}</span>
         <div className="layout-options">
           <label className="layout-option">
             <input
@@ -63,7 +67,7 @@ const CardForm = ({
             </span>
           </label>
         </div>
-      </fieldset>
+      </div>
 
       {/* ポケモン名入力 */}
       <div className="form-group pokemon-name-group">
@@ -132,7 +136,10 @@ const CardForm = ({
             onChange={onImageUpload}
             hidden
           />
-          <small>{t('recommendedImage')}</small>
+          <div className="image-upload-help">
+            <small>{t('recommendedImage')}</small>
+            <small>{t('imagePrivacyNotice')}</small>
+          </div>
           {imageError && (
             <div className="image-upload-error" role="alert">
               <span aria-hidden="true">!</span>
