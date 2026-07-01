@@ -78,7 +78,7 @@ const FullArtCard = ({ cardData, imagePreview, imageAdjustment, svgRef }) => {
   const typeIcon = getTypeIcon(cardData.type)
   const abilities = cardData.abilities.filter((ability) => ability.name).slice(0, 2)
   const nameUnits = getTextUnits(cardData.name || '')
-  const nameSize = Math.max(22, 38 - Math.max(0, nameUnits - 10) * 1.45)
+  const nameSize = Math.max(22, 38 - Math.max(0, nameUnits - 9) * 2.5)
   const raritySymbols = { common: '○', uncommon: '●', rare: '◆', holo: '★' }
   const photo = getCoverLayout(imageAdjustment, {
     x: FULL_ART_X,
@@ -190,7 +190,7 @@ const FullArtCard = ({ cardData, imagePreview, imageAdjustment, svgRef }) => {
         {cardData.name || 'Untitled'}
       </text>
       <text x="548" y="116" textAnchor="end" fontFamily="Arial, Helvetica, sans-serif">
-        <tspan fill="#303637" fontSize="15" fontWeight="800" dy="-6">HP</tspan>
+        <tspan fill="#303637" fontSize="25" fontWeight="900" dy="-6">HP</tspan>
         <tspan fill="#111516" fontSize="35" fontWeight="850" dy="6" dx="5">{cardData.hp || '—'}</tspan>
       </text>
       <image href={typeIcon} xlinkHref={typeIcon} x="556" y="75" width="48" height="48" />
@@ -199,8 +199,10 @@ const FullArtCard = ({ cardData, imagePreview, imageAdjustment, svgRef }) => {
         const y = abilityStartY + index * 101
         const cost = Math.min(Number(ability.energyCost) || 1, 5)
         const abilityX = 75 + cost * 29
-        const abilityNameSize = Math.max(16, 24 - Math.max(0, getTextUnits(ability.name) - 11) * 0.85)
-        const descriptionLines = wrapText(ability.description, Math.max(23, 49 - cost * 2.4), 2)
+        const abilityNameSize = Math.max(10, 24 - Math.max(0, getTextUnits(ability.name) - 11) * 0.75)
+        const descriptionUnits = getTextUnits(ability.description)
+        const descriptionSize = Math.max(10, 13 - Math.max(0, descriptionUnits - 28) * 0.35)
+        const descriptionLines = wrapText(ability.description, 35, 1)
 
         return (
           <g key={`${ability.name}-${index}`} filter="url(#full-art-panel-shadow)">
@@ -223,7 +225,7 @@ const FullArtCard = ({ cardData, imagePreview, imageAdjustment, svgRef }) => {
               lineHeight="16"
               fill="#2c3233"
               fontFamily="Arial, Helvetica, sans-serif"
-              fontSize="13"
+              fontSize={descriptionSize}
             />
           </g>
         )
@@ -265,7 +267,7 @@ const CardArtwork = ({ cardData, layoutMode, imagePreview, imageAdjustment, svgR
   const typeIcon = getTypeIcon(cardData.type)
   const abilities = cardData.abilities.filter((ability) => ability.name).slice(0, 3)
   const nameUnits = getTextUnits(cardData.name || '')
-  const nameSize = Math.max(21, 35 - Math.max(0, nameUnits - 10) * 1.4)
+  const nameSize = Math.max(21, 35 - Math.max(0, nameUnits - 9) * 1.5)
   const raritySymbols = { common: '○', uncommon: '●', rare: '◆', holo: '★' }
   const image = getCoverLayout(imageAdjustment, {
     x: ART_X,
@@ -377,7 +379,7 @@ const CardArtwork = ({ cardData, layoutMode, imagePreview, imageAdjustment, svgR
         {cardData.name || 'Untitled'}
       </text>
       <text x="558" y="97" textAnchor="end" fontFamily="Arial, Helvetica, sans-serif">
-        <tspan fill={theme.dark} fontSize="13" fontWeight="850" dy="-3">HP</tspan>
+        <tspan fill={theme.dark} fontSize="25" fontWeight="900" dy="-3">HP</tspan>
         <tspan fill="#111" fontSize="36" fontWeight="900" letterSpacing="-1" dy="3" dx="5">{cardData.hp || '—'}</tspan>
       </text>
       <image href={typeIcon} xlinkHref={typeIcon} x="566" y="57" width="46" height="46" />
@@ -421,8 +423,8 @@ const CardArtwork = ({ cardData, layoutMode, imagePreview, imageAdjustment, svgR
         const separatorY = abilityAreaY + index * abilitySlotHeight
         const cost = Math.min(Number(ability.energyCost) || 1, 5)
         const abilityX = 68 + cost * 32
-        const abilityNameSize = Math.max(16, 23 - Math.max(0, getTextUnits(ability.name) - 11) * 0.85)
-        const descriptionLines = wrapText(ability.description, Math.max(24, 52 - cost * 2.5), 2)
+        const abilityNameSize = Math.max(10, 23 - Math.max(0, getTextUnits(ability.name) - 11) * 0.68)
+        const descriptionLines = wrapText(ability.description, 35, 1)
         return (
           <g key={`${ability.name}-${index}`}>
             {index > 0 && <line x1="66" y1={separatorY} x2="594" y2={separatorY} stroke={theme.dark} strokeOpacity="0.35" strokeWidth="1.2" />}
@@ -465,7 +467,7 @@ const CardArtwork = ({ cardData, layoutMode, imagePreview, imageAdjustment, svgR
       ))}
 
       <TextLines
-        lines={wrapText(cardData.description, 65, 2)}
+        lines={wrapText(cardData.description, 40, 2)}
         x="330"
         y="830"
         lineHeight="17"
