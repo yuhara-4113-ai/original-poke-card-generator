@@ -4,7 +4,7 @@ import { useLanguage } from '../contexts/useLanguage'
 const INPUT_LIMITS = {
   pokemonName: 16,
   abilityName: 16,
-  abilityDescription: 32,
+  abilityDescription: 40,
   pokemonDescription: 100,
 }
 
@@ -357,11 +357,10 @@ const CardForm = ({
           id="pokemon-description"
           value={cardData.description}
           onChange={(e) => {
-            const twoLineValue = e.target.value
-              .split(/\r?\n/)
-              .slice(0, 2)
-              .join('\n')
-            onInputChange('description', twoLineValue)
+            const lines = e.target.value.split(/\r?\n/)
+            if (lines.length <= 2) {
+              onInputChange('description', e.target.value)
+            }
           }}
           placeholder={t('pokemonDescriptionPlaceholder')}
           maxLength={INPUT_LIMITS.pokemonDescription}
