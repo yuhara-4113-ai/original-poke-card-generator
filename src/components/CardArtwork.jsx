@@ -78,7 +78,7 @@ const FullArtCard = ({ cardData, imagePreview, imageAdjustment, svgRef }) => {
   const typeIcon = getTypeIcon(cardData.type)
   const abilities = cardData.abilities.filter((ability) => ability.name).slice(0, 2)
   const nameUnits = getTextUnits(cardData.name || '')
-  const nameSize = Math.max(22, 38 - Math.max(0, nameUnits - 10) * 1.45)
+  const nameSize = Math.max(22, 38 - Math.max(0, nameUnits - 9) * 2.5)
   const raritySymbols = { common: '○', uncommon: '●', rare: '◆', holo: '★' }
   const photo = getCoverLayout(imageAdjustment, {
     x: FULL_ART_X,
@@ -199,7 +199,7 @@ const FullArtCard = ({ cardData, imagePreview, imageAdjustment, svgRef }) => {
         const y = abilityStartY + index * 101
         const cost = Math.min(Number(ability.energyCost) || 1, 5)
         const abilityX = 75 + cost * 29
-        const abilityNameSize = Math.max(16, 24 - Math.max(0, getTextUnits(ability.name) - 11) * 0.85)
+        const abilityNameSize = Math.max(14, 24 - Math.max(0, getTextUnits(ability.name) - 11) * 1.1)
         const descriptionLines = wrapText(ability.description, 28, 1)
 
         return (
@@ -265,7 +265,7 @@ const CardArtwork = ({ cardData, layoutMode, imagePreview, imageAdjustment, svgR
   const typeIcon = getTypeIcon(cardData.type)
   const abilities = cardData.abilities.filter((ability) => ability.name).slice(0, 3)
   const nameUnits = getTextUnits(cardData.name || '')
-  const nameSize = Math.max(21, 35 - Math.max(0, nameUnits - 10) * 1.4)
+  const nameSize = Math.max(21, 35 - Math.max(0, nameUnits - 9) * 1.5)
   const raritySymbols = { common: '○', uncommon: '●', rare: '◆', holo: '★' }
   const image = getCoverLayout(imageAdjustment, {
     x: ART_X,
@@ -421,7 +421,7 @@ const CardArtwork = ({ cardData, layoutMode, imagePreview, imageAdjustment, svgR
         const separatorY = abilityAreaY + index * abilitySlotHeight
         const cost = Math.min(Number(ability.energyCost) || 1, 5)
         const abilityX = 68 + cost * 32
-        const abilityNameSize = Math.max(16, 23 - Math.max(0, getTextUnits(ability.name) - 11) * 0.85)
+        const abilityNameSize = Math.max(14, 23 - Math.max(0, getTextUnits(ability.name) - 11))
         const descriptionLines = wrapText(ability.description, 28, 1)
         return (
           <g key={`${ability.name}-${index}`}>

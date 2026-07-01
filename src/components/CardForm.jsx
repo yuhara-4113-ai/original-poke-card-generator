@@ -2,9 +2,9 @@ import { useRef } from 'react'
 import { useLanguage } from '../contexts/useLanguage'
 
 const INPUT_LIMITS = {
-  pokemonName: 9,
-  abilityName: 11,
-  abilityDescription: 28,
+  pokemonName: 12,
+  abilityName: 20,
+  abilityDescription: 70,
   pokemonDescription: 80,
 }
 
