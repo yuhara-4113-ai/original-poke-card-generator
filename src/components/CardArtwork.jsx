@@ -121,6 +121,9 @@ const FullArtCard = ({ cardData, imagePreview, imageAdjustment, svgRef }) => {
     height: FULL_ART_HEIGHT,
   })
   const abilityStartY = abilities.length > 1 ? 590 : 690
+  const originalLabel = { x: 61, y: 58, width: 103, height: 24 }
+  const nameMarginTop = 10
+  const nameY = originalLabel.y + originalLabel.height + nameMarginTop
 
   return (
     <svg
@@ -184,7 +187,7 @@ const FullArtCard = ({ cardData, imagePreview, imageAdjustment, svgRef }) => {
           <rect x={FULL_ART_X} y={FULL_ART_Y} width={FULL_ART_WIDTH} height={FULL_ART_HEIGHT} rx="26" />
         </clipPath>
         <clipPath id="full-art-name-clip">
-          <rect x="59" y="78" width="370" height="49" />
+          <rect x="59" y={nameY} width="370" height="46" />
         </clipPath>
       </defs>
 
@@ -218,9 +221,9 @@ const FullArtCard = ({ cardData, imagePreview, imageAdjustment, svgRef }) => {
       </g>
 
       <rect x="45" y="45" width="570" height="103" rx="23" fill="url(#full-art-header)" stroke="#dce3e1" strokeWidth="2" filter="url(#full-art-panel-shadow)" />
-      <rect x="61" y="58" width="103" height="24" rx="12" fill="#202627" fillOpacity="0.88" />
-      <text x="112.5" y="75" textAnchor="middle" fill="#fff" fontFamily="Arial, Helvetica, sans-serif" fontSize="11" fontWeight="800" letterSpacing="1.3">ORIGINAL</text>
-      <text x="61" y="116" clipPath="url(#full-art-name-clip)" fill="#111516" fontFamily="Arial, Helvetica, sans-serif" fontSize={nameSize} fontWeight="850">
+      <rect {...originalLabel} rx="12" fill="#202627" fillOpacity="0.88" />
+      <text x={originalLabel.x + originalLabel.width / 2} y={originalLabel.y + 17} textAnchor="middle" fill="#fff" fontFamily="Arial, Helvetica, sans-serif" fontSize="11" fontWeight="800" letterSpacing="1.3">ORIGINAL</text>
+      <text x={originalLabel.x} y={nameY} dominantBaseline="hanging" clipPath="url(#full-art-name-clip)" fill="#111516" fontFamily="Arial, Helvetica, sans-serif" fontSize={nameSize} fontWeight="850">
         {cardData.name || 'Untitled'}
       </text>
       <HpDisplay
