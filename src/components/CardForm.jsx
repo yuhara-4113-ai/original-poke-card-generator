@@ -87,7 +87,7 @@ const CardForm = ({
             type="number"
             value={cardData.hp}
             onChange={(e) => {
-              const hp = e.target.value
+              const hp = e.target.value.replace(/\D/g, '')
               onInputChange('hp', Number(hp) > 9999 ? '9999' : hp.slice(0, 4))
             }}
             placeholder="100"
