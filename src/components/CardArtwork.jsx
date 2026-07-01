@@ -11,6 +11,11 @@ const FULL_ART_Y = 30
 const FULL_ART_WIDTH = 600
 const FULL_ART_HEIGHT = 861
 
+const getRetreatCost = (value) => {
+  const cost = Number.parseInt(value ?? 1, 10)
+  return Number.isNaN(cost) ? 1 : Math.max(0, Math.min(cost, 5))
+}
+
 const getTextUnits = (text) => [...text].reduce((total, character) => (
   total + (/\p{Script=Han}|\p{Script=Hiragana}|\p{Script=Katakana}/u.test(character) ? 1 : 0.56)
 ), 0)
@@ -228,7 +233,7 @@ const FullArtCard = ({ cardData, imagePreview, imageAdjustment, svgRef }) => {
         <rect x="45" y="808" width="570" height="75" rx="18" fill="#f5f8f5" fillOpacity="0.86" stroke="#d7dedc" strokeWidth="2" />
       </g>
       <text x="65" y="837" fill="#252b2c" fontFamily="Arial, Helvetica, sans-serif" fontSize="11" fontWeight="800" letterSpacing="0.8">RETREAT</text>
-      {Array.from({ length: Math.min(Number(cardData.retreatCost ?? 1), 5) }).map((_, index) => (
+      {Array.from({ length: getRetreatCost(cardData.retreatCost) }).map((_, index) => (
         <image key={index} href={getTypeIcon('normal')} xlinkHref={getTypeIcon('normal')} x={124 + index * 21} y="824" width="18" height="18" />
       ))}
       <text x="330" y="837" textAnchor="middle" fill="#303738" fontFamily="Arial, Helvetica, sans-serif" fontSize="11" fontWeight="750" letterSpacing="0.8">FAN-MADE • NOT FOR SALE</text>
@@ -451,7 +456,7 @@ const CardArtwork = ({ cardData, layoutMode, imagePreview, imageAdjustment, svgR
       {resistanceIcon ? <image href={resistanceIcon} xlinkHref={resistanceIcon} x="280" y="775" width="25" height="25" /> : <text x="292" y="795" fill={theme.dark}>—</text>}
       {resistanceIcon && <text x="312" y="795" fill={theme.dark} fontFamily="Arial, Helvetica, sans-serif" fontSize="15" fontWeight="850">−30</text>}
       <text x="442" y="769" fill={theme.dark} fontFamily="Arial, Helvetica, sans-serif" fontSize="10" fontWeight="850" letterSpacing="0.7">RETREAT</text>
-      {Array.from({ length: Math.min(Number(cardData.retreatCost ?? 1), 5) }).map((_, index) => (
+      {Array.from({ length: getRetreatCost(cardData.retreatCost) }).map((_, index) => (
         <image key={index} href={getTypeIcon('normal')} xlinkHref={getTypeIcon('normal')} x={444 + index * 27} y="777" width="23" height="23" />
       ))}
 

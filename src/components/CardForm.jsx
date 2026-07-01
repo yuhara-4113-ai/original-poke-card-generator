@@ -259,7 +259,7 @@ const CardForm = ({
               <select
                 aria-label={t('retreatCost')}
                 value={cardData.retreatCost ?? 1}
-                onChange={(e) => onInputChange('retreatCost', parseInt(e.target.value))}
+                onChange={(e) => onInputChange('retreatCost', Number.parseInt(e.target.value, 10))}
               >
                 {[0, 1, 2, 3, 4, 5].map(cost => (
                   <option key={cost} value={cost}>{cost}</option>
