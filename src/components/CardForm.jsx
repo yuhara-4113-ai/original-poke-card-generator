@@ -86,10 +86,14 @@ const CardForm = ({
             id="pokemon-hp"
             type="number"
             value={cardData.hp}
-            onChange={(e) => onInputChange('hp', e.target.value)}
+            onChange={(e) => {
+              const hp = e.target.value.replace(/\D/g, '')
+              const parsedHp = Number.parseInt(hp, 10)
+              onInputChange('hp', Number.isNaN(parsedHp) ? '' : String(Math.min(parsedHp, 9999)))
+            }}
             placeholder="100"
             min="10"
-            max="999"
+            max="9999"
           />
         </div>
 
@@ -254,8 +258,8 @@ const CardForm = ({
               <label>{t('retreatCost')}</label>
               <select
                 aria-label={t('retreatCost')}
-                value={cardData.retreatCost || 1}
-                onChange={(e) => onInputChange('retreatCost', parseInt(e.target.value))}
+                value={cardData.retreatCost ?? 1}
+                onChange={(e) => onInputChange('retreatCost', Number.parseInt(e.target.value, 10))}
               >
                 {[0, 1, 2, 3, 4, 5].map(cost => (
                   <option key={cost} value={cost}>{cost}</option>
