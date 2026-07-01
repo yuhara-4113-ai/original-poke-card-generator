@@ -190,7 +190,7 @@ const FullArtCard = ({ cardData, imagePreview, imageAdjustment, svgRef }) => {
         {cardData.name || 'Untitled'}
       </text>
       <text x="548" y="116" textAnchor="end" fontFamily="Arial, Helvetica, sans-serif">
-        <tspan fill="#303637" fontSize="18" fontWeight="800" dy="-6">HP</tspan>
+        <tspan fill="#303637" fontSize="21" fontWeight="900" dy="-6">HP</tspan>
         <tspan fill="#111516" fontSize="35" fontWeight="850" dy="6" dx="5">{cardData.hp || '—'}</tspan>
       </text>
       <image href={typeIcon} xlinkHref={typeIcon} x="556" y="75" width="48" height="48" />
@@ -379,7 +379,7 @@ const CardArtwork = ({ cardData, layoutMode, imagePreview, imageAdjustment, svgR
         {cardData.name || 'Untitled'}
       </text>
       <text x="558" y="97" textAnchor="end" fontFamily="Arial, Helvetica, sans-serif">
-        <tspan fill={theme.dark} fontSize="18" fontWeight="850" dy="-3">HP</tspan>
+        <tspan fill={theme.dark} fontSize="21" fontWeight="900" dy="-3">HP</tspan>
         <tspan fill="#111" fontSize="36" fontWeight="900" letterSpacing="-1" dy="3" dx="5">{cardData.hp || '—'}</tspan>
       </text>
       <image href={typeIcon} xlinkHref={typeIcon} x="566" y="57" width="46" height="46" />
