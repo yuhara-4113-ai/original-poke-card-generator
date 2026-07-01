@@ -2,10 +2,10 @@ import { useRef } from 'react'
 import { useLanguage } from '../contexts/useLanguage'
 
 const INPUT_LIMITS = {
-  pokemonName: 16,
-  abilityName: 16,
-  abilityDescription: 40,
-  pokemonDescription: 100,
+  pokemonName: 9,
+  abilityName: 11,
+  abilityDescription: 28,
+  pokemonDescription: 80,
 }
 
 const CharacterCount = ({ currentLength = 0, maxLength, messageId, t }) => {

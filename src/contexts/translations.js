@@ -114,7 +114,7 @@ export const translations = {
         abilities: [
           {
             name: "Fire Blast",
-            description: "Deals massive fire damage to opponents.",
+            description: "Deals heavy fire damage.",
           },
           { name: "Heat Wave", description: "Burns all nearby enemies." },
         ],
@@ -123,20 +123,20 @@ export const translations = {
       aquaflow: {
         name: "Aquaflow",
         abilities: [
-          { name: "Tidal Wave", description: "Creates massive water attacks." },
+          { name: "Tidal Wave", description: "Makes strong water attacks." },
         ],
         description: "A graceful water Pokemon that controls ocean currents.",
       },
       thunderstrike: {
-        name: "Thunderstrike",
+        name: "Thunder",
         abilities: [
           {
-            name: "Lightning Bolt",
-            description: "Strikes with pure electric energy.",
+            name: "Lightning",
+            description: "Uses pure electric energy.",
           },
           {
-            name: "Static Shield",
-            description: "Creates protective electric barriers.",
+            name: "Barrier",
+            description: "Creates an electric barrier.",
           },
         ],
         description: "An electric Pokemon crackling with storm energy.",
@@ -145,9 +145,9 @@ export const translations = {
 
     // デフォルトカードデータ
     defaultCard: {
-      name: "Custom Pokemon",
-      ability: "Custom Ability",
-      abilityDescription: "Your custom ability description.",
+      name: "Pokemon",
+      ability: "My Ability",
+      abilityDescription: "Describe your ability.",
       description: "A unique and original Pokemon created by you!",
     },
 
