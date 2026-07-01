@@ -1,6 +1,28 @@
 import { useRef } from 'react'
 import { useLanguage } from '../contexts/useLanguage'
 
+const INPUT_LIMITS = {
+  pokemonName: 16,
+  abilityName: 16,
+  abilityDescription: 32,
+  pokemonDescription: 100,
+}
+
+const CharacterCount = ({ currentLength, maxLength, messageId, t }) => {
+  const isAtLimit = currentLength >= maxLength
+
+  return (
+    <div className={`character-count${isAtLimit ? ' is-at-limit' : ''}`}>
+      <span id={messageId} role="status" aria-live="polite">
+        {isAtLimit ? t('characterLimitReached') : ''}
+      </span>
+      <span>
+        {currentLength} / {maxLength}
+      </span>
+    </div>
+  )
+}
+
 // カード入力フォームコンポーネント - 各入力項目を管理
 const CardForm = ({ 
   cardData, 
@@ -76,9 +98,19 @@ const CardForm = ({
           id="pokemon-name"
           type="text"
           value={cardData.name}
-          onChange={(e) => onInputChange('name', e.target.value)}
+          onChange={(e) => onInputChange(
+            'name',
+            e.target.value.slice(0, INPUT_LIMITS.pokemonName),
+          )}
           placeholder={t('enterPokemonName')}
-          maxLength={20}
+          maxLength={INPUT_LIMITS.pokemonName}
+          aria-describedby="pokemon-name-limit"
+        />
+        <CharacterCount
+          currentLength={cardData.name.length}
+          maxLength={INPUT_LIMITS.pokemonName}
+          messageId="pokemon-name-limit"
+          t={t}
         />
       </div>
 
@@ -184,12 +216,18 @@ const CardForm = ({
             <div key={index} className="ability-group">
               <div className="ability-header">
                 <input
+                  id={`ability-name-${index}`}
                   aria-label={`${t('abilityName')} ${index + 1}`}
                   type="text"
                   value={ability.name}
-                  onChange={(e) => onAbilityChange(index, 'name', e.target.value)}
+                  onChange={(e) => onAbilityChange(
+                    index,
+                    'name',
+                    e.target.value.slice(0, INPUT_LIMITS.abilityName),
+                  )}
                   placeholder={t('abilityName')}
-                  maxLength={20}
+                  maxLength={INPUT_LIMITS.abilityName}
+                  aria-describedby={`ability-name-${index}-limit`}
                 />
                 {/* 技が複数ある場合は削除ボタンを表示 */}
                 {cardData.abilities.length > 1 && (
@@ -203,6 +241,12 @@ const CardForm = ({
                   </button>
                 )}
               </div>
+              <CharacterCount
+                currentLength={ability.name.length}
+                maxLength={INPUT_LIMITS.abilityName}
+                messageId={`ability-name-${index}-limit`}
+                t={t}
+              />
               
               {/* エネルギーコストとダメージの入力行 */}
               <div className="ability-stats">
@@ -233,13 +277,25 @@ const CardForm = ({
                 </div>
               </div>
               
-              <textarea
+              <input
+                id={`ability-description-${index}`}
                 aria-label={`${t('abilityDescription')} ${index + 1}`}
+                type="text"
                 value={ability.description}
-                onChange={(e) => onAbilityChange(index, 'description', e.target.value)}
+                onChange={(e) => onAbilityChange(
+                  index,
+                  'description',
+                  e.target.value.slice(0, INPUT_LIMITS.abilityDescription),
+                )}
                 placeholder={t('abilityDescription')}
-                maxLength={60}
-                rows={2}
+                maxLength={INPUT_LIMITS.abilityDescription}
+                aria-describedby={`ability-description-${index}-limit`}
+              />
+              <CharacterCount
+                currentLength={ability.description.length}
+                maxLength={INPUT_LIMITS.abilityDescription}
+                messageId={`ability-description-${index}-limit`}
+                t={t}
               />
             </div>
           ))}
@@ -311,10 +367,24 @@ const CardForm = ({
         <textarea
           id="pokemon-description"
           value={cardData.description}
-          onChange={(e) => onInputChange('description', e.target.value)}
+          onChange={(e) => {
+            const twoLineValue = e.target.value
+              .slice(0, INPUT_LIMITS.pokemonDescription)
+              .split(/\r?\n/)
+              .slice(0, 2)
+              .join('\n')
+            onInputChange('description', twoLineValue)
+          }}
           placeholder={t('pokemonDescriptionPlaceholder')}
-          maxLength={100}
-          rows={3}
+          maxLength={INPUT_LIMITS.pokemonDescription}
+          rows={2}
+          aria-describedby="pokemon-description-limit"
+        />
+        <CharacterCount
+          currentLength={cardData.description.length}
+          maxLength={INPUT_LIMITS.pokemonDescription}
+          messageId="pokemon-description-limit"
+          t={t}
         />
       </div>
     </div>

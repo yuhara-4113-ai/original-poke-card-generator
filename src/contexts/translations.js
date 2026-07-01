@@ -60,6 +60,7 @@ export const translations = {
     abilityName: "Ability name",
     abilityDescription: "Ability description",
     pokemonDescriptionPlaceholder: "A brief description of your Pokemon",
+    characterLimitReached: "Character limit reached. No more text can be entered.",
 
     // ボタンテキスト
     uploadImage: "Choose Image",
@@ -224,6 +225,7 @@ export const translations = {
     abilityName: "技名",
     abilityDescription: "技の説明",
     pokemonDescriptionPlaceholder: "ポケモンの簡単な説明",
+    characterLimitReached: "文字数の上限に達したため、これ以上入力できません。",
 
     // ボタンテキスト
     uploadImage: "画像を選択",

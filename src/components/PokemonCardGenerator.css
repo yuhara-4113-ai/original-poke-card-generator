@@ -275,6 +275,31 @@
   box-shadow: 0 0 0 3px rgba(44, 110, 170, 0.13);
 }
 
+.character-count {
+  display: flex;
+  min-height: 1.25rem;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  color: var(--muted);
+  font-size: 0.7rem;
+  line-height: 1.35;
+}
+
+.character-count > :first-child {
+  flex: 1;
+}
+
+.character-count > :last-child {
+  flex: 0 0 auto;
+  font-variant-numeric: tabular-nums;
+}
+
+.character-count.is-at-limit {
+  color: #9b342b;
+  font-weight: 700;
+}
+
 .image-upload-section {
   display: grid;
   grid-template-columns: auto 1fr;
@@ -433,7 +458,15 @@
   display: flex;
   gap: 9px;
   align-items: center;
+  margin-bottom: 0;
+}
+
+.ability-header + .character-count {
   margin-bottom: 10px;
+}
+
+.ability-group > .character-count:last-child {
+  margin-top: 4px;
 }
 
 .ability-header input {

@@ -200,7 +200,7 @@ const FullArtCard = ({ cardData, imagePreview, imageAdjustment, svgRef }) => {
         const cost = Math.min(Number(ability.energyCost) || 1, 5)
         const abilityX = 75 + cost * 29
         const abilityNameSize = Math.max(16, 24 - Math.max(0, getTextUnits(ability.name) - 11) * 0.85)
-        const descriptionLines = wrapText(ability.description, Math.max(23, 49 - cost * 2.4), 2)
+        const descriptionLines = wrapText(ability.description, Math.max(23, 49 - cost * 2.4), 1)
 
         return (
           <g key={`${ability.name}-${index}`} filter="url(#full-art-panel-shadow)">
@@ -422,7 +422,7 @@ const CardArtwork = ({ cardData, layoutMode, imagePreview, imageAdjustment, svgR
         const cost = Math.min(Number(ability.energyCost) || 1, 5)
         const abilityX = 68 + cost * 32
         const abilityNameSize = Math.max(16, 23 - Math.max(0, getTextUnits(ability.name) - 11) * 0.85)
-        const descriptionLines = wrapText(ability.description, Math.max(24, 52 - cost * 2.5), 2)
+        const descriptionLines = wrapText(ability.description, Math.max(24, 52 - cost * 2.5), 1)
         return (
           <g key={`${ability.name}-${index}`}>
             {index > 0 && <line x1="66" y1={separatorY} x2="594" y2={separatorY} stroke={theme.dark} strokeOpacity="0.35" strokeWidth="1.2" />}
