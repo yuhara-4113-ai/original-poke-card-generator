@@ -121,9 +121,9 @@ const FullArtCard = ({ cardData, imagePreview, imageAdjustment, svgRef }) => {
     height: FULL_ART_HEIGHT,
   })
   const abilityStartY = abilities.length > 1 ? 590 : 690
-  const originalLabel = { x: 61, y: 58, width: 103, height: 24 }
+  const stageLabel = { x: 61, y: 58, width: 103, height: 24 }
   const nameMarginTop = 10
-  const nameY = originalLabel.y + originalLabel.height + nameMarginTop
+  const nameY = stageLabel.y + stageLabel.height + nameMarginTop
 
   return (
     <svg
@@ -221,9 +221,9 @@ const FullArtCard = ({ cardData, imagePreview, imageAdjustment, svgRef }) => {
       </g>
 
       <rect x="45" y="45" width="570" height="103" rx="23" fill="url(#full-art-header)" stroke="#dce3e1" strokeWidth="2" filter="url(#full-art-panel-shadow)" />
-      <rect {...originalLabel} rx="12" fill="#202627" fillOpacity="0.88" />
-      <text x={originalLabel.x + originalLabel.width / 2} y={originalLabel.y + 17} textAnchor="middle" fill="#fff" fontFamily="Arial, Helvetica, sans-serif" fontSize="11" fontWeight="800" letterSpacing="1.3">BASIC</text>
-      <text x={originalLabel.x} y={nameY} dominantBaseline="hanging" clipPath="url(#full-art-name-clip)" fill="#111516" fontFamily="Arial, Helvetica, sans-serif" fontSize={nameSize} fontWeight="850">
+      <rect {...stageLabel} rx="12" fill="#202627" fillOpacity="0.88" />
+      <text x={stageLabel.x + stageLabel.width / 2} y={stageLabel.y + 17} textAnchor="middle" fill="#fff" fontFamily="Arial, Helvetica, sans-serif" fontSize="11" fontWeight="800" letterSpacing="1.3">BASIC</text>
+      <text x={stageLabel.x} y={nameY} dominantBaseline="hanging" clipPath="url(#full-art-name-clip)" fill="#111516" fontFamily="Arial, Helvetica, sans-serif" fontSize={nameSize} fontWeight="850">
         {cardData.name || 'Untitled'}
       </text>
       <HpDisplay
