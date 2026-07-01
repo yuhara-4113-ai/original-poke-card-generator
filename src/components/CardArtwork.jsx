@@ -275,6 +275,10 @@ const CardArtwork = ({ cardData, layoutMode, imagePreview, imageAdjustment, svgR
   })
   const weaknessIcon = cardData.weakness !== 'none' ? getTypeIcon(cardData.weakness) : null
   const resistanceIcon = cardData.resistance !== 'none' ? getTypeIcon(cardData.resistance) : null
+  const abilityAreaY = 519
+  const abilityAreaHeight = 221
+  const abilityContentHeight = 64
+  const abilitySlotHeight = abilityAreaHeight / Math.max(abilities.length, 1)
 
   return (
     <svg
@@ -409,19 +413,19 @@ const CardArtwork = ({ cardData, layoutMode, imagePreview, imageAdjustment, svgR
         NO. 001  ORIGINAL CREATURE  ·  HT: 1.2 m  ·  WT: 24.0 kg
       </text>
 
-      <rect x="48" y="519" width="564" height="221" rx="4" fill="#fff" fillOpacity="0.28" stroke={theme.dark} strokeOpacity="0.22" />
+      <rect x="48" y={abilityAreaY} width="564" height={abilityAreaHeight} rx="4" fill="#fff" fillOpacity="0.28" stroke={theme.dark} strokeOpacity="0.22" />
       {abilities.length === 0 ? (
         <text x="330" y="630" textAnchor="middle" fill={theme.dark} fillOpacity="0.6" fontFamily="Arial, Helvetica, sans-serif" fontSize="18">Add an ability to complete the card</text>
       ) : abilities.map((ability, index) => {
-        const abilityRowHeight = Math.min(73, 215 / Math.max(abilities.length, 1))
-        const y = 528 + index * abilityRowHeight
+        const y = abilityAreaY + index * abilitySlotHeight + (abilitySlotHeight - abilityContentHeight) / 2
+        const separatorY = abilityAreaY + index * abilitySlotHeight
         const cost = Math.min(Number(ability.energyCost) || 1, 5)
         const abilityX = 68 + cost * 32
         const abilityNameSize = Math.max(16, 23 - Math.max(0, getTextUnits(ability.name) - 11) * 0.85)
         const descriptionLines = wrapText(ability.description, Math.max(24, 52 - cost * 2.5), 2)
         return (
           <g key={`${ability.name}-${index}`}>
-            {index > 0 && <line x1="66" y1={y - 9} x2="594" y2={y - 9} stroke={theme.dark} strokeOpacity="0.35" strokeWidth="1.2" />}
+            {index > 0 && <line x1="66" y1={separatorY} x2="594" y2={separatorY} stroke={theme.dark} strokeOpacity="0.35" strokeWidth="1.2" />}
             {Array.from({ length: cost }).map((_, energyIndex) => (
               <image key={energyIndex} href={typeIcon} xlinkHref={typeIcon} x={68 + energyIndex * 32} y={y + 2} width="28" height="28" />
             ))}

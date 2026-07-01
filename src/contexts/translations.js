@@ -244,7 +244,7 @@ export const translations = {
 
     // 情報テキスト
     recommendedImage: "JPG・PNG・WebP／8MBまで／縦長画像がおすすめです",
-    imagePrivacyNotice: "※画像はサーバーにアップロードされません",
+    imagePrivacyNotice: "※画像はサーバーへ送信されず、ブラウザ内でのみ処理されます",
     downloadInfo: "プレビューと同じ内容を1320 × 1842 pxで保存します",
 
     // ポケモンタイプ
