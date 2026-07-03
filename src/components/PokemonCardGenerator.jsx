@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import PokemonCard from './PokemonCard'
 import CardForm from './CardForm'
 import DownloadButton from './DownloadButton'
@@ -13,38 +13,127 @@ const initialImageAdjustment = {
   height: 0,
 }
 
+const cardDraftStorageKey = 'pokemonCardDraft'
+
+const createInitialCardData = (t) => ({
+  name: t('defaultCard.name'),
+  hp: '100',
+  type: 'normal',
+  image: null,
+  abilities: [
+    {
+      name: t('defaultCard.ability'),
+      description: t('defaultCard.abilityDescription'),
+      energyCost: 1,
+      damage: '',
+    },
+  ],
+  description: t('defaultCard.description'),
+  weakness: 'none',
+  resistance: 'none',
+  retreatCost: 1,
+  cardNumber: '001/100',
+  rarity: 'common',
+})
+
+const isString = (value) => typeof value === 'string'
+const isFiniteNumber = (value) => typeof value === 'number' && Number.isFinite(value)
+
+const isSavedCardData = (cardData) => (
+  cardData
+  && isString(cardData.name)
+  && isString(cardData.hp)
+  && isString(cardData.type)
+  && Array.isArray(cardData.abilities)
+  && cardData.abilities.length >= 1
+  && cardData.abilities.length <= 3
+  && cardData.abilities.every((ability) => (
+    ability
+    && isString(ability.name)
+    && isString(ability.description)
+    && isFiniteNumber(ability.energyCost)
+    && isString(ability.damage)
+  ))
+  && isString(cardData.description)
+  && isString(cardData.weakness)
+  && isString(cardData.resistance)
+  && isFiniteNumber(cardData.retreatCost)
+  && isString(cardData.cardNumber)
+  && isString(cardData.rarity)
+)
+
+const isSavedImageAdjustment = (adjustment) => (
+  adjustment
+  && ['x', 'y', 'zoom', 'width', 'height'].every((field) => isFiniteNumber(adjustment[field]))
+)
+
+const loadSavedDraft = () => {
+  try {
+    const savedDraft = JSON.parse(localStorage.getItem(cardDraftStorageKey))
+    if (
+      !savedDraft
+      || !isSavedCardData(savedDraft.cardData)
+      || !isSavedImageAdjustment(savedDraft.imageAdjustment)
+      || !['standard', 'fullArt'].includes(savedDraft.layoutMode)
+    ) {
+      return null
+    }
+
+    return {
+      ...savedDraft,
+      cardData: { ...savedDraft.cardData, image: null },
+    }
+  } catch {
+    return null
+  }
+}
+
 // メインのポケモンカードジェネレーターコンポーネント
 const PokemonCardGenerator = () => {
   const { t } = useLanguage() // 翻訳機能とユーザーの言語設定を取得
-  
-  // カードデータの状態管理 - 初期値は言語に応じて設定
-  const [cardData, setCardData] = useState({
-    name: t('defaultCard.name'),
-    hp: '100',
-    type: 'normal',
-    image: null,
-    abilities: [
-      { 
-        name: t('defaultCard.ability'), 
-        description: t('defaultCard.abilityDescription'),
-        energyCost: 1,
-        damage: ''
-      }
-    ],
-    description: t('defaultCard.description'),
-    weakness: 'none',
-    resistance: 'none',
-    retreatCost: 1,
-    cardNumber: '001/100',
-    rarity: 'common'
-  })
+  const initialCardData = createInitialCardData(t)
+  const savedDraftRef = useRef(undefined)
+  if (savedDraftRef.current === undefined) {
+    savedDraftRef.current = loadSavedDraft()
+  }
+  const savedDraft = savedDraftRef.current
+
+  // カードデータの状態管理 - 保存内容がなければ言語に応じた初期値を使用
+  const [cardData, setCardData] = useState(() => savedDraft?.cardData ?? initialCardData)
 
   const [imagePreview, setImagePreview] = useState(null)
-  const [imageAdjustment, setImageAdjustment] = useState(initialImageAdjustment)
-  const [layoutMode, setLayoutMode] = useState('standard')
+  const [imageAdjustment, setImageAdjustment] = useState(
+    () => savedDraft?.imageAdjustment ?? initialImageAdjustment,
+  )
+  const [layoutMode, setLayoutMode] = useState(() => savedDraft?.layoutMode ?? 'standard')
   const [imageError, setImageError] = useState('')
   const cardRef = useRef(null)
   const imageUploadIdRef = useRef(0)
+  const isInitialRenderRef = useRef(true)
+  const skipNextSaveRef = useRef(false)
+
+  useEffect(() => {
+    if (isInitialRenderRef.current) {
+      isInitialRenderRef.current = false
+      return
+    }
+    if (skipNextSaveRef.current) {
+      skipNextSaveRef.current = false
+      return
+    }
+
+    const cardDataWithoutImage = { ...cardData }
+    delete cardDataWithoutImage.image
+    try {
+      localStorage.setItem(cardDraftStorageKey, JSON.stringify({
+        cardData: cardDataWithoutImage,
+        imageAdjustment,
+        layoutMode,
+      }))
+    } catch {
+      // 保存できない環境でもカード編集は継続できるようにする
+    }
+  }, [cardData, imageAdjustment, layoutMode])
 
   // サンプルカードのデータ - 現在の言語に基づいて動的に取得
   const getSampleCards = () => {
@@ -205,26 +294,13 @@ const PokemonCardGenerator = () => {
   // カードリセット処理 - 言語に応じたデフォルト値に戻す
   const resetCard = () => {
     imageUploadIdRef.current += 1
-    setCardData({
-      name: t('defaultCard.name'),
-      hp: '100',
-      type: 'normal',
-      image: null,
-      abilities: [
-        { 
-          name: t('defaultCard.ability'), 
-          description: t('defaultCard.abilityDescription'),
-          energyCost: 1,
-          damage: ''
-        }
-      ],
-      description: t('defaultCard.description'),
-      weakness: 'none',
-      resistance: 'none',
-      retreatCost: 1,
-      cardNumber: '001/100',
-      rarity: 'common'
-    })
+    skipNextSaveRef.current = true
+    try {
+      localStorage.removeItem(cardDraftStorageKey)
+    } catch {
+      // 削除できない環境でも画面上のリセットは継続する
+    }
+    setCardData(createInitialCardData(t))
     setImagePreview(null)
     setImageAdjustment(initialImageAdjustment)
     setLayoutMode('standard')
