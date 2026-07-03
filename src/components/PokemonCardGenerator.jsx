@@ -3,6 +3,7 @@ import PokemonCard from './PokemonCard'
 import CardForm from './CardForm'
 import DownloadButton from './DownloadButton'
 import { useLanguage } from '../contexts/useLanguage'
+import { translations } from '../contexts/translations'
 import './PokemonCardGenerator.css'
 
 const initialImageAdjustment = {
@@ -36,6 +37,13 @@ const createInitialCardData = (t) => ({
   rarity: 'common',
 })
 
+const defaultCardDataByLanguage = Object.values(translations).map(({ defaultCard }) => ({
+  ...createInitialCardData((key) => {
+    const defaultCardKey = key.split('.')[1]
+    return defaultCard[defaultCardKey]
+  }),
+}))
+
 const isString = (value) => typeof value === 'string'
 const isFiniteNumber = (value) => typeof value === 'number' && Number.isFinite(value)
 
@@ -67,6 +75,39 @@ const isSavedImageAdjustment = (adjustment) => (
   && ['x', 'y', 'zoom', 'width', 'height'].every((field) => isFiniteNumber(adjustment[field]))
 )
 
+const isSameCardData = (cardData, otherCardData) => (
+  cardData.name === otherCardData.name
+  && cardData.hp === otherCardData.hp
+  && cardData.type === otherCardData.type
+  && cardData.description === otherCardData.description
+  && cardData.weakness === otherCardData.weakness
+  && cardData.resistance === otherCardData.resistance
+  && cardData.retreatCost === otherCardData.retreatCost
+  && cardData.cardNumber === otherCardData.cardNumber
+  && cardData.rarity === otherCardData.rarity
+  && cardData.abilities.length === otherCardData.abilities.length
+  && cardData.abilities.every((ability, index) => {
+    const otherAbility = otherCardData.abilities[index]
+    return (
+      ability.name === otherAbility.name
+      && ability.description === otherAbility.description
+      && ability.energyCost === otherAbility.energyCost
+      && ability.damage === otherAbility.damage
+    )
+  })
+)
+
+const isInitialDraft = (cardData, imageAdjustment, layoutMode) => (
+  layoutMode === 'standard'
+  && isSavedImageAdjustment(imageAdjustment)
+  && Object.entries(initialImageAdjustment).every(
+    ([field, value]) => imageAdjustment[field] === value,
+  )
+  && defaultCardDataByLanguage.some((defaultCardData) => (
+    isSameCardData(cardData, defaultCardData)
+  ))
+)
+
 const loadSavedDraft = () => {
   try {
     const savedDraft = JSON.parse(localStorage.getItem(cardDraftStorageKey))
@@ -92,11 +133,7 @@ const loadSavedDraft = () => {
 const PokemonCardGenerator = () => {
   const { t } = useLanguage() // 翻訳機能とユーザーの言語設定を取得
   const initialCardData = createInitialCardData(t)
-  const savedDraftRef = useRef(undefined)
-  if (savedDraftRef.current === undefined) {
-    savedDraftRef.current = loadSavedDraft()
-  }
-  const savedDraft = savedDraftRef.current
+  const [savedDraft] = useState(() => loadSavedDraft())
 
   // カードデータの状態管理 - 保存内容がなければ言語に応じた初期値を使用
   const [cardData, setCardData] = useState(() => savedDraft?.cardData ?? initialCardData)
@@ -109,16 +146,14 @@ const PokemonCardGenerator = () => {
   const [imageError, setImageError] = useState('')
   const cardRef = useRef(null)
   const imageUploadIdRef = useRef(0)
-  const isInitialRenderRef = useRef(true)
-  const skipNextSaveRef = useRef(false)
 
   useEffect(() => {
-    if (isInitialRenderRef.current) {
-      isInitialRenderRef.current = false
-      return
-    }
-    if (skipNextSaveRef.current) {
-      skipNextSaveRef.current = false
+    if (isInitialDraft(cardData, imageAdjustment, layoutMode)) {
+      try {
+        localStorage.removeItem(cardDraftStorageKey)
+      } catch {
+        // 削除できない環境でもカード編集は継続できるようにする
+      }
       return
     }
 
@@ -294,12 +329,6 @@ const PokemonCardGenerator = () => {
   // カードリセット処理 - 言語に応じたデフォルト値に戻す
   const resetCard = () => {
     imageUploadIdRef.current += 1
-    skipNextSaveRef.current = true
-    try {
-      localStorage.removeItem(cardDraftStorageKey)
-    } catch {
-      // 削除できない環境でも画面上のリセットは継続する
-    }
     setCardData(createInitialCardData(t))
     setImagePreview(null)
     setImageAdjustment(initialImageAdjustment)
