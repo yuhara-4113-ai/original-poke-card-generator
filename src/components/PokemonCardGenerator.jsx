@@ -37,12 +37,12 @@ const createInitialCardData = (t) => ({
   rarity: 'common',
 })
 
-const defaultCardDataByLanguage = Object.values(translations).map(({ defaultCard }) => ({
-  ...createInitialCardData((key) => {
+const defaultCardDataByLanguage = Object.values(translations).map(({ defaultCard }) => (
+  createInitialCardData((key) => {
     const defaultCardKey = key.split('.')[1]
-    return defaultCard[defaultCardKey]
-  }),
-}))
+    return defaultCard?.[defaultCardKey] ?? ''
+  })
+))
 
 const isString = (value) => typeof value === 'string'
 const isFiniteNumber = (value) => typeof value === 'number' && Number.isFinite(value)
@@ -70,11 +70,6 @@ const isSavedCardData = (cardData) => (
   && isString(cardData.rarity)
 )
 
-const isSavedImageAdjustment = (adjustment) => (
-  adjustment
-  && ['x', 'y', 'zoom', 'width', 'height'].every((field) => isFiniteNumber(adjustment[field]))
-)
-
 const isSameCardData = (cardData, otherCardData) => (
   cardData.name === otherCardData.name
   && cardData.hp === otherCardData.hp
@@ -97,12 +92,8 @@ const isSameCardData = (cardData, otherCardData) => (
   })
 )
 
-const isInitialDraft = (cardData, imageAdjustment, layoutMode) => (
+const isInitialDraft = (cardData, layoutMode) => (
   layoutMode === 'standard'
-  && isSavedImageAdjustment(imageAdjustment)
-  && Object.entries(initialImageAdjustment).every(
-    ([field, value]) => imageAdjustment[field] === value,
-  )
   && defaultCardDataByLanguage.some((defaultCardData) => (
     isSameCardData(cardData, defaultCardData)
   ))
@@ -114,7 +105,6 @@ const loadSavedDraft = () => {
     if (
       !savedDraft
       || !isSavedCardData(savedDraft.cardData)
-      || !isSavedImageAdjustment(savedDraft.imageAdjustment)
       || !['standard', 'fullArt'].includes(savedDraft.layoutMode)
     ) {
       return null
@@ -139,16 +129,14 @@ const PokemonCardGenerator = () => {
   const [cardData, setCardData] = useState(() => savedDraft?.cardData ?? initialCardData)
 
   const [imagePreview, setImagePreview] = useState(null)
-  const [imageAdjustment, setImageAdjustment] = useState(
-    () => savedDraft?.imageAdjustment ?? initialImageAdjustment,
-  )
+  const [imageAdjustment, setImageAdjustment] = useState(initialImageAdjustment)
   const [layoutMode, setLayoutMode] = useState(() => savedDraft?.layoutMode ?? 'standard')
   const [imageError, setImageError] = useState('')
   const cardRef = useRef(null)
   const imageUploadIdRef = useRef(0)
 
   useEffect(() => {
-    if (isInitialDraft(cardData, imageAdjustment, layoutMode)) {
+    if (isInitialDraft(cardData, layoutMode)) {
       try {
         localStorage.removeItem(cardDraftStorageKey)
       } catch {
@@ -162,13 +150,12 @@ const PokemonCardGenerator = () => {
     try {
       localStorage.setItem(cardDraftStorageKey, JSON.stringify({
         cardData: cardDataWithoutImage,
-        imageAdjustment,
         layoutMode,
       }))
     } catch {
       // 保存できない環境でもカード編集は継続できるようにする
     }
-  }, [cardData, imageAdjustment, layoutMode])
+  }, [cardData, layoutMode])
 
   // サンプルカードのデータ - 現在の言語に基づいて動的に取得
   const getSampleCards = () => {
