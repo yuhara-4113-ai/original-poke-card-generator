@@ -132,6 +132,8 @@ const DownloadButton = ({ cardRef, cardData }) => {
   const { t } = useLanguage()
 
   const generateCardImage = async () => {
+    window.gtag?.('event', 'card_download')
+
     const svg = cardRef?.current?.getSvgElement?.()
     if (!svg) {
       setError(t('alerts.cardNotAvailable'))
