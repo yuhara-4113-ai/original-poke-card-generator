@@ -357,7 +357,6 @@ const DownloadButton = ({
           onClick={() => generateImage('card')}
           disabled={isGenerating}
         >
-          <span aria-hidden="true">{isGenerating ? '◌' : '↓'}</span>
           {isGenerating ? t('generating') : t('downloadCard')}
         </button>
         <details
@@ -429,7 +428,6 @@ const DownloadButton = ({
           onClick={() => generateImage('wallpaper')}
           disabled={isGenerating}
         >
-          <span aria-hidden="true">{isGenerating ? '◌' : '↓'}</span>
           {isGenerating ? t('generating') : t('downloadWallpaper')}
         </button>
       </div>
