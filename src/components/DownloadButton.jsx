@@ -211,6 +211,7 @@ const DownloadButton = ({
   const [includeFoil, setIncludeFoil] = useState(false)
   const [wallpaperPosition, setWallpaperPosition] = useState(DEFAULT_WALLPAPER_POSITION)
   const [wallpaperPreviewUrl, setWallpaperPreviewUrl] = useState('')
+  const [isWallpaperPanelOpen, setIsWallpaperPanelOpen] = useState(false)
   const [error, setError] = useState('')
   const [status, setStatus] = useState('')
   const wallpaperPreviewRef = useRef(null)
@@ -218,6 +219,7 @@ const DownloadButton = ({
   const { t } = useLanguage()
 
   useEffect(() => {
+    if (!isWallpaperPanelOpen) return undefined
     let isDisposed = false
     let previewUrl = ''
     const sourceSvg = cardRef?.current?.getSvgElement?.()
@@ -247,7 +249,13 @@ const DownloadButton = ({
       isDisposed = true
       if (previewUrl) URL.revokeObjectURL(previewUrl)
     }
-  }, [cardRef, cardData, layoutMode, imagePreview, imageAdjustment])
+  }, [isWallpaperPanelOpen, cardRef, cardData, layoutMode, imagePreview, imageAdjustment])
+
+  const handleWallpaperPanelToggle = (event) => {
+    const isOpen = event.currentTarget.open
+    setIsWallpaperPanelOpen(isOpen)
+    if (!isOpen) setWallpaperPreviewUrl('')
+  }
 
   const updateWallpaperPosition = (position) => {
     setWallpaperPosition(Math.round(clampWallpaperPosition(Number(position))))
@@ -352,7 +360,10 @@ const DownloadButton = ({
           <span aria-hidden="true">{isGenerating ? '◌' : '↓'}</span>
           {isGenerating ? t('generating') : t('downloadCard')}
         </button>
-        <details className="wallpaper-position-panel">
+        <details
+          className="wallpaper-position-panel"
+          onToggle={handleWallpaperPanelToggle}
+        >
           <summary>{t('adjustWallpaperPosition')}</summary>
           <div className="wallpaper-position-content">
             <p>{t('wallpaperPositionHelp')}</p>
