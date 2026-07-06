@@ -397,7 +397,13 @@ const PokemonCardGenerator = () => {
             />
           </div>
           {/* ダウンロードボタン */}
-          <DownloadButton cardRef={cardRef} cardData={cardData} />
+          <DownloadButton
+            cardRef={cardRef}
+            cardData={cardData}
+            layoutMode={layoutMode}
+            imagePreview={imagePreview}
+            imageAdjustment={imageAdjustment}
+          />
         </section>
       </div>
     </div>

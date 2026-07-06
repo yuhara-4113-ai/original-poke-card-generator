@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useLanguage } from '../contexts/useLanguage'
 import { getTypeTheme } from './cardTheme'
 
@@ -9,7 +9,16 @@ const WALLPAPER_WIDTH = 1440
 const WALLPAPER_HEIGHT = 3120
 const WALLPAPER_CARD_WIDTH = 1152
 const WALLPAPER_CARD_HEIGHT = Math.round(WALLPAPER_CARD_WIDTH * (CARD_HEIGHT / CARD_WIDTH))
-const WALLPAPER_CARD_Y = 1040
+const WALLPAPER_CARD_MIN_Y = 520
+const WALLPAPER_CARD_MAX_Y = 1240
+const DEFAULT_WALLPAPER_POSITION = 72
+
+const clampWallpaperPosition = (position) => Math.min(100, Math.max(0, position))
+
+const getWallpaperCardY = (position) => Math.round(
+  WALLPAPER_CARD_MIN_Y
+  + (WALLPAPER_CARD_MAX_Y - WALLPAPER_CARD_MIN_Y) * (clampWallpaperPosition(position) / 100),
+)
 
 const blobToDataUrl = (blob) => new Promise((resolve, reject) => {
   const reader = new FileReader()
@@ -132,7 +141,7 @@ const svgToCanvas = async (sourceSvg, includeFoil, foilPosition) => {
   }
 }
 
-const createWallpaperCanvas = (cardCanvas, type) => {
+const createWallpaperCanvas = (cardCanvas, type, wallpaperPosition) => {
   const canvas = document.createElement('canvas')
   canvas.width = WALLPAPER_WIDTH
   canvas.height = WALLPAPER_HEIGHT
@@ -172,6 +181,7 @@ const createWallpaperCanvas = (cardCanvas, type) => {
   context.fillRect(0, 0, WALLPAPER_WIDTH, WALLPAPER_HEIGHT)
 
   const cardX = (WALLPAPER_WIDTH - WALLPAPER_CARD_WIDTH) / 2
+  const cardY = getWallpaperCardY(wallpaperPosition)
   context.save()
   context.shadowColor = 'rgba(0, 0, 0, 0.48)'
   context.shadowBlur = 64
@@ -181,7 +191,7 @@ const createWallpaperCanvas = (cardCanvas, type) => {
   context.drawImage(
     cardCanvas,
     cardX,
-    WALLPAPER_CARD_Y,
+    cardY,
     WALLPAPER_CARD_WIDTH,
     WALLPAPER_CARD_HEIGHT,
   )
@@ -190,12 +200,93 @@ const createWallpaperCanvas = (cardCanvas, type) => {
   return canvas
 }
 
-const DownloadButton = ({ cardRef, cardData }) => {
+const DownloadButton = ({
+  cardRef,
+  cardData,
+  layoutMode,
+  imagePreview,
+  imageAdjustment,
+}) => {
   const [isGenerating, setIsGenerating] = useState(false)
   const [includeFoil, setIncludeFoil] = useState(false)
+  const [wallpaperPosition, setWallpaperPosition] = useState(DEFAULT_WALLPAPER_POSITION)
+  const [wallpaperPreviewUrl, setWallpaperPreviewUrl] = useState('')
   const [error, setError] = useState('')
   const [status, setStatus] = useState('')
+  const wallpaperPreviewRef = useRef(null)
+  const wallpaperDragRef = useRef(null)
   const { t } = useLanguage()
+
+  useEffect(() => {
+    let isDisposed = false
+    let previewUrl = ''
+    const sourceSvg = cardRef?.current?.getSvgElement?.()
+    if (!sourceSvg) return undefined
+
+    const updatePreview = async () => {
+      const svg = sourceSvg.cloneNode(true)
+      svg.setAttribute('width', CARD_WIDTH)
+      svg.setAttribute('height', CARD_HEIGHT)
+      svg.removeAttribute('class')
+      svg.removeAttribute('role')
+      svg.removeAttribute('aria-label')
+      await inlineExternalImages(svg)
+      if (isDisposed) return
+
+      const svgSource = new XMLSerializer().serializeToString(svg)
+      previewUrl = URL.createObjectURL(new Blob([svgSource], { type: 'image/svg+xml;charset=utf-8' }))
+      setWallpaperPreviewUrl(previewUrl)
+    }
+
+    updatePreview().catch((previewError) => {
+      console.error('Error generating wallpaper preview:', previewError)
+      if (!isDisposed) setWallpaperPreviewUrl('')
+    })
+
+    return () => {
+      isDisposed = true
+      if (previewUrl) URL.revokeObjectURL(previewUrl)
+    }
+  }, [cardRef, cardData, layoutMode, imagePreview, imageAdjustment])
+
+  const updateWallpaperPosition = (position) => {
+    setWallpaperPosition(Math.round(clampWallpaperPosition(Number(position))))
+  }
+
+  const handleWallpaperPointerDown = (event) => {
+    if (isGenerating) return
+    event.preventDefault()
+    event.currentTarget.setPointerCapture(event.pointerId)
+    wallpaperDragRef.current = {
+      pointerId: event.pointerId,
+      startClientY: event.clientY,
+      startPosition: wallpaperPosition,
+    }
+  }
+
+  const handleWallpaperPointerMove = (event) => {
+    const drag = wallpaperDragRef.current
+    const previewHeight = wallpaperPreviewRef.current?.getBoundingClientRect().height
+    if (!drag || drag.pointerId !== event.pointerId || !previewHeight) return
+
+    const deltaCanvasY = ((event.clientY - drag.startClientY) / previewHeight) * WALLPAPER_HEIGHT
+    const deltaPosition = (deltaCanvasY / (WALLPAPER_CARD_MAX_Y - WALLPAPER_CARD_MIN_Y)) * 100
+    updateWallpaperPosition(drag.startPosition + deltaPosition)
+  }
+
+  const handleWallpaperPointerEnd = (event) => {
+    if (wallpaperDragRef.current?.pointerId !== event.pointerId) return
+    wallpaperDragRef.current = null
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId)
+    }
+  }
+
+  const handleWallpaperKeyDown = (event) => {
+    if (!['ArrowUp', 'ArrowDown'].includes(event.key)) return
+    event.preventDefault()
+    updateWallpaperPosition(wallpaperPosition + (event.key === 'ArrowUp' ? -2 : 2))
+  }
 
   const generateImage = async (format) => {
     if (typeof window.gtag === 'function') {
@@ -216,7 +307,7 @@ const DownloadButton = ({ cardRef, cardData }) => {
       const foilPosition = cardRef.current?.getFoilPosition?.() || { x: 50, y: 50 }
       const cardCanvas = await svgToCanvas(svg, includeFoil, foilPosition)
       const exportCanvas = format === 'wallpaper'
-        ? createWallpaperCanvas(cardCanvas, cardData.type)
+        ? createWallpaperCanvas(cardCanvas, cardData.type, wallpaperPosition)
         : cardCanvas
       const blob = await canvasToPng(exportCanvas)
       const url = URL.createObjectURL(blob)
@@ -261,6 +352,66 @@ const DownloadButton = ({ cardRef, cardData }) => {
           <span aria-hidden="true">{isGenerating ? '◌' : '↓'}</span>
           {isGenerating ? t('generating') : t('downloadCard')}
         </button>
+        <details className="wallpaper-position-panel">
+          <summary>{t('adjustWallpaperPosition')}</summary>
+          <div className="wallpaper-position-content">
+            <p>{t('wallpaperPositionHelp')}</p>
+            <div
+              ref={wallpaperPreviewRef}
+              className="wallpaper-preview"
+              style={{
+                '--wallpaper-dark': getTypeTheme(cardData.type).dark,
+                '--wallpaper-primary': getTypeTheme(cardData.type).primary,
+                '--wallpaper-light': getTypeTheme(cardData.type).light,
+              }}
+            >
+              <button
+                type="button"
+                className="wallpaper-preview-card"
+                style={{ top: `${(getWallpaperCardY(wallpaperPosition) / WALLPAPER_HEIGHT) * 100}%` }}
+                onPointerDown={handleWallpaperPointerDown}
+                onPointerMove={handleWallpaperPointerMove}
+                onPointerUp={handleWallpaperPointerEnd}
+                onPointerCancel={handleWallpaperPointerEnd}
+                onKeyDown={handleWallpaperKeyDown}
+                disabled={isGenerating}
+                aria-label={t('wallpaperPositionDragLabel')}
+              >
+                {wallpaperPreviewUrl
+                  ? <img src={wallpaperPreviewUrl} alt="" draggable="false" />
+                  : <span className="wallpaper-preview-placeholder">CARD</span>}
+              </button>
+            </div>
+            <div className="wallpaper-position-control">
+              <label htmlFor="wallpaper-position">
+                <span>{t('wallpaperPosition')}</span>
+                <output htmlFor="wallpaper-position">{Math.round(wallpaperPosition)}%</output>
+              </label>
+              <input
+                id="wallpaper-position"
+                type="range"
+                min="0"
+                max="100"
+                step="1"
+                value={wallpaperPosition}
+                onChange={(event) => updateWallpaperPosition(event.target.value)}
+                disabled={isGenerating}
+              />
+              <div className="wallpaper-position-axis" aria-hidden="true">
+                <span>{t('wallpaperPositionTop')}</span>
+                <span>{t('wallpaperPositionBottom')}</span>
+              </div>
+            </div>
+            <button
+              type="button"
+              className="wallpaper-position-reset"
+              onClick={() => updateWallpaperPosition(DEFAULT_WALLPAPER_POSITION)}
+              disabled={isGenerating || wallpaperPosition === DEFAULT_WALLPAPER_POSITION}
+            >
+              {t('resetWallpaperPosition')}
+            </button>
+          </div>
+        </details>
         <button
           type="button"
           className="download-button download-button--wallpaper"
