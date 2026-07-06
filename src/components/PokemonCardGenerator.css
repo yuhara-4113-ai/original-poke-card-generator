@@ -646,6 +646,22 @@
   transition: background 150ms ease, transform 150ms ease, box-shadow 150ms ease;
 }
 
+.download-actions {
+  display: grid;
+  gap: 10px;
+}
+
+.download-button--wallpaper {
+  color: var(--accent-dark);
+  background: #fff;
+  border-color: var(--accent);
+  box-shadow: 0 6px 16px rgba(157, 56, 42, 0.12);
+}
+
+.download-button--wallpaper:hover:not(:disabled) {
+  color: #fff;
+}
+
 .download-button:hover:not(:disabled) {
   background: var(--accent-dark);
   transform: translateY(-1px);

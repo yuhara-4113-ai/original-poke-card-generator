@@ -1,9 +1,15 @@
 import { useState } from 'react'
 import { useLanguage } from '../contexts/useLanguage'
+import { getTypeTheme } from './cardTheme'
 
 const CARD_WIDTH = 660
 const CARD_HEIGHT = 921
 const EXPORT_SCALE = 2
+const WALLPAPER_WIDTH = 1440
+const WALLPAPER_HEIGHT = 3120
+const WALLPAPER_CARD_WIDTH = 1152
+const WALLPAPER_CARD_HEIGHT = WALLPAPER_CARD_WIDTH * (CARD_HEIGHT / CARD_WIDTH)
+const WALLPAPER_CARD_Y = 1040
 
 const blobToDataUrl = (blob) => new Promise((resolve, reject) => {
   const reader = new FileReader()
@@ -83,7 +89,11 @@ const drawFoilEffect = (context, foilPosition) => {
   context.restore()
 }
 
-const svgToPng = async (sourceSvg, includeFoil, foilPosition) => {
+const canvasToPng = (canvas) => new Promise((resolve, reject) => {
+  canvas.toBlob((blob) => blob ? resolve(blob) : reject(new Error('Could not create PNG')), 'image/png', 1)
+})
+
+const svgToCanvas = async (sourceSvg, includeFoil, foilPosition) => {
   const svg = sourceSvg.cloneNode(true)
   svg.setAttribute('width', CARD_WIDTH)
   svg.setAttribute('height', CARD_HEIGHT)
@@ -116,12 +126,68 @@ const svgToPng = async (sourceSvg, includeFoil, foilPosition) => {
     context.drawImage(image, 0, 0, canvas.width, canvas.height)
     if (includeFoil) drawFoilEffect(context, foilPosition)
 
-    return await new Promise((resolve, reject) => {
-      canvas.toBlob((blob) => blob ? resolve(blob) : reject(new Error('Could not create PNG')), 'image/png', 1)
-    })
+    return canvas
   } finally {
     URL.revokeObjectURL(svgUrl)
   }
+}
+
+const createWallpaperCanvas = (cardCanvas, type) => {
+  const canvas = document.createElement('canvas')
+  canvas.width = WALLPAPER_WIDTH
+  canvas.height = WALLPAPER_HEIGHT
+  const context = canvas.getContext('2d')
+  if (!context) throw new Error('Canvas is not available')
+
+  const theme = getTypeTheme(type)
+  const background = context.createLinearGradient(0, 0, WALLPAPER_WIDTH, WALLPAPER_HEIGHT)
+  background.addColorStop(0, theme.dark)
+  background.addColorStop(0.48, theme.primary)
+  background.addColorStop(1, theme.dark)
+  context.fillStyle = background
+  context.fillRect(0, 0, WALLPAPER_WIDTH, WALLPAPER_HEIGHT)
+
+  context.save()
+  context.globalAlpha = 0.16
+  context.fillStyle = theme.light
+  context.beginPath()
+  context.arc(WALLPAPER_WIDTH * 0.08, WALLPAPER_HEIGHT * 0.18, 560, 0, Math.PI * 2)
+  context.fill()
+  context.beginPath()
+  context.arc(WALLPAPER_WIDTH * 0.96, WALLPAPER_HEIGHT * 0.76, 720, 0, Math.PI * 2)
+  context.fill()
+  context.restore()
+
+  const vignette = context.createRadialGradient(
+    WALLPAPER_WIDTH / 2,
+    WALLPAPER_HEIGHT * 0.52,
+    WALLPAPER_WIDTH * 0.2,
+    WALLPAPER_WIDTH / 2,
+    WALLPAPER_HEIGHT * 0.52,
+    WALLPAPER_HEIGHT * 0.68,
+  )
+  vignette.addColorStop(0, 'rgba(0, 0, 0, 0)')
+  vignette.addColorStop(1, 'rgba(0, 0, 0, 0.38)')
+  context.fillStyle = vignette
+  context.fillRect(0, 0, WALLPAPER_WIDTH, WALLPAPER_HEIGHT)
+
+  const cardX = (WALLPAPER_WIDTH - WALLPAPER_CARD_WIDTH) / 2
+  context.save()
+  context.shadowColor = 'rgba(0, 0, 0, 0.48)'
+  context.shadowBlur = 64
+  context.shadowOffsetY = 30
+  context.imageSmoothingEnabled = true
+  context.imageSmoothingQuality = 'high'
+  context.drawImage(
+    cardCanvas,
+    cardX,
+    WALLPAPER_CARD_Y,
+    WALLPAPER_CARD_WIDTH,
+    WALLPAPER_CARD_HEIGHT,
+  )
+  context.restore()
+
+  return canvas
 }
 
 const DownloadButton = ({ cardRef, cardData }) => {
@@ -131,9 +197,9 @@ const DownloadButton = ({ cardRef, cardData }) => {
   const [status, setStatus] = useState('')
   const { t } = useLanguage()
 
-  const generateCardImage = async () => {
+  const generateImage = async (format) => {
     if (typeof window.gtag === 'function') {
-      window.gtag('event', 'card_download_click')
+      window.gtag('event', format === 'wallpaper' ? 'wallpaper_download_click' : 'card_download_click')
     }
 
     const svg = cardRef?.current?.getSvgElement?.()
@@ -148,11 +214,16 @@ const DownloadButton = ({ cardRef, cardData }) => {
     try {
       await document.fonts?.ready
       const foilPosition = cardRef.current?.getFoilPosition?.() || { x: 50, y: 50 }
-      const blob = await svgToPng(svg, includeFoil, foilPosition)
+      const cardCanvas = await svgToCanvas(svg, includeFoil, foilPosition)
+      const exportCanvas = format === 'wallpaper'
+        ? createWallpaperCanvas(cardCanvas, cardData.type)
+        : cardCanvas
+      const blob = await canvasToPng(exportCanvas)
       const url = URL.createObjectURL(blob)
       const link = document.createElement('a')
       const safeName = (cardData.name || 'original-card').trim().replace(/[^\p{L}\p{N}_-]+/gu, '_')
-      link.download = `${safeName || 'original-card'}.png`
+      const suffix = format === 'wallpaper' ? '-wallpaper' : ''
+      link.download = `${safeName || 'original-card'}${suffix}.png`
       link.href = url
       document.body.appendChild(link)
       link.click()
@@ -180,16 +251,27 @@ const DownloadButton = ({ cardRef, cardData }) => {
         <span className="foil-toggle-label">{t('includeFoil')}</span>
         <strong>{includeFoil ? t('foilOn') : t('foilOff')}</strong>
       </label>
-      <button
-        type="button"
-        className="download-button"
-        onClick={generateCardImage}
-        disabled={isGenerating}
-      >
-        <span aria-hidden="true">{isGenerating ? '◌' : '↓'}</span>
-        {isGenerating ? t('generating') : t('downloadCard')}
-      </button>
-      <p className="download-info">{t('downloadInfo')}</p>
+      <div className="download-actions">
+        <button
+          type="button"
+          className="download-button"
+          onClick={() => generateImage('card')}
+          disabled={isGenerating}
+        >
+          <span aria-hidden="true">{isGenerating ? '◌' : '↓'}</span>
+          {isGenerating ? t('generating') : t('downloadCard')}
+        </button>
+        <button
+          type="button"
+          className="download-button download-button--wallpaper"
+          onClick={() => generateImage('wallpaper')}
+          disabled={isGenerating}
+        >
+          <span aria-hidden="true">{isGenerating ? '◌' : '↓'}</span>
+          {isGenerating ? t('generating') : t('downloadWallpaper')}
+        </button>
+      </div>
+      <p className="download-info">{t('downloadInfo')}<br />{t('wallpaperDownloadInfo')}</p>
       <p className="download-error" role="alert">{error}</p>
       <p className="download-status" role="status">{status}</p>
     </div>
