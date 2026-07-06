@@ -73,6 +73,14 @@ export const translations = {
     addAbility: "+ Add Ability",
     removeAbility: "Remove ability",
     downloadCard: "Download high-resolution PNG",
+    downloadWallpaper: "Download smartphone wallpaper",
+    adjustWallpaperPosition: "Adjust card position in wallpaper",
+    wallpaperPosition: "Vertical position",
+    wallpaperPositionHelp: "Drag the card up or down, or use the slider for precise adjustment.",
+    wallpaperPositionDragLabel: "Drag to adjust the card's vertical position. Use the up and down arrow keys for fine adjustment.",
+    wallpaperPositionTop: "Top",
+    wallpaperPositionBottom: "Bottom",
+    resetWallpaperPosition: "Reset position",
     includeFoil: "Include foil effect in PNG",
     foilOn: "ON",
     foilOff: "OFF",
@@ -84,6 +92,7 @@ export const translations = {
       "JPG, PNG or WebP · up to 8 MB · portrait images work best",
     imagePrivacyNotice: "Your image is processed only in this browser and is not uploaded to a server.",
     downloadInfo: "Exports the exact preview at 1320 × 1842 px",
+    wallpaperDownloadInfo: "Wallpaper export: 1440 × 3120 px with space for the clock",
 
     // ポケモンタイプ
     types: {
@@ -238,6 +247,14 @@ export const translations = {
     addAbility: "+ 技を追加",
     removeAbility: "技を削除",
     downloadCard: "高解像度画像をダウンロード",
+    downloadWallpaper: "スマホ壁紙用画像をダウンロード",
+    adjustWallpaperPosition: "壁紙内のカード位置を調整",
+    wallpaperPosition: "カードの縦位置",
+    wallpaperPositionHelp: "カードを上下にドラッグするか、スライダーで微調整できます。",
+    wallpaperPositionDragLabel: "ドラッグして壁紙内のカード位置を上下に調整します。上下の矢印キーでも微調整できます。",
+    wallpaperPositionTop: "上",
+    wallpaperPositionBottom: "下",
+    resetWallpaperPosition: "位置をリセット",
     includeFoil: "画像に光沢エフェクトを含める",
     foilOn: "ON",
     foilOff: "OFF",
@@ -248,6 +265,7 @@ export const translations = {
     recommendedImage: "JPG・PNG・WebP／8MBまで／縦長画像がおすすめです",
     imagePrivacyNotice: "※画像はサーバーへ送信されず、ブラウザ内でのみ処理されます",
     downloadInfo: "プレビューと同じ内容を1320 × 1842 pxで保存します",
+    wallpaperDownloadInfo: "壁紙用は時計の余白を含む1440 × 3120 pxで保存します",
 
     // ポケモンタイプ
     types: {

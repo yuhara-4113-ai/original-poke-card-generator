@@ -646,6 +646,184 @@
   transition: background 150ms ease, transform 150ms ease, box-shadow 150ms ease;
 }
 
+.download-actions {
+  display: grid;
+  gap: 10px;
+}
+
+.wallpaper-position-panel {
+  overflow: hidden;
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.68);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  text-align: left;
+}
+
+.wallpaper-position-panel summary {
+  padding: 13px 14px;
+  cursor: pointer;
+  font-size: 0.82rem;
+  font-weight: 800;
+  list-style-position: inside;
+}
+
+.wallpaper-position-panel[open] summary {
+  border-bottom: 1px solid var(--line);
+}
+
+.wallpaper-position-content {
+  display: grid;
+  gap: 14px;
+  padding: 14px;
+}
+
+.wallpaper-position-content > p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.74rem;
+  line-height: 1.6;
+  text-align: center;
+}
+
+.wallpaper-preview {
+  position: relative;
+  width: min(100%, 210px);
+  aspect-ratio: 6 / 13;
+  overflow: hidden;
+  margin: 0 auto;
+  background: linear-gradient(145deg, var(--wallpaper-dark), var(--wallpaper-primary) 48%, var(--wallpaper-dark));
+  border: 1px solid color-mix(in srgb, var(--wallpaper-light) 38%, transparent);
+  border-radius: 16px;
+  box-shadow: inset 0 0 60px rgba(0, 0, 0, 0.28), 0 10px 24px rgba(31, 41, 51, 0.18);
+}
+
+.wallpaper-preview::before,
+.wallpaper-preview::after {
+  position: absolute;
+  width: 76%;
+  aspect-ratio: 1;
+  content: '';
+  background: var(--wallpaper-light);
+  border-radius: 50%;
+  opacity: 0.16;
+}
+
+.wallpaper-preview::before {
+  top: -4%;
+  left: -36%;
+}
+
+.wallpaper-preview::after {
+  right: -46%;
+  bottom: 3%;
+}
+
+.wallpaper-preview-card {
+  position: absolute;
+  left: 10%;
+  z-index: 1;
+  display: block;
+  width: 80%;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  border-radius: 7px;
+  box-shadow: 0 8px 14px rgba(0, 0, 0, 0.44);
+  cursor: grab;
+  touch-action: none;
+}
+
+.wallpaper-preview-card:active {
+  cursor: grabbing;
+}
+
+.wallpaper-preview-card:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: 3px;
+}
+
+.wallpaper-preview-card:disabled {
+  cursor: wait;
+}
+
+.wallpaper-preview-card img,
+.wallpaper-preview-placeholder {
+  display: block;
+  width: 100%;
+  aspect-ratio: 660 / 921;
+  border-radius: inherit;
+  pointer-events: none;
+  user-select: none;
+}
+
+.wallpaper-preview-placeholder {
+  display: grid;
+  place-items: center;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.24);
+  font-size: 0.68rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+}
+
+.wallpaper-position-control {
+  display: grid;
+  gap: 6px;
+}
+
+.wallpaper-position-control label,
+.wallpaper-position-axis {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.wallpaper-position-control label {
+  font-size: 0.76rem;
+  font-weight: 800;
+}
+
+.wallpaper-position-control output {
+  color: var(--accent-dark);
+}
+
+.wallpaper-position-control input {
+  width: 100%;
+  accent-color: var(--accent);
+}
+
+.wallpaper-position-axis {
+  color: var(--muted);
+  font-size: 0.68rem;
+}
+
+.wallpaper-position-reset {
+  justify-self: center;
+  padding: 7px 12px;
+  color: var(--accent-dark);
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+.wallpaper-position-reset:disabled {
+  opacity: 0.45;
+}
+
+.download-button--wallpaper {
+  color: var(--accent-dark);
+  background: #fff;
+  border-color: var(--accent);
+  box-shadow: 0 6px 16px rgba(157, 56, 42, 0.12);
+}
+
+.download-button--wallpaper:hover:not(:disabled) {
+  color: #fff;
+}
+
 .download-button:hover:not(:disabled) {
   background: var(--accent-dark);
   transform: translateY(-1px);
