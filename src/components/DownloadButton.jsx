@@ -240,13 +240,16 @@ const DownloadButton = ({
       setWallpaperPreviewUrl(previewUrl)
     }
 
-    updatePreview().catch((previewError) => {
-      console.error('Error generating wallpaper preview:', previewError)
-      if (!isDisposed) setWallpaperPreviewUrl('')
-    })
+    const timer = window.setTimeout(() => {
+      updatePreview().catch((previewError) => {
+        console.error('Error generating wallpaper preview:', previewError)
+        if (!isDisposed) setWallpaperPreviewUrl('')
+      })
+    }, 300)
 
     return () => {
       isDisposed = true
+      window.clearTimeout(timer)
       if (previewUrl) URL.revokeObjectURL(previewUrl)
     }
   }, [isWallpaperPanelOpen, cardRef, cardData, layoutMode, imagePreview, imageAdjustment])
