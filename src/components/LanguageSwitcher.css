@@ -3,6 +3,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
+  padding-inline-end: 10px;
 }
 
 .language-label {
