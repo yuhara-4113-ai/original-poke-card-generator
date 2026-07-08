@@ -216,12 +216,18 @@ const DownloadButton = ({
   const [status, setStatus] = useState('')
   const wallpaperPreviewRef = useRef(null)
   const wallpaperDragRef = useRef(null)
+  const previewUrlRef = useRef('')
   const { t } = useLanguage()
 
   useEffect(() => {
-    if (!isWallpaperPanelOpen) return undefined
+    if (!isWallpaperPanelOpen) {
+      if (previewUrlRef.current) {
+        URL.revokeObjectURL(previewUrlRef.current)
+        previewUrlRef.current = ''
+      }
+      return undefined
+    }
     let isDisposed = false
-    let previewUrl = ''
     const sourceSvg = cardRef?.current?.getSvgElement?.()
     if (!sourceSvg) return undefined
 
@@ -236,20 +242,29 @@ const DownloadButton = ({
       if (isDisposed) return
 
       const svgSource = new XMLSerializer().serializeToString(svg)
-      previewUrl = URL.createObjectURL(new Blob([svgSource], { type: 'image/svg+xml;charset=utf-8' }))
-      setWallpaperPreviewUrl(previewUrl)
+      const nextPreviewUrl = URL.createObjectURL(new Blob([svgSource], { type: 'image/svg+xml;charset=utf-8' }))
+      const previousPreviewUrl = previewUrlRef.current
+      previewUrlRef.current = nextPreviewUrl
+      setWallpaperPreviewUrl(nextPreviewUrl)
+      if (previousPreviewUrl) URL.revokeObjectURL(previousPreviewUrl)
     }
 
-    updatePreview().catch((previewError) => {
-      console.error('Error generating wallpaper preview:', previewError)
-      if (!isDisposed) setWallpaperPreviewUrl('')
-    })
+    const timer = window.setTimeout(() => {
+      updatePreview().catch((previewError) => {
+        console.error('Error generating wallpaper preview:', previewError)
+        if (!isDisposed) setWallpaperPreviewUrl('')
+      })
+    }, 300)
 
     return () => {
       isDisposed = true
-      if (previewUrl) URL.revokeObjectURL(previewUrl)
+      window.clearTimeout(timer)
     }
   }, [isWallpaperPanelOpen, cardRef, cardData, layoutMode, imagePreview, imageAdjustment])
+
+  useEffect(() => () => {
+    if (previewUrlRef.current) URL.revokeObjectURL(previewUrlRef.current)
+  }, [])
 
   const handleWallpaperPanelToggle = (event) => {
     const isOpen = event.currentTarget.open

@@ -15,12 +15,23 @@
 }
 
 .language-select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
   min-height: 38px;
   padding: 6px 32px 6px 12px;
   color: #f8fafc;
   border: 1px solid #55616c;
   border-radius: 999px;
   background-color: #293641;
+  background-image:
+    linear-gradient(45deg, transparent 50%, #c7d0d7 50%),
+    linear-gradient(135deg, #c7d0d7 50%, transparent 50%);
+  background-position:
+    calc(100% - 17px) 50%,
+    calc(100% - 12px) 50%;
+  background-repeat: no-repeat;
+  background-size: 5px 5px;
   font-size: 13px;
   cursor: pointer;
   transition: border-color 0.2s ease;
